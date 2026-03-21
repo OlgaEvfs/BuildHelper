@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs'); // для хеширования паролей
 
 // Схема пользователя
 const userSchema = new mongoose.Schema({
@@ -29,5 +30,19 @@ const userSchema = new mongoose.Schema({
         default: Date.now // сохраняем дату создания
     }
 });
+
+// Хешируем пароль перед сохранением
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        next(); // если пароль не изменился, переходим к следующему middleware
+    }
+    const salt = await bcrypt.genSalt(10); // генерируем соль
+    this.password = await bcrypt.hash(this.password, salt); // хешируем пароль
+});
+
+// Метод для сравнения паролей при входе
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password); // сравниваем введенный пароль с хешированным
+};
 
 module.exports = mongoose.model('User', userSchema); // Экспортируем модель для использования в других местах приложения
