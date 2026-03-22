@@ -12,4 +12,4 @@ const generateToken = (id) => {
     });
 };
 
-module.exports = { generateToken }; // Экспортируем функцию для использования в других местах приложения
+module.exports = generateToken; // Экспортируем функцию для использования в других местах приложения
