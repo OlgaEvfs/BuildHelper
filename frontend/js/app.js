@@ -1,6 +1,6 @@
-console.log("Frontend is running!");
+// console.log("Frontend is running!");
 
-// Пример запроса к нашему API
+//Пример запроса к нашему API
 /* fetch('/api/test')
     .then(response => response.json())
     .then(data => {
