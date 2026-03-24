@@ -1,16 +1,90 @@
+:root {
+    --primary-dark: #0d1b2a; /* Темно-синий для заголовков и акцентов */
+    --accent-blue: #007bff; /* Акцентный синий */
+    --text-main: #1b263b; /* Основной текстовый цвет */
+    --bg-light: #f8f9fa; /* Светлый фон */
+    --white: #ffffff; /* Белый цвет */
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: sans-serif;
-    margin: 20px;
-    line-height: 1.6; 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: var(--bg-light);
+    color: var(--text-main); 
 }
 
 header {
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    background-color: var(--white);
+    position: sticky; /* Фиксируем шапку при прокрутке */
+    top: 0;
+    z-index: 1000; /* шапка будет поверх другого контента */
 }
 
-nav a {
-    text-decoration: none;
-    color: blue; font-weight: bold;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px 20px;
+    box-shadow: 0 1px 10px rgba(13, 27, 42, 0.1);
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 1.4em;
+    letter-spacing: -0.5px; /* Немного сжимаем буквы для более современного вида */
+    color: var(--primary-dark);
+}
+
+.nav-links a {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Style for button "Регистрация" */
+.nav-links a[href*="register"] {
+    background-color: var(--accent-blue);
+    color: var(--white);
+    padding: 8px 18px;
+    border-radius: 4px;
+    margin-left: 20px;
+}
+
+.nav-links a[href*="register"]:hover {
+    background-color: #0056b3;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Стиль для авторизированного пользователя */
+.user-info {
+    font-weight: bold;
+    color: var(--primary-dark);
+    border-left: 2px solid #ddd;
+    padding-left: 15px;
+}
+
