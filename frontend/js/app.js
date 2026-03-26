@@ -49,4 +49,6 @@ function updateNavbar() {
 // Запуск при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     updateNavbar();
+
+    
 });
