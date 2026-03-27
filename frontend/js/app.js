@@ -92,7 +92,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             case 'paint':
                 title = "Расход грунтовки или краски";
-                // форма для краски
+                content = `
+                    <div class="form-group">
+                        <label>Площадь стен (м²):</label>
+                        <input type="number" id="paint-area" placeholder="0.0" step="0.1">
+                        <small style="color:#666; font-size:0.8rem;">(Возьмите из расчета Геометрии)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Средний расход (л/м²):</label>
+                        <input type="number" id="paint-consumption" placeholder="например 0,15" step="0.1" value="0.15">
+                    </div>
+                    <div class="form-group">
+                        <label>Количество слоев:</label>
+                        <input type="number" id="paint-layers" value="2" step="1">
+                    </div>
+
+                    <div id="paint-result" class="result-box" style="margin-top: 20px; padding:15px; background:#f0f7ff; border-radius: 8px; display: none;">
+                        <!-- Результаты будут здесь -->
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculatePaint()">Рассчитать</button>
+                `;
                 break;
         }
 
@@ -160,6 +180,11 @@ window.calculateGeometry = function() {
         <p>Сумма проемов: <strong>${totalOpeningsArea.toFixed(2)} м²</strong></p>
         <p style="color:var(--accent-blue); font-size:1.1rem;">Чистая площадь стен: <strong>${netWallArea} м²</strong></p>
     `;
+
+    // Сохраняем результат для других калькуляторов
+    sessionStorage.setItem('lastNetWallArea', netWallArea);
+    sessionStorage.setItem('lastFloorArea', floorArea);
+    sessionStorage.setItem('lastPerimeter', perimeter.toFixed(2));
 };
 
 // Функция для добавления блока, чтобы вычитать оконные и дверные проемы
@@ -180,4 +205,26 @@ window.addOpeningRow = function() {
         <button onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem;">&times;</button>
     `;
     openingsList.appendChild(row);
+};
+
+// Функция расчета краски или грунтовки
+window.calculatePaint = function() {
+    const area = parseFloat(document.getElementById('paint-area').value) || 0;
+    const cons = parseFloat(document.getElementById('paint-consumption').value) || 0;
+    const layers = parseInt(document.getElementById('paint-layers').value) || 1;
+
+    if (area <= 0 || cons <= 0) {
+        alert("Пожалуйста, заполните площадь и расход материала.");
+        return;
+    }
+
+    const totalLiters = (area * cons * layers).toFixed(2);
+
+    const resultBox = document.getElementById('paint-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Для покраски в ${layers} слоя(ев):</p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо: <strong>${totalLiters} л.</strong></p>
+        <p style="font-size:0.9rem; margin-top:10px;">(Рекомендуем взять запас 10% - это примерно ${(totalLiters * 1.1).toFixed(2)} л.)</p>
+    `;
 };
