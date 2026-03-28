@@ -52,9 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция для открытия модалки
     function openCalculatorModal(type) {
+
         const overlay = document.createElement('div');
         overlay.className = 'modal-overlay';
         overlay.id = 'modal-overlay';
+
+        // Достаем сохраненные данные в localStorage
+        const savedWallArea = sessionStorage.getItem('lastNetWallArea') || "";
+        const savedFloorArea = sessionStorage.getItem('lastFloorArea') || "";
+        const savedPerimeter = sessionStorage.getItem('lastPerimeter') || "";
 
         let title = "";
         let content = "";
@@ -95,12 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 content = `
                     <div class="form-group">
                         <label>Площадь стен (м²):</label>
-                        <input type="number" id="paint-area" placeholder="0.0" step="0.1">
-                        <small style="color:#666; font-size:0.8rem;">(Возьмите из расчета Геометрии)</small>
+                        <input type="number" id="paint-area" value="${savedWallArea}" placeholder="0.0" step="0.1">
+                        
+                        ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
                     </div>
                     <div class="form-group">
-                        <label>Средний расход (л/м²):</label>
-                        <input type="number" id="paint-consumption" placeholder="например 0,15" step="0.1" value="0.15">
+                        <label>Расход (м²/л):</label>
+                        <input type="number" id="paint-consumption" placeholder="например 10" step="1">
                     </div>
                     <div class="form-group">
                         <label>Количество слоев:</label>
@@ -114,6 +121,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculatePaint()">Рассчитать</button>
                 `;
                 break;
+            
+                case 'wallpaper':
+                    title = "Расчет обоев";
+                    content = `
+                        <div class="form-group">
+                            <label>Площадь стен (м²):</label>
+                            <input type="number" id="wallpaper-area" value="${savedWallArea}" placeholder="0.0" step="0.1">
+                            ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                        </div>
+                        <div class="form-group">
+                            <label>Ширина рулона (м):</label>
+                            <select id="roll-width" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="0.53">0.53 м (стандарт)</option>
+                                <option value="1.06">1.06 м (метровые)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Длина рулона (м):</label>
+                            <select id="roll-length" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="10.05">10.05 м (стандарт)</option>
+                                <option value="25">25 м (проф)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Высота стены (м):</label>
+                            <input type="number" id="wall-height" value="2.5" step="0.1">
+                            <small style="color:#666;">Высота влияет на количестсво полос</small>
+                        </div>
+
+                        <div id="wallpaper-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                             <!-- Результаты будут здесь -->
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWallpaper()">Рассчитать</button>
+                    `;
+                    break;
         }
 
         // Собираем модалку
@@ -218,7 +261,8 @@ window.calculatePaint = function() {
         return;
     }
 
-    const totalLiters = (area * cons * layers).toFixed(2);
+    // cons = м2/л
+    const totalLiters = ((area / cons) * layers).toFixed(2);
 
     const resultBox = document.getElementById('paint-result');
     resultBox.style.display = 'block';
@@ -226,5 +270,39 @@ window.calculatePaint = function() {
         <p>Для покраски в ${layers} слоя(ев):</p>
         <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо: <strong>${totalLiters} л.</strong></p>
         <p style="font-size:0.9rem; margin-top:10px;">(Рекомендуем взять запас 10% - это примерно ${(totalLiters * 1.1).toFixed(2)} л.)</p>
+    `;
+};
+
+// Функция расчета обоев
+window.calculateWallpaper = function() {
+    const area = parseFloat(document.getElementById('wallpaper-area').value) || 0;
+    const rollWidth = parseFloat(document.getElementById('roll-width').value) || 0.53;
+    const rollLength = parseInt(document.getElementById('roll-length').value) || 10.05;
+    const wallHeight = parseInt(document.getElementById('wall-height').value) || 2.5;
+
+    if (area <= 0 || wallHeight <= 0) {
+        alert("Пожалуйста, введите площадь и высоту стен.");
+        return;
+    }
+
+    // Общая длина стен
+    const wallLength = area / wallHeight;
+
+    // Сколько полос нужно
+    const stripsNeeded = Math.ceil(wallLength / rollWidth);
+
+    // Сколько полос в одном рулоне
+    const stripsPerRoll = Math.floor(rollLength / wallHeight);
+
+    // Кол-во рулонов
+    const rollsNeeded =Math.ceil(stripsNeeded / stripsPerRoll);
+
+    const resultBox = document.getElementById('wallpaper-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Полос нужно: <strong>${stripsNeeded}</strong></p>
+        <p>Полос в рулоне: <strong>${stripsPerRoll}</strong></p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо рулонов: <strong>${rollsNeeded} шт.</strong></p>
+        <p style="font-size:0.8rem; margin-top:10px; color:#666;">(Расчет без учета подгона рисунка. Рекомендуем взять +1 рулон в запас)</p>
     `;
 };
