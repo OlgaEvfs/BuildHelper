@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div id="openings-list">
                         <!-- Сюда будем добавлять двери и окна -->
                     </div>
-                    <button class="btn-secondary" onclick="addOpeningRow()">+ Добавить проем</button>
+                    <button class="btn-helper" onclick="addOpeningRow()">+ Добавить проем</button>
 
                     <div id="calc-result" class="result-box" style="margin-top: 20px; padding:15px; background:#f0f7ff; border-radius: 8px; display: none;">
                         <!-- Результаты будут здесь -->
@@ -101,9 +101,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 content = `
                     <div class="form-group">
                         <label>Площадь стен (м²):</label>
-                        <input type="number" id="paint-area" value="${savedWallArea}" placeholder="0.0" step="0.1">
+                        <input type="number" id="paint-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
                         
                         ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                        ${(savedFloorArea && savedFloorArea) ? `
+                            <div style="margin-top: 5px;">
+                                <button type="button"  class="btn-helper" 
+                                    onclick="toggleAreaValue(this, 'paint-area', '${savedWallArea}', '${savedFloorArea}')">
+                                    Использовать пол (${savedFloorArea} м²)
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                     <div class="form-group">
                         <label>Расход (м²/л):</label>
@@ -122,41 +130,93 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 break;
             
-                case 'wallpaper':
-                    title = "Расчет обоев";
-                    content = `
-                        <div class="form-group">
-                            <label>Площадь стен (м²):</label>
-                            <input type="number" id="wallpaper-area" value="${savedWallArea}" placeholder="0.0" step="0.1">
-                            ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
-                        </div>
-                        <div class="form-group">
-                            <label>Ширина рулона (м):</label>
-                            <select id="roll-width" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                                <option value="0.53">0.53 м (стандарт)</option>
-                                <option value="1.06">1.06 м (метровые)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Длина рулона (м):</label>
-                            <select id="roll-length" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                                <option value="10.05">10.05 м (стандарт)</option>
-                                <option value="25">25 м (проф)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Высота стены (м):</label>
-                            <input type="number" id="wall-height" value="2.5" step="0.1">
-                            <small style="color:#666;">Высота влияет на количестсво полос</small>
-                        </div>
+            case 'wallpaper':
+                title = "Расчет обоев";
+                content = `
+                    <div class="form-group">
+                        <label>Площадь стен (м²):</label>
+                        <input type="number" id="wallpaper-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                        ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                    </div>
+                    <div class="form-group">
+                        <label>Ширина рулона (м):</label>
+                        <select id="roll-width" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="0.53">0.53 м (стандарт)</option>
+                            <option value="1.06">1.06 м (метровые)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Длина рулона (м):</label>
+                        <select id="roll-length" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="10.05">10.05 м (стандарт)</option>
+                            <option value="25">25 м (проф)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Высота стены (м):</label>
+                        <input type="number" id="wall-height" value="2.5" step="0.1">
+                        <small style="color:#666;">Высота влияет на количестсво полос</small>
+                    </div>
 
-                        <div id="wallpaper-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
-                             <!-- Результаты будут здесь -->
-                        </div>
+                    <div id="wallpaper-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                            <!-- Результаты будут здесь -->
+                    </div>
 
-                        <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWallpaper()">Рассчитать</button>
-                    `;
-                    break;
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWallpaper()">Рассчитать</button>
+                `;
+                break;
+            case 'tiles':
+                title = "Расчет плитки";
+                content = `
+                    <div class="form-group">
+                        <label>Площадь поверхности (м²):</label>
+                        <input type="number" id="tile-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                        ${savedWallArea 
+                            ? '<small style="color:green;">Подставлено из Геометрии</small>' 
+                            : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                        ${(savedFloorArea && savedFloorArea) ? `
+                            <div style="margin-top: 5px;">
+                                <button type="button"  class="btn-helper" 
+                                    onclick="toggleAreaValue(this, 'tile-area', '${savedWallArea}', '${savedFloorArea}')">
+                                    Использовать пол (${savedFloorArea} м²)
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="form-group">
+                        <label>Размер плитки (мм):</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="tile-w" placeholder="Ш" step="1" value="300">
+                            <input type="number" id="tile-h" placeholder="В" step="1" value="300">
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <button type="button" class="btn-helper" onclick="setTileSize(300, 300)">30x30</button>
+                            <button type="button" class="btn-helper" onclick="setTileSize(600, 600)">60x60</button>
+                            <button type="button" class="btn-helper" onclick="setTileSize(600, 300)">60x30</button>
+                        </div>
+                        <small style="color:#666;">
+                            Быстрый выбор популярных размеров
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Шов (мм):</label>
+                        <input type="number" id="tile-grout" value="2" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Запас (%):</label>
+                        <input type="number" id="tile-stock" value="10" step="1">
+                        <small style="color: #666;">
+                            Рекомендуется 5-15%
+                        </small>
+                    </div>
+
+                    <div id="tiles-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                            <!-- Результаты будут здесь -->
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateTiles()">Рассчитать</button>
+                `;
+                break;
         }
 
         // Собираем модалку
@@ -305,4 +365,67 @@ window.calculateWallpaper = function() {
         <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо рулонов: <strong>${rollsNeeded} шт.</strong></p>
         <p style="font-size:0.8rem; margin-top:10px; color:#666;">(Расчет без учета подгона рисунка. Рекомендуем взять +1 рулон в запас)</p>
     `;
+};
+
+// Функция расчета плитки
+window.calculateTiles = function() {
+    const area = parseFloat(document.getElementById('tile-area').value) || 0;
+    const w = parseFloat(document.getElementById('tile-w').value) || 0;
+    const h = parseFloat(document.getElementById('tile-h').value) || 0;
+    const grout = parseFloat(document.getElementById('tile-grout').value) || 0;
+    const stock = parseFloat(document.getElementById('tile-stock').value) || 0;
+
+    if (area <= 0 || w <= 0 || h <= 0) {
+        alert("Пожалуйста, введите площадь и размеры плитки.");
+        return;
+    }
+
+    // Площадь плитки без шва
+    const tileArea = (w * h) / 1000000;
+
+    // Площадь плитки со швом (переводим из мм в метры)
+    const tileAreaWithGrout = ((w + grout) * (h + grout)) / 1000000;
+
+    // Кол-во плиток
+    let count = area / tileAreaWithGrout;
+
+    // Добавляем запас
+    count = count * (1 + stock / 100);
+
+    const finalCount = Math.ceil(count);
+
+    const resultBox = document.getElementById('tiles-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Площадь плитки: <strong>${tileArea.toFixed(4)} м²</strong></p>
+        <p>С учетом шва: <strong>${tileAreaWithGrout.toFixed(4)} м²</strong></p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо плиток: <strong>${finalCount} шт.</strong></p>
+        <p style="font-size:0.8rem; margin-top:10px; color:#666;">(Шов: ${grout} мм, запас ${stock}%)</p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Общая площадь с запасом: ${(area * (1 + stock / 100)).toFixed(2)} м²</p>
+    `;
+};
+
+// Функция-переключатель для площади (Стены <-> Пол)
+window.toggleAreaValue = function(btn, inputId, wallArea, floorArea) {
+    const input = document.getElementById(inputId);
+
+    // Если стены, меняем на пол
+    if (input.value === wallArea) {
+        input.value = floorArea;
+        btn.innerText = `Использовать стены (${wallArea} м²)`;
+    } else {
+        // Иначе меняем на пол
+        input.value = wallArea;
+        btn.innerText = `Использовать пол (${floorArea} м²)`;
+    }
+};
+
+// Функция для быстрой установки размера плитки
+window.setTileSize = function(w, h) {
+    const inputW = document.getElementById('tile-w');
+    const inputH = document.getElementById('tile-h');
+    if (inputW && inputH) {
+        inputW.value = w;
+        inputH.value = h;
+    }
 };

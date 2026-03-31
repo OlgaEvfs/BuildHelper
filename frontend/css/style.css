@@ -134,19 +134,40 @@ header {
     color: white;
 }
 
-.btn-secondary {
-    border: 2px solid var(--primary-dark);
-    color: var(--primary-dark);
-}
-
 .btn-primary:hover {
     background-color: #0056b3;
     transform: translateY(-2px);
 }
 
+.btn-secondary {
+    border: 2px solid var(--primary-dark);
+    color: var(--primary-dark);
+}
+
 .btn-secondary:hover {
     background-color: var(--primary-dark);
     color: white;
+}
+
+/* Кнопка для встаки готовых размеров */
+
+.btn-helper {
+    background: #f0f2f5;
+    border: 1px solid #d1d5db;
+    color: #4b5563;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+.btn-helper:hover {
+    background: #e5e7eb;
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
 }
 
 /* Заглушка для визуального элемента */
