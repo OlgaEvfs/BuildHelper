@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="paint-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
                         
                         ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
-                        ${(savedFloorArea && savedFloorArea) ? `
+                        ${(savedWallArea && savedFloorArea) ? `
                             <div style="margin-top: 5px;">
                                 <button type="button"  class="btn-helper" 
                                     onclick="toggleAreaValue(this, 'paint-area', '${savedWallArea}', '${savedFloorArea}')">
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${savedWallArea 
                             ? '<small style="color:green;">Подставлено из Геометрии</small>' 
                             : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
-                        ${(savedFloorArea && savedFloorArea) ? `
+                        ${(savedWallArea && savedFloorArea) ? `
                             <div style="margin-top: 5px;">
                                 <button type="button"  class="btn-helper" 
                                     onclick="toggleAreaValue(this, 'tile-area', '${savedWallArea}', '${savedFloorArea}')">
@@ -217,6 +217,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateTiles()">Рассчитать</button>
                 `;
                 break;
+            case 'waterproofing':
+                title = "Расчет гидроизоляции";
+                content = `
+                    <div class="form-group">
+                        <label>Площадь обработки (м²):</label>
+                        <input type="number" id="wp-area" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                        ${savedWallArea 
+                            ? '<small style="color:green;">Подставлено из Геометрии</small>' 
+                            : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                        ${(savedWallArea && savedFloorArea) ? `
+                            <div style="margin-top: 5px;">
+                                <button type="button"  class="btn-helper" 
+                                    onclick="toggleAreaValue(this, 'wp-area', '${savedWallArea}', '${savedFloorArea}')">
+                                    Использовать стены (${savedWallArea} м²)
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="form-group">
+                        <label>Расход (кг/м²):</label>
+                        <input type="number" id="wp-consumption" step="0.1" value="1.5">
+                        <small style="color:#666;">Стандарт: 1.2 - 2.0 кг/м² (обычно на 2 слоя)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Периметр стыков (м.п):</label>
+                        <input type="number" id="wp-perimeter" value="${savedPerimeter || ''}" placeholder="0.0" step="0.1">
+                        <small style="color:#666;">Для расчета ленты (уже подставлен периметр комнаты)</small>
+                    </div>
+
+                    <div id="wp-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                            <!-- Результаты будут здесь -->
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWP()">Рассчитать</button>
+                `;
+                break;
         }
 
         // Собираем модалку
@@ -246,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+//----------------------------------- РАСЧЕТЫ ---------------------------------------------
 
 // Функция расчета геометрии
 window.calculateGeometry = function() {
@@ -428,4 +466,38 @@ window.setTileSize = function(w, h) {
         inputW.value = w;
         inputH.value = h;
     }
+};
+
+// Функция расчета гидроизоляции
+window.calculateWP = function() {
+    const area = parseFloat(document.getElementById('wp-area').value) || 0;
+    const cons = parseFloat(document.getElementById('wp-consumption').value) || 1.5;
+    const perimeter = parseFloat(document.getElementById('wp-perimeter').value) || 0;
+
+    if (area <= 0) {
+        alert("Пожалуйста, введите площадь обработки.");
+        return;
+    }
+
+    // Считаем общий вес мастики
+    const totalWeight = area * cons;
+
+    // Считаем ленту с запасом
+    const tapeLength = Math.ceil(perimeter * 1.05);
+
+    // Запас
+    const areaWithReserve = area * 1.1;
+
+    const resultBox = document.getElementById('wp-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Площадь с запасом: <strong>${areaWithReserve.toFixed(1)} м²</strong></p>
+        <p>Мастика: <strong>${totalWeight.toFixed(1)} кг</strong></p>
+        <p>Лента для углов: <strong>${tapeLength} м.п</strong></p>
+        <hr style="margin: 10px 0; border: 0.5px solid #d0e7ff;">
+        <p style="font-size:0.9rem; color: #666;">Рекомендуем купить: <br>
+            - ${Math.ceil(totalWeight / 5)} ведер по 5 кг или ${Math.ceil(totalWeight / 15)} ведер по 15 кг.<br>
+            - Ленты: рулоны по 10 или 20 метров.
+        </p>
+    `;
 };
