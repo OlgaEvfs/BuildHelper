@@ -253,6 +253,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWP()">Рассчитать</button>
                 `;
                 break;
+            case 'floor':
+                title = "Расчет стяжки пола";
+                content = `
+                    <div class="form-group">
+                        <label>Площадь пола (м²):</label>
+                        <input type="number" id="floor-area" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                        ${savedFloorArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                    </div>
+                    <div class="form-group">
+                        <label>Толщина слоя (см):</label>
+                        <input type="number" id="floor-thickness" placeholder="например, 3" step="0.5" value="3">
+                        <small style="color:#666;">Минимальная толщина - 3 см</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Вес мешка (кг):</label>
+                        <input type="number" id="bag-weight" value="25" step="1">
+                    </div>
+
+                    <div id="floor-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                            <!-- Результаты будут здесь -->
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateFloor()">Рассчитать</button>
+                `;
+                break;
         }
 
         // Собираем модалку
@@ -499,5 +524,39 @@ window.calculateWP = function() {
             - ${Math.ceil(totalWeight / 5)} ведер по 5 кг или ${Math.ceil(totalWeight / 15)} ведер по 15 кг.<br>
             - Ленты: рулоны по 10 или 20 метров.
         </p>
+    `;
+};
+
+// Функция расчета стяжки пола
+window.calculateFloor = function() {
+    const area = parseFloat(document.getElementById('floor-area').value) || 0;
+    const thickness = parseFloat(document.getElementById('floor-thickness').value) || 0;
+    const weight = parseFloat(document.getElementById('bag-weight').value) || 25;
+
+    if (area <= 0 || thickness <= 0) {
+        alert("Пожалуйста, введите площадь и толщину слоя.");
+        return;
+    }
+
+    if (thickness < 3) {
+        alert("Минимальная толщина стяжки - 3 см");
+        return;
+    }
+
+    // Средний расход стяжки - 20 кг на 1 м² при толщине 1 см
+    const totalWeight = area * thickness * 20;
+    const totalWithReserve = totalWeight * 1.1; // Добавляем запас 10%
+    const bags = Math.ceil(totalWithReserve / weight);
+
+    const resultBox = document.getElementById('floor-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Площадь: <strong>${area} м²</strong></p>
+        <p>Слой стяжки: <strong>${thickness} см</strong></p>
+        <p>Общий вес смеси: <strong>${totalWeight.toFixed(0)} кг</strong></p>
+        <p>С учетом запаса: <strong>${totalWithReserve.toFixed(0)} кг</strong></p>
+        <hr style="margin: 10px 0; border: 0.5px solid #d0e7ff;">
+        <p style="font-size:1.2rem; color: var(--accent-blue);">Необходимо мешков (${weight} кг): <strong>${bags} шт</strong></p>
+        <p style="font-size:0.8rem; margin-top:10px; color: #666;">(Расход: ~20 кг/м² на 1 см толщины)</p>
     `;
 };
