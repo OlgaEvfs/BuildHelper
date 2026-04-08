@@ -1,13 +1,5 @@
 // console.log("Frontend is running!");
 
-//Пример запроса к нашему API
-/* fetch('/api/test')
-    .then(response => response.json())
-    .then(data => {
-        console.log('Response from API:', data.message);
-    })
-    .catch(err => console.error("Error fetching from API:", err)); */
-
 // Функция обновления навигационной панели
 function updateNavbar() {
     const authLinks = document.getElementById('auth-links');
@@ -49,6 +41,7 @@ function updateNavbar() {
 // Запуск при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     updateNavbar();
+    fetchNews();
 
     // Функция для открытия модалки
     function openCalculatorModal(type) {
@@ -82,17 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label>Высота (м):</label>
                         <input type="number" id="room-height" placeholder="0.0" step="0.1">
                     </div>
-                    <hr style="margin: 20px 0; border: 0.5px solid #eee;">
+                    <hr class="modal-divider">
                     <div id="openings-list">
                         <!-- Сюда будем добавлять двери и окна -->
                     </div>
                     <button class="btn-helper" onclick="addOpeningRow()">+ Добавить проем</button>
 
-                    <div id="calc-result" class="result-box" style="margin-top: 20px; padding:15px; background:#f0f7ff; border-radius: 8px; display: none;">
+                    <div id="calc-result" class="result-box">
                         <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateGeometry()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculateGeometry()">Рассчитать</button>
                 `;
                 break;
 
@@ -122,11 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="paint-layers" value="2" step="1">
                     </div>
 
-                    <div id="paint-result" class="result-box" style="margin-top: 20px; padding:15px; background:#f0f7ff; border-radius: 8px; display: none;">
+                    <div id="paint-result" class="result-box">
                         <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculatePaint()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculatePaint()">Рассчитать</button>
                 `;
                 break;
             
@@ -140,14 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="form-group">
                         <label>Ширина рулона (м):</label>
-                        <select id="roll-width" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        <select id="roll-width">
                             <option value="0.53">0.53 м (стандарт)</option>
                             <option value="1.06">1.06 м (метровые)</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Длина рулона (м):</label>
-                        <select id="roll-length" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        <select id="roll-length">
                             <option value="10.05">10.05 м (стандарт)</option>
                             <option value="25">25 м (проф)</option>
                         </select>
@@ -158,11 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small style="color:#666;">Высота влияет на количестсво полос</small>
                     </div>
 
-                    <div id="wallpaper-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                    <div id="wallpaper-result" class="result-box">
                             <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWallpaper()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculateWallpaper()">Рассчитать</button>
                 `;
                 break;
             case 'tiles':
@@ -210,11 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         </small>
                     </div>
 
-                    <div id="tiles-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                    <div id="tiles-result" class="result-box">
                             <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateTiles()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculateTiles()">Рассчитать</button>
                 `;
                 break;
             case 'waterproofing':
@@ -246,11 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small style="color:#666;">Для расчета ленты (уже подставлен периметр комнаты)</small>
                     </div>
 
-                    <div id="wp-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                    <div id="wp-result" class="result-box">
                             <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateWP()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculateWP()">Рассчитать</button>
                 `;
                 break;
             case 'floor':
@@ -271,11 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <input type="number" id="bag-weight" value="25" step="1">
                     </div>
 
-                    <div id="floor-result" class="result-box" style="margin-top: 20px; padding: 15px; background: #f0f7ff; border-radius: 8px; display: none;">
+                    <div id="floor-result" class="result-box">
                             <!-- Результаты будут здесь -->
                     </div>
 
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="calculateFloor()">Рассчитать</button>
+                    <button class="btn btn-primary btn-full" onclick="calculateFloor()">Рассчитать</button>
                 `;
                 break;
         }
@@ -358,17 +351,16 @@ window.addOpeningRow = function() {
     const openingsList = document.getElementById('openings-list');
     const row = document.createElement('div');
     row.className = 'opening-row';
-    row.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
 
     row.innerHTML = `
-        <select class="opening-type" style="padding:5px;">
+        <select class="opening-type">
             <option value="door">Дверь</option>
             <option value="window">Окно</option>
         </select>
-        <input type="number" class="op-width" placeholder="Ш (м)" style="width: 70px; padding:5px;" step="0.1">
-        <input type="number" class="op-height" placeholder="В (м)" style="width: 70px; padding:5px;" step="0.1">
-        <input type="number" class="op-qty" placeholder="Кол-во" style="width: 70px; padding:5px;" value="1">
-        <button onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer; font-size:1.2rem;">&times;</button>
+        <input type="number" class="op-width" placeholder="Ш (м)" step="0.1">
+        <input type="number" class="op-height" placeholder="В (м)" step="0.1">
+        <input type="number" class="op-qty" placeholder="Кол-во" value="1">
+        <button onclick="this.parentElement.remove()" class="btn-remove-row">&times;</button>
     `;
     openingsList.appendChild(row);
 };
@@ -384,7 +376,6 @@ window.calculatePaint = function() {
         return;
     }
 
-    // cons = м2/л
     const totalLiters = ((area / cons) * layers).toFixed(2);
 
     const resultBox = document.getElementById('paint-result');
@@ -400,25 +391,18 @@ window.calculatePaint = function() {
 window.calculateWallpaper = function() {
     const area = parseFloat(document.getElementById('wallpaper-area').value) || 0;
     const rollWidth = parseFloat(document.getElementById('roll-width').value) || 0.53;
-    const rollLength = parseInt(document.getElementById('roll-length').value) || 10.05;
-    const wallHeight = parseInt(document.getElementById('wall-height').value) || 2.5;
+    const rollLength = parseFloat(document.getElementById('roll-length').value) || 10.05;
+    const wallHeight = parseFloat(document.getElementById('wall-height').value) || 2.5;
 
     if (area <= 0 || wallHeight <= 0) {
         alert("Пожалуйста, введите площадь и высоту стен.");
         return;
     }
 
-    // Общая длина стен
     const wallLength = area / wallHeight;
-
-    // Сколько полос нужно
     const stripsNeeded = Math.ceil(wallLength / rollWidth);
-
-    // Сколько полос в одном рулоне
     const stripsPerRoll = Math.floor(rollLength / wallHeight);
-
-    // Кол-во рулонов
-    const rollsNeeded =Math.ceil(stripsNeeded / stripsPerRoll);
+    const rollsNeeded = Math.ceil(stripsNeeded / stripsPerRoll);
 
     const resultBox = document.getElementById('wallpaper-result');
     resultBox.style.display = 'block';
@@ -443,18 +427,10 @@ window.calculateTiles = function() {
         return;
     }
 
-    // Площадь плитки без шва
     const tileArea = (w * h) / 1000000;
-
-    // Площадь плитки со швом (переводим из мм в метры)
     const tileAreaWithGrout = ((w + grout) * (h + grout)) / 1000000;
-
-    // Кол-во плиток
     let count = area / tileAreaWithGrout;
-
-    // Добавляем запас
     count = count * (1 + stock / 100);
-
     const finalCount = Math.ceil(count);
 
     const resultBox = document.getElementById('tiles-result');
@@ -471,13 +447,10 @@ window.calculateTiles = function() {
 // Функция-переключатель для площади (Стены <-> Пол)
 window.toggleAreaValue = function(btn, inputId, wallArea, floorArea) {
     const input = document.getElementById(inputId);
-
-    // Если стены, меняем на пол
     if (input.value === wallArea) {
         input.value = floorArea;
         btn.innerText = `Использовать стены (${wallArea} м²)`;
     } else {
-        // Иначе меняем на пол
         input.value = wallArea;
         btn.innerText = `Использовать пол (${floorArea} м²)`;
     }
@@ -504,13 +477,8 @@ window.calculateWP = function() {
         return;
     }
 
-    // Считаем общий вес мастики
     const totalWeight = area * cons;
-
-    // Считаем ленту с запасом
     const tapeLength = Math.ceil(perimeter * 1.05);
-
-    // Запас
     const areaWithReserve = area * 1.1;
 
     const resultBox = document.getElementById('wp-result');
@@ -519,7 +487,7 @@ window.calculateWP = function() {
         <p>Площадь с запасом: <strong>${areaWithReserve.toFixed(1)} м²</strong></p>
         <p>Мастика: <strong>${totalWeight.toFixed(1)} кг</strong></p>
         <p>Лента для углов: <strong>${tapeLength} м.п</strong></p>
-        <hr style="margin: 10px 0; border: 0.5px solid #d0e7ff;">
+        <hr class="modal-divider">
         <p style="font-size:0.9rem; color: #666;">Рекомендуем купить: <br>
             - ${Math.ceil(totalWeight / 5)} ведер по 5 кг или ${Math.ceil(totalWeight / 15)} ведер по 15 кг.<br>
             - Ленты: рулоны по 10 или 20 метров.
@@ -543,9 +511,8 @@ window.calculateFloor = function() {
         return;
     }
 
-    // Средний расход стяжки - 20 кг на 1 м² при толщине 1 см
     const totalWeight = area * thickness * 20;
-    const totalWithReserve = totalWeight * 1.1; // Добавляем запас 10%
+    const totalWithReserve = totalWeight * 1.1;
     const bags = Math.ceil(totalWithReserve / weight);
 
     const resultBox = document.getElementById('floor-result');
@@ -555,8 +522,107 @@ window.calculateFloor = function() {
         <p>Слой стяжки: <strong>${thickness} см</strong></p>
         <p>Общий вес смеси: <strong>${totalWeight.toFixed(0)} кг</strong></p>
         <p>С учетом запаса: <strong>${totalWithReserve.toFixed(0)} кг</strong></p>
-        <hr style="margin: 10px 0; border: 0.5px solid #d0e7ff;">
+        <hr class="modal-divider">
         <p style="font-size:1.2rem; color: var(--accent-blue);">Необходимо мешков (${weight} кг): <strong>${bags} шт</strong></p>
         <p style="font-size:0.8rem; margin-top:10px; color: #666;">(Расход: ~20 кг/м² на 1 см толщины)</p>
     `;
+};
+
+// Функция для получения и отображения новостей
+window.fetchNews = async function() {
+    const contentContainer = document.querySelector('.tabcontainer-content');
+    const itemsContainer = document.querySelector('.tabheader-items');
+
+    if (!contentContainer || !itemsContainer) return;
+
+    try {
+        const response = await fetch('api/news?limit=5');
+        const data = await response.json();
+        const news = data.news; 
+
+        contentContainer.innerHTML = ''; 
+        itemsContainer.innerHTML = ''; 
+
+        if (!news || news.length === 0) {
+            contentContainer.innerHTML = '<p style="padding: 20px;">Новостей пока нет.</p>';
+            return;
+        }
+
+        news.forEach((item, i) => {
+            const contentBlock = document.createElement('div');
+            contentBlock.className = 'tabcontent';
+            contentBlock.setAttribute('data-category', item.category);
+            if (item.jobType) contentBlock.setAttribute('data-job-type', item.jobType);
+
+            contentBlock.innerHTML = `
+                <img src="${item.imageUrl}" alt="${item.title}">
+                <div class="tabcontent-desc">
+                    <div class="news-date">${new Date(item.createdAt).toLocaleDateString()}</div>
+                    <h2>${item.title}</h2>
+                    <p>${item.content}</p>
+                    <a href="#" class="btn-read">${item.category === 'jobs' ? 'Откликнуться' : 'Читать далее'}</a>
+                </div>
+            `;
+            contentContainer.appendChild(contentBlock);
+
+            const headerItem = document.createElement('div');
+            headerItem.className = 'tabheader-item';
+            headerItem.setAttribute('data-category', item.category);
+            if (item.jobType) headerItem.setAttribute('data-job-type', item.jobType);
+            headerItem.textContent = item.title;
+
+            itemsContainer.appendChild(headerItem);
+        });
+
+        if (data.pagination.totalItems > 5) {
+            const allNewsLink = document.createElement('a');
+            allNewsLink.href = "/news.html";
+            allNewsLink.className = "tabheader-all-news";
+            allNewsLink.innerHTML = "Все новости →";
+            itemsContainer.appendChild(allNewsLink);
+        }
+
+        window.initNewsTabs();
+
+    } catch (err) {
+        console.error("Ошибка загрузки новостей:", err);
+        contentContainer.innerHTML = '<p style="color: red; padding: 20px;">Не удалось загрузить новости.</p>';
+    }
+};
+
+// Функция инициализации табов для новостей
+window.initNewsTabs = function() {
+    const tabs = document.querySelectorAll('.tabheader-item'),
+          tabsContent = document.querySelectorAll('.tabcontent');
+
+    function hideTabContent() {
+        tabsContent.forEach(item => {
+            item.style.display = 'none';
+            item.classList.remove('fade');
+        });
+        tabs.forEach(item => item.classList.remove('tabheader-item-active'));
+    }
+
+    function showTabContent(i = 0) {
+        if (tabs[i] && tabsContent[i]) {
+            hideTabContent();
+            tabsContent[i].style.display = 'block';
+            tabsContent[i].classList.add('fade');
+            tabs[i].classList.add('tabheader-item-active');
+        }
+    }
+
+    const itemsParent = document.querySelector('.tabheader-items');
+    if (itemsParent) {
+        itemsParent.onclick = (e) => {
+            const target = e.target;
+            if (target && target.classList.contains('tabheader-item')) {
+                tabs.forEach((item, i) => {
+                    if (target == item) showTabContent(i);
+                });
+            }
+        };
+    }
+
+    showTabContent(0);
 };

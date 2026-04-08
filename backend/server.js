@@ -30,6 +30,10 @@ app.get('/api/test', (req, res) => {
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes); // Все маршруты к авторизации будут начинаться с /api/auth
 
+// Роуты для новостей
+const newsRoutes = require('./routes/news');
+app.use('/api/news', newsRoutes); // Все маршруты к новостям будут начинаться с /api/news
+
 // Базовый роут для проверки API
 app.get('/', (req, res) => {
     res.send({ message: 'Welcome to BuildHelper API' });
