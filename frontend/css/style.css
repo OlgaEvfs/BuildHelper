@@ -622,3 +622,124 @@ header {
 .opening-row input, .opening-row select {
     width: auto;
 }
+
+/* Чек-лист */
+.checklist-section {
+    padding: 80px 20px;
+    background-color: var(--bg-accent-light);
+}
+
+.checklist-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-light);
+}
+
+.checklist-progress {
+    margin-bottom: 40px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background-color: var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-blue), #00d2ff);
+    transition: width 0.4s ease;
+}
+
+.checklist-category h3 {
+    margin: 25px 0 15px 0;
+    font-size: 1.2rem;
+    color: var(--primary-dark);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Кастомный чекбокс */
+.check-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: 0.2s;
+    user-select: none;
+}
+
+.check-item input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    background-color: var(--white);
+    border: 2px solid var(--border-dark);
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.check-item:hover input ~ .checkmark {
+    border-color: var(--accent-blue);
+}
+
+.check-item input:checked ~ .checkmark {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.check-item input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.check-item input:checked ~ .item-text {
+    color: var(--text-light);
+    text-decoration: line-through;
+    opacity: 0.6;
+}
