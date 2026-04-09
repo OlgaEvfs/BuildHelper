@@ -21,6 +21,12 @@
     --overlay-bg: rgba(13, 27, 42, 0.85);
     --shadow-light: rgba(13, 27, 42, 0.05);
     --shadow-medium: rgba(0, 0, 0, 0.1);
+
+    /* Футер */
+    --footer-bg: #1a1a1a;
+    --footer-text: #cccccc;
+    --footer-text-muted: #777777;
+    --footer-border: #333333;
 }
 
 * {
@@ -779,4 +785,101 @@ header {
 
 .reg-reminder a:hover {
     text-decoration: none;
+}
+
+/* Стили для футера */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 60px 0 20px;
+    margin-top: 80px;
+}
+
+.footer-grid {
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-logo {
+    margin-bottom: 20px;
+}
+
+.footer-logo .logo-text {
+    color: var(--white);
+}
+
+.footer-about p {
+    color: var(--footer-text-muted);
+}
+
+.footer h4 {
+    color: var(--accent-blue);
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: var(--footer-text);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--white);
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--border-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.social-icon:hover {
+    background: var(--accent-blue);
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+.social-icon svg {
+    display: block;
+}
+.footer-email {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--footer-border);
+    padding-top: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
