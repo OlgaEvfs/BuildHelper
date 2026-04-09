@@ -14,7 +14,7 @@
     --white: #ffffff;
     --bg-accent-light: #f0f7ff;
     --border-color: #eeeeee;    
-    --border-dark: #dddddd;     
+    --border-dark: #dddddd;
     
     /* Спец-цвета */
     --error-red: #ff4d4d;
@@ -742,4 +742,41 @@ header {
     color: var(--text-light);
     text-decoration: line-through;
     opacity: 0.6;
+}
+ 
+/* Плашка-напоминание для гостей */
+.reg-reminder {
+    background: rgba(var(--bg-light), 0.1);
+    border: 1px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+    display: block;
+}
+
+.reminder-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.reminder-icon {
+    font-size: 1.5rem;
+}
+
+.reg-reminder p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.reg-reminder a {
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.reg-reminder a:hover {
+    text-decoration: none;
 }

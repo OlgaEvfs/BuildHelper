@@ -31,4 +31,8 @@ const newsSchema = new mongoose.Schema({
     }
 });
 
+// Добавляем индексы для ускорения работы
+newsSchema.index({ createdAt: -1 });
+newsSchema.index({ category: 1 });
+
 module.exports = mongoose.model('News', newsSchema);

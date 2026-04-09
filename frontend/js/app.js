@@ -36,6 +36,17 @@ function updateNavbar() {
             localStorage.removeItem('user'); // Если данные повреждены, удаляем их
         }
     }
+
+    const reminder = document.getElementById('reg-reminder');
+    if (reminder) {
+        if (localStorage.getItem('user')) {
+            if (localStorage.getItem('user')) {
+                reminder.style.display = 'none'; // Скрываем, если вошел
+            } else {
+                reminder.style.display = 'block'; // Показываем, если гость
+            }
+        }
+    }
 }
 
 // Запуск при загрузке страницы
@@ -319,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Вешаем событие на изменение
             cb.addEventListener('change', () => {
                 updateProgress();
-                savedState();
+                saveStateToLocal();
             });
         });
 
@@ -334,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 4. Сохраняем состояние в localStorage
-        function savedState() {
+        function saveStateToLocal() {
             const state = {};
             checkboxes.forEach(cb => {
                 state[cb.getAttribute('data-id')] = cb.checked;
@@ -582,7 +593,7 @@ window.fetchNews = async function() {
     if (!contentContainer || !itemsContainer) return;
 
     try {
-        const response = await fetch('api/news?limit=5');
+        const response = await fetch('/api/news?limit=5');
         const data = await response.json();
         const news = data.news; 
 
