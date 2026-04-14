@@ -39,13 +39,8 @@ function updateNavbar() {
 
     const reminder = document.getElementById('reg-reminder');
     if (reminder) {
-        if (localStorage.getItem('user')) {
-            if (localStorage.getItem('user')) {
-                reminder.style.display = 'none'; // Скрываем, если вошел
-            } else {
-                reminder.style.display = 'block'; // Показываем, если гость
-            }
-        }
+        // Если данные пользователя есть — скрываем плашку (none), если нет — показываем (block)
+        reminder.style.display = localStorage.getItem('user') ? 'none' : 'block';
     }
 }
 
