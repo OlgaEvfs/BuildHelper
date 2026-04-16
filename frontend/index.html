@@ -4,298 +4,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BuildHelper - Помощник строителя</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <a href="/" class="logo">
-                <img src="images/logo.png" alt="Logo" class="logo-img">
-                <span class="logo-text">Build Helper</span>
-            </a>
+        <nav class="navbar navbar-expand-lg navbar-light bh-bg-light shadow-sm">
+            <div class="container">
+                <!-- Логотип -->
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-img me-2">
+                    <span class="fw-bold bh-brand-name">BuildHelper</span>
+                </a>
 
-            <div id="auth-links" class="nav-links">
-                <a href="/login.html">Вход</a>
-                <a href="/register.html">Регистрация</a>
+                <!-- Кнопка-бургер для мобильных -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Ссылки навигации -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Блок для авторизации (заполнится из app.js) -->
+                    <div id="auth-links" class="ms-auto d-flex gap-2">
+                        <a href="/login.html" class="btn btn-sm bh-btn-outline">Вход</a>
+                        <a href="/register.html" class="btn btn-sm bh-btn-primary">Регистрация</a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
 
     <main id="content">
         <!-- Контент будет загружаться здесь -->
-         <section class="hero">
-            <div class="hero-container">
-                <div class="hero-content">
-                    <h1>BuildHelper - <br><span>Ваш цифровой помощник</span></h1>
-                    <p>Расчитайте материалы, составьте чекследите за новостями и узнавайте о лучших предложениях в магазинах.</p>
-                    <div class="hero-actions">
-                        <a href="#calculators" class="btn btn-primary">Калькуляторы</a>
-                        <a href="#news" class="btn btn-secondary">Новости</a>
+        <section class="py-5 bg-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Текст и кнопки -->
+                    <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+                        <h1 class="display-4 fw-bold mb-4">
+                            BuildHelper — <br><span class="bh-text-accent">Ваш цифровой помощник</span>
+                        </h1>
+                        <p class="lead text-muted mb-4">
+                            Рассчитывайте материалы, составляйте чек-лист, следите за новостями, находите подходящие вакансии. И все в одном месте.
+                        </p>
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+                            <a href="#calculators" class="btn bh-btn-primary btn-lg px-4">Калькуляторы</a>
+                            <a href="#news" class="btn bh-btn-outline btn-lg px-4">Новости</a>
+                        </div>
                     </div>
-                </div>
-                <div class="hero-visual">
-                    <!-- SVG иконка инструментов -->
-                    <div class="tech-placeholder">
-                        <div class="grid-lines"></div>
-                        <div class="blueprint-card">Blueprint v.1.0</div>
+
+                    <!-- Визуальный элемент (Инструменты на сетке) -->
+                    <div class="col-lg-6 d-none d-lg-flex justify-content-end">
+                        <div class="tech-placeholder shadow-lg">
+                            <div class="grid-lines"></div>
+
+                            <div class="tools-composition">
+                                <!-- Пиксельный молоток -->
+                                <div class="pixel-art-tool hammer">
+                                    <svg viewBox="0 0 16 16" fill="none">
+                                        <rect x="7" y="8" width="2" height="7" fill="#533824"/>
+                                        <rect x="4" y="3" width="8" height="5" fill="var(--accent-blue)"/>
+                                        <rect x="3" y="4" width="1" height="3" fill="var(--accent-blue)"/>
+                                        <rect x="12" y="4" width="1" height="3" fill="var(--accent-blue)"/>
+                                        <rect x="5" y="4" width="2" height="1" fill="var(--text-muted)"/>
+                                        <rect x="7" y="7" width="2" height="1" fill="rgba(0,0,0,0.2)"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Пиксельная дрель -->
+                                <div class="pixel-art-tool drill">
+                                    <svg viewBox="0 0 16 16" fill="none">
+                                        <rect x="4" y="9" width="3" height="5" fill="#333"/>
+                                        <rect x="5" y="10" width="1" height="1" fill="var(--accent-blue)"/>
+                                        <rect x="3" y="4" width="9" height="6" fill="var(--accent-blue)"/>
+                                        <rect x="4" y="5" width="2" height="1" fill="rgba(255,255,255,0.2)"/>
+                                        <rect x="2" y="5" width="1" height="4" fill="var(--accent-blue)"/>
+                                        <rect x="12" y="6" width="2" height="2" fill="#333"/>
+                                        <rect x="14" y="6" width="2" height="1" fill="#888"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Пиксельная рулетка -->
+                                <div class="pixel-art-tool tape">
+                                    <svg viewBox="0 0 16 16" fill="none">
+                                        <rect x="3" y="5" width="8" height="8" rx="1" fill="var(--accent-blue)"/>
+                                        <rect x="5" y="7" width="4" height="4" fill="rgba(255,255,255,0.2)"/>
+                                        <rect x="11" y="10" width="3" height="1" fill="#FFD700"/>
+                                        <rect x="14" y="10" width="1" height="2" fill="#333"/>
+                                        <rect x="5" y="4" width="3" height="1" fill="#333"/>
+                                    </svg>
+                                </div>
+
+                                <!-- Пиксельный шпатель -->
+                                <div class="pixel-art-tool spatula">
+                                    <svg viewBox="0 0 16 16" fill="none">
+                                        <!-- Лезвие -->
+                                        <rect x="3" y="2" width="10" height="7" fill="var(--border-dark)"/>
+                                        <!-- Блик -->
+                                        <rect x="3" y="2" width="10" height="1" fill="rgba(255,255,255,0.4)"/>
+                                        <!-- Крепление ручки -->
+                                        <rect x="6" y="9" width="4" height="1" fill="#7F8C8D"/>
+                                        <!-- Рукоять -->
+                                        <rect x="7" y="10" width="2" height="5" fill="var(--text-muted)"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-         </section>
+        </section>
 
-         <section id="calculators" class="calculators-grid">
+        <section id="calculators" class="py-5 bh-bg-light">
             <div class="container">
-                <h2 class="section-title">Выберите нужный расчет</h2>
-                <div class="grid-wrapper">
+                <h2 class="text-center mb-5 display-5 fw-bold bh-section-title">Выберите нужный расчет</h2>
+                
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                     <!-- Геометрия -->
-                    <div class="calc-card" data-calc="geometry">
-                        <div class="calc-icon">📐</div>
-                        <h3>Геометрия</h3>
-                        <p>Периметр и площадь стен с учетом окон и дверей.</p>
-                        <button class="btn-calc">Рассчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="geometry">
+                            <div class="display-4 mb-3">📐</div>
+                            <h3 class="h5 fw-bold">Геометрия</h3>
+                            <p class="text-muted small">Периметр и площадь стен с учетом окон и дверей.</p>
+                            <button class="btn bh-btn-outline mt-auto">Рассчитать</button>
+                        </div>
                     </div>
                     
                     <!-- Грунтовка и краска-->
-                    <div class="calc-card" data-calc="paint">
-                        <div class="calc-icon">🖌️</div>
-                        <h3>Грунтовка или краска</h3>
-                        <p>Расход грунтовки и краски на м² поверхности.</p>
-                        <button class="btn-calc">Расчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="paint">
+                            <div class="display-4 mb-3">🖌️</div>
+                            <h3 class="h5 fw-bold">Грунтовка или краска</h3>
+                            <p class="text-muted small">Расход грунтовки и краски на м² поверхности.</p>
+                            <button class="btn bh-btn-outline mt-auto">Расчитать</button>
+                        </div>
                     </div>
 
                     <!-- Обои -->
-                    <div class="calc-card" data-calc="wallpaper">
-                        <div class="calc-icon">📜</div>
-                        <h3>Обои</h3>
-                        <p>Расчет количества рулонов по ширине и длине.</p>
-                        <button class="btn-calc">Рассчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="wallpaper">
+                            <div class="display-4 mb-3">📃</div>
+                            <h3 class="h5 fw-bold">Обои</h3>
+                            <p class="text-muted small">Расчет количества рулонов по ширине и длине.</p>
+                            <button class="btn bh-btn-outline mt-auto">Рассчитать</button>
+                        </div>
                     </div>
 
                     <!-- Плитка и затирка -->
-                    <div class="calc-card" data-calc="tiles">
-                        <div class="calc-icon">🧱</div>
-                        <h3>Плитка</h3>
-                        <p>Количество плитки и расход затирки для швов.</p>
-                        <button class="btn-calc">Рассчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="tiles">
+                            <div class="display-4 mb-3">💠</div>
+                            <h3 class="h5 fw-bold">Плитка</h3>
+                            <p class="text-muted small">Количество плитки и расход затирки для швов.</p>
+                            <button class="btn bh-btn-outline mt-auto">Рассчитать</button>
+                        </div>
                     </div>
 
                     <!-- Гидроизоляция -->
-                    <div class="calc-card" data-calc="waterproofing">
-                        <div class="calc-icon">🚿</div>
-                        <h3>Гидроизоляция</h3>
-                        <p>Защита влажных зон: расчет мастики и лент.</p>
-                        <button class="btn-calc">Рассчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="waterproofing">
+                            <div class="display-4 mb-3">🪣</div>
+                            <h3 class="h5 fw-bold">Гидроизоляция</h3>
+                            <p class="text-muted small">Защита влажных зон: расчет мастики и лент.</p>
+                            <button class="btn bh-btn-outline mt-auto">Рассчитать</button>
+                        </div>
                     </div>
 
                     <!-- Стяжка пола -->
-                    <div class="calc-card" data-calc="floor">
-                        <div class="calc-icon">🏗️</div>
-                        <h3>Стяжка пола</h3>
-                        <p>Объем раствора и количество мешков смеси.</p>
-                        <button class="btn-calc">Рассчитать</button>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="floor">
+                            <div class="display-4 mb-3">◻️</div>
+                            <h3 class="h5 fw-bold">Стяжка пола</h3>
+                            <p class="text-muted small">Объем раствора и количество мешков смеси.</p>
+                            <button class="btn bh-btn-outline mt-auto">Рассчитать</button>
+                        </div>
                     </div>
                 </div>
             </div>
-         </section>
+        </section>
 
-         <section id="news" class="news-tabs">
+        <section id="news" class="py-5 bg-white">
             <div class="container">
-                <h2 class="section-title">Новости</h2>
+                <h2 class="text-center mb-5 display-5 fw-bold bh-section-title">Новости</h2>
 
-                <!-- Этот контейнер будет содержать табы с новостями и заполняться динамически -->
-                <div class="tabcontainer" id="news-container">
-
-                    <!-- Левая часть - ккартинки и описание -->
+                <div class="tabcontainer border shadow-sm rounded-4 overflow-hidden" id="news-container">
                     <div class="tabcontainer-content">
-                        <div class="loader">Загрузка новостей...</div>
+                        <div class="loader text-muted p-5 text-center">Загрузка новостей...</div>
                     </div>
 
-                    <!-- Правая часть - список новостей (5 новостей) -->
-                    <div class="tabheader"></div>
-
-                        <!-- Список заголовков новостей -->
-                        <div class="tabheader-items"></div>
+                    <div class="tabheader bh-bg-light border-start">
+                        <div class="tabheader-items p-3"></div>
                     </div>
-                    
                 </div>
             </div>
-         </section>
+        </section>
 
-         <section id="checklist" class="checklist-section">
+        <section id="checklist" class="py-5 bh-bg-light">
             <div class="container">
-                <h2 class="section-title">Чек-лист вашего ремонта</h2>
-                <div class="checklist-wrapper">
-                    <!-- Прогресс-бар -->
-                     <div class="checklist-progress">
-                        <div class="progress-info">
-                            <span>Ваш прогресс: <span id="progress-percent">0%</span></span>
+                <h2 class="text-center mb-5 display-5 fw-bold bh-section-title">Чек-лист вашего ремонта</h2>
+                
+                <div class="card shadow-sm border-0 mx-auto rounded-4 p-4 p-md-5" style="max-width: 900px;">
+                    <!-- Прогресс-бар Bootstrap -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between fw-bold mb-2">
+                            <span>Ваш прогресс:</span>
+                            <span id="progress-percent" class="bh-text-accent">0%</span>
                         </div>
-                        <div class="progress-bar-container">
-                            <div id="progress-bar" class="progress-bar"></div>
-                        </div>
-                     </div>
-
-                    <!-- Плашка-напоминание для гостей -->
-                    <div id="reg-reminder" class="reg-reminder">
-                        <div class="reminder-content">
-                            <span class="reminder-icon">💾</span>
-                            <p>Ваш прогресс сохраняется только в этом браузере.
-                                <a href="/register.html">Зарегистрируйтесь</a>, чтобы сохранить прогресс.
-                            </p>
+                        <div class="progress" style="height: 12px;">
+                            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
                         </div>
                     </div>
 
-                     <div class="checklist-categories">
-                        <!-- Категории чек-листа -->
+                    <!-- Плашка для гостей -->
+                    <div id="reg-reminder" class="alert bh-bg-light border-0 shadow-sm d-flex align-items-center mb-4 rounded-3">
+                        <span class="fs-4 me-3">💾</span>
+                        <p class="mb-0 small text-dark">
+                            Ваш прогресс сохраняется только в этом браузере.
+                            <a href="/register.html" class="fw-bold bh-text-accent text-decoration-underline">Зарегистрируйтесь</a>, чтобы сохранить прогресс.
+                        </p>
+                    </div>
+
+                    <div class="row g-4">
                         <!-- Категория 1 -->
-                        <div class="checklist-category">
-                            <h3>1. Планирование и подготовка</h3>
-                            <div class="checklist-items">
-                                <label class="check-item">
+                        <div class="col-md-4">
+                            <h3 class="h6 fw-bold border-bottom pb-2 mb-3">1. Планирование</h3>
+                            <div class="checklist-items d-flex flex-column gap-2">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="1">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Замеры помещения и создание плана</span>
+                                    <span class="item-text">Замеры и план</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="2">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Расчет бюджета и закупка инструментов</span>
+                                    <span class="item-text">Закупка материалов</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="3">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Демонтаж старых покрытий и вывоз мусора</span>
+                                    <span class="item-text">Поиск мастеров</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="4">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Защита мебели и пола (пленка, малярный скотч)</span>
+                                    <span class="item-text">Дизайн-проект</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Категория 2 -->
-                        <div class="checklist-category">
-                            <h3>2. Черновые работы</h3>
-                            <div class="checklist-items">
-                                <label class="check-item">
+                        <div class="col-md-4">
+                            <h3 class="h6 fw-bold border-bottom pb-2 mb-3">2. Черновые работы</h3>
+                            <div class="checklist-items d-flex flex-column gap-2">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="5">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Разводка электрики и сантехники</span>
+                                    <span class="item-text">Электрика и сантехника</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="6">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Монтаж гипсокартонных конструкций (перегородки, ниши)</span>
+                                    <span class="item-text">Гидроизоляция</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="7">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Выравнивание стен (штукатурка, шпаклевка)</span>
+                                    <span class="item-text">Выравнивание стен</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="8">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Стяжка пола и гидроизоляция</span>
+                                    <span class="item-text">Стяжка пола</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Категория 3 -->
-                        <div class="checklist-category">
-                            <h3>3. Чистовые работы</h3>
-                            <div class="checklist-items">
-                                <label class="check-item">
+                        <div class="col-md-4">
+                            <h3 class="h6 fw-bold border-bottom pb-2 mb-3">3. Чистовые работы</h3>
+                            <div class="checklist-items d-flex flex-column gap-2">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="9">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Укладка плитки и ламината</span>
+                                    <span class="item-text">Укладка плитки</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="10">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Покраска стен и потолков</span>
+                                    <span class="item-text">Поклейка обоев/Покраска стен</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="11">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Поклейка обоев и установка плинтусов</span>
+                                    <span class="item-text">Розетки и свет</span>
                                 </label>
-                                <label class="check-item">
+                                <label class="check-item small">
                                     <input type="checkbox" data-id="12">
                                     <span class="checkmark"></span>
-                                    <span class="item-text">Установка розеток и светильников</span>
+                                    <span class="item-text">Укладка ламината</span>
                                 </label>
                             </div>
                         </div>
-                     </div>
-                </div>
-            </div>
-         </section>
-    </main>
-
-    <footer>
-        <div class="footer-grid">
-            <!-- Логотип и описание -->
-            <div class="footer-about">
-                <a href="/" class="footer-logo">
-                    <img src="image/logo.png" alt="Logo" class="logo-img">
-                    <span class="logo-text">Build Helper</span>
-                </a>
-                <p>Ваш надежный помощник в мире строительства и ремонта.</p>
-            </div>
-
-            <!-- Ссылки -->
-            <div class="footer-links">
-                <h3>Разделы</h3>
-                <ul>
-                    <li><a href="#calculators">Калькуляторы</a></li>
-                    <li><a href="#news">Новости</a></li>
-                    <li><a href="#checklist">Чек-лист ремонта</a></li>
-                </ul>
-            </div>
-
-            <!-- Помощь и контакты -->
-            <div class="footer-social">
-                <h4>Мы в социальных сетях</h4>
-                <div class="social-icons">
-                    <div class="social-icons">
-                        <!-- VK -->
-                        <a href="#" class="social-icon" aria-label="Вконтакте">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M15.074 19c-5.908 0-9.28-4.047-9.422-10.74h3.01c.106 4.912 2.27 6.992 3.986 7.42V8.26h2.835v4.24c1.737-.186
-                                3.522-2.112 4.137-4.24h2.835a8.4 8.4 0 0 1-3.797 5.292 8.56 8.56 0 0 1 4.39 5.448h-3.155a4.99 4.99 0 0
-                                0-3.664-3.513v3.513h-.155z"/>
-                            </svg>
-                        </a>
-                        <!-- Telegram -->
-                        <a href="#" class="social-icon" aria-label="Telegram">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42
-                                10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599
-                                3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/>
-                            </svg>
-                        </a>
-                        <!-- YouTube -->
-                        <a href="#" class="social-icon" aria-label="YouTube">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12
-                                20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107
-                                4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>
-                            </svg>
-                        </a>
                     </div>
                 </div>
-                <p class="footer-email">support@buildhelper.ee</p>
             </div>
-        </div>
+        </section>
+    </main>
 
-        <div class="footer-bottom">
-            <div class="container">
-                <p>&copy; 2026 BuildHelper. Все права защищены.</p>
+    <footer class="bh-bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Логотип и описание -->
+                <div class="col-lg-4 col-md-6">
+                    <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
+                        <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
+                        <span class="h5 mb-0 fw-bold bh-brand-name">BuildHelper</span>
+                    </a>
+                    <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта. Расчитывайте материалы быстро и точно.</p>
+                </div>
+
+                <!-- Ссылки -->
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#calculators" class="text-secondary text-decoration-none hover-white">Калькуляторы</a></li>
+                        <li class="mb-2"><a href="#news" class="text-secondary text-decoration-none hover-white">Новости</a></li>
+                        <li class="mb-2"><a href="#checklist" class="text-secondary text-decoration-none hover-white">Чек-лист ремонта</a></li>
+                    </ul>
+                </div>
+
+                <!-- Социальные сети -->
+                <div class="col-lg-4 col-md-12">
+                    <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.074 19c-5.908 0-9.28-4.047-9.422-10.74h3.01c.106 4.912 2.27 6.992 3.986 7.42V8.26h2.835v4.24c1.737-.186 3.522-2.112 4.137-4.24h2.835a8.4 8.4 0 0 1-3.797 5.292 8.56 8.56 0 0 1 4.39 5.448h-3.155a4.99 4.99 0 0 0-3.664-3.513v3.513h-.155z"/></svg>
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/></svg>
+                        </a>
+                    </div>
+                    <p class="text-secondary small">support@buildhelper.ee</p>
+                </div>
+            </div>
+
+            <hr class="my-4 border-secondary opacity-25">
+            
+            <div class="text-center text-secondary small">
+                <p class="mb-0">&copy; 2026 BuildHelper. Все права защищены.</p>
             </div>
         </div>
     </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/news.js"></script>
+    <script src="js/checklist.js"></script>
+    <script src="js/calculators.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

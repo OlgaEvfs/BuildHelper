@@ -35,7 +35,7 @@ app.get('/api/test', (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Все остальные GET запросы перенапрявляем на index.html (для SPA в будущем)
-app.get('*', (req, res) => {
+app.get('*path', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 

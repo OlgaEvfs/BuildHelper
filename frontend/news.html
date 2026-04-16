@@ -4,102 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Все новости - BuildHelper</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/news.css">
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <a href="/" class="logo">
-                <img src="images/logo.png" alt="Logo" class="logo-img">
-                <span class="logo-text">Build Helper</span>
-            </a>
+        <nav class="navbar navbar-expand-lg navbar-light bh-bg-light shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-imgd-inline-block align-text-top me-2">
+                    <span class="fw-bold bh-brand-name">Build Helper</span>
+                </a>
 
-            <div id="auth-links" class="nav-links">
-                <a href="/login.html">Вход</a>
-                <a href="/register.html">Регистрация</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div id="auth-links" class="ms-auto d-flex gap-2">
+                        <!-- Заполнится из app.js -->
+                        <a href="/login.html" class="btn bh-btn-outline btn-sm">Вход</a>
+                        <a href="/register.html" class="btn bh-btn-primary btn-sm">Регистрация</a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
 
-    <main class="news-content">
-        <h1 class="section-title">Все новости</h1>
+    <main class="container py-5">
+        <h1 class="text-center mb-5 display-5 fw-bold bh-section-title">Все новости</h1>
 
-        <!-- Фильтры новостей -->
-        <div class="news-filters">
-            <button class="filter-btn active" data-category="all">Все</button>
-            <button class="filter-btn" data-category="tech">Технологии</button>
-            <button class="filter-btn" data-category="market">Рынок</button>
-            <button class="filter-btn" data-category="experts">Эксперты</button>
-            <button class="filter-btn" data-category="calendar">Календарь</button>
-            <button class="filter-btn" data-category="jobs">Вакансии</button>
+        <!-- Фильтры новостей (Bootstrap Button Group) -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-5" id="news-filters">
+            <button class="btn bh-btn-outline rounded-pill active px-4" data-category="all">Все</button>
+            <button class="btn bh-btn-outline rounded-pill px-4" data-category="tech">Технологии</button>
+            <button class="btn bh-btn-outline rounded-pill px-4" data-category="market">Рынок</button>
+            <button class="btn bh-btn-outline rounded-pill px-4" data-category="experts">Эксперты</button>
+            <button class="btn bh-btn-outline rounded-pill px-4" data-category="calendar">Календарь</button>
+            <button class="btn bh-btn-outline rounded-pill px-4" data-category="jobs">Вакансии</button>
         </div>
 
-        <!-- Контейнер для карточек -->
-        <div id="news-grid" class="news-grid"></div>
+        <!-- Контейнер для карточек (Bootstrap Grid) -->
+        <div id="news-grid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col-12 text-center p-5">
+                <div class="spinner-border bh-text-accent" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <p class="mt-2 text-muted">Загрузка новостей...</p>
+            </div>
+        </div>
+
+        <!-- Пагинация Bootstrap -->
+        <nav aria-label="Навигация по новостям" class="mt-5">
+            <ul id="pagination" class="pagination justify-content-center">
+                <!-- Кнопки появятся здесь -->
+            </ul>
+        </nav>
     </main>
 
-    <footer>
-        <div class="footer-grid">
-            <!-- Логотип и описание -->
-            <div class="footer-about">
-                <a href="/" class="footer-logo">
-                    <img src="image/logo.png" alt="Logo" class="logo-img">
-                    <span class="logo-text">Build Helper</span>
-                </a>
-                <p>Ваш надежный помощник в мире строительства и ремонта.</p>
-            </div>
+    <footer class="bh-bg-dark text-light py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
+                        <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
+                        <span class="h5 mb-0 text-white fw-bold">BuildHelper</span>
+                    </a>
+                    <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта.</p>
+                </div>
 
-            <!-- Ссылки -->
-            <div class="footer-links">
-                <h3>Разделы</h3>
-                <ul>
-                    <li><a href="#calculators">Калькуляторы</a></li>
-                    <li><a href="#news">Новости</a></li>
-                    <li><a href="#checklist">Чек-лист ремонта</a></li>
-                </ul>
-            </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#calculators" class="text-secondary text-decoration-none hover-white">Калькуляторы</a></li>
+                        <li class="mb-2"><a href="#news" class="text-secondary text-decoration-none hover-white">Новости</a></li>
+                        <li class="mb-2"><a href="#checklist" class="text-secondary text-decoration-none hover-white">Чек-лист ремонта</a></li>
+                    </ul>
+                </div>
 
-            <!-- Помощь и контакты -->
-            <div class="footer-social">
-                <h4>Мы в социальных сетях</h4>
-                <div class="social-icons">
-                    <div class="social-icons">
-                        <!-- VK -->
-                        <a href="#" class="social-icon" aria-label="Вконтакте">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M15.074 19c-5.908 0-9.28-4.047-9.422-10.74h3.01c.106 4.912 2.27 6.992 3.986 7.42V8.26h2.835v4.24c1.737-.186
-                                3.522-2.112 4.137-4.24h2.835a8.4 8.4 0 0 1-3.797 5.292 8.56 8.56 0 0 1 4.39 5.448h-3.155a4.99 4.99 0 0
-                                0-3.664-3.513v3.513h-.155z"/>
-                            </svg>
+                <div class="col-lg-4 col-md-12">
+                    <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.074 19c-5.908 0-9.28-4.047-9.422-10.74h3.01c.106 4.912 2.27 6.992 3.986 7.42V8.26h2.835v4.24c1.737-.186 3.522-2.112 4.137-4.24h2.835a8.4 8.4 0 0 1-3.797 5.292 8.56 8.56 0 0 1 4.39 5.448h-3.155a4.99 4.99 0 0 0-3.664-3.513v3.513h-.155z"/></svg>
                         </a>
-                        <!-- Telegram -->
-                        <a href="#" class="social-icon" aria-label="Telegram">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42
-                                10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599
-                                3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/>
-                            </svg>
-                        </a>
-                        <!-- YouTube -->
-                        <a href="#" class="social-icon" aria-label="YouTube">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12
-                                20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107
-                                4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>
-                            </svg>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/></svg>
                         </a>
                     </div>
+                    <p class="text-secondary small">support@buildhelper.ee</p>
                 </div>
-                <p class="footer-email">support@buildhelper.ee</p>
             </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="container">
-                <p>&copy; 2026 BuildHelper. Все права защищены.</p>
+            <hr class="my-4 border-secondary opacity-25">
+            <div class="text-center text-secondary small">
+                <p class="mb-0">&copy; 2026 BuildHelper. Все права защищены.</p>
             </div>
         </div>
     </footer>
-    <script src=""></script>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/news-page.js"></script>
 </body>
 </html>
