@@ -21,6 +21,8 @@
     --overlay-bg: rgba(13, 27, 42, 0.85);
     --shadow-light: rgba(13, 27, 42, 0.05);
     --shadow-medium: rgba(0, 0, 0, 0.1);
+    --accent-orange: #ff9800;
+    --accent-orange-hover: #e68900;
 }
 
 html {
@@ -185,6 +187,17 @@ body {
     border-color: var(--accent-hover) !important;
 }
 
+.bh-btn-accent {
+    background-color: var(--accent-orange) !important;
+    border-color: var(--accent-orange) !important;
+    color: var(--white) !important;
+}
+
+.bh-btn-accent:hover {
+    background-color: var(--accent-orange-hover) !important;
+    border-color: var(--accent-orange-hover) !important;
+}
+
 .bh-btn-outline {
     color: var(--accent-blue) !important;
     border-color: var(--accent-blue) !important;
@@ -196,6 +209,23 @@ body {
     color: var(--white) !important;
 }
 
+.bh-btn-accent-outline {
+    color: var(--accent-orange) !important;
+    border-color: var(--accent-orange) !important;
+    background: transparent !important;
+}
+
+.bh-btn-accent-outline:hover {
+    background-color: var(--accent-orange) !important;
+    color: var(--white) !important;
+}
+
+.bh-btn-accent-outline.active {
+    background-color: var(--accent-orange) !important;
+    color: var(--white) !important;
+    border-color: var(--accent-orange) !important;
+}
+
 /* Заголовки разделов и футера */
 .bh-section-title {
     color: var(--primary-dark) !important;
@@ -203,6 +233,14 @@ body {
 
 .bh-footer-accent {
     color: var(--accent-blue) !important;
+}
+
+.bh-text-orange {
+    color: var(--accent-orange) !important;
+}
+
+.bh-bg-orange {
+    background-color: var(--accent-orange) !important;
 }
 
 .bh-bg-light {
