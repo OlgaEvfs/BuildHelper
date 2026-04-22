@@ -1,17 +1,15 @@
 /* Стили для страницы всех новостей (news.html) */
 
-.news-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+#news-grid {
+    margin-top: 20px;
 }
 
 .news-card {
     background: var(--white);
     border-radius: 12px;
+    border: 1px solid var(--border-color);
     overflow: hidden;
-    box-shadow: 0 4px 15px var(--shadow-medium);
+    box-shadow: 0 4px 15px var(--shadow-light);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -19,18 +17,19 @@
 }
 
 .news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px var(--shadow-medium);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px var(--shadow-medium);
+    border-color: var(--accent-blue);
 }
 
 .news-card img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
 .news-card-content {
-    padding: 20px;
+    padding: 25px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -39,76 +38,71 @@
 .news-card-content small {
     color: var(--accent-blue);
     font-weight: 700;
+    font-size: 0.8rem;
     margin-bottom: 10px;
     display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .news-card-content h3 {
     font-size: 1.25rem;
+    font-weight: 700;
     margin-bottom: 15px;
     color: var(--primary-dark);
+    line-height: 1.4;
 }
 
 .news-card-content p {
     font-size: 0.95rem;
     color: var(--text-muted);
-    line-height: 1.5;
-    margin-bottom: 20px;
+    line-height: 1.6;
+    margin-bottom: 25px;
     flex-grow: 1;
 }
 
-/* Пагинация */
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 40px 0;
+/* Фильтры новостей */
+.bh-btn-accent-outline {
+    border: 1px solid var(--border-dark) !important;
+    background-color: var(--white) !important;
+    color: var(--text-muted) !important;
+    transition: all 0.3s ease !important;
 }
 
-.page-btn {
-    padding: 8px 16px;
-    border: 1px solid var(--accent-blue);
-    background: transparent;
-    color: var(--accent-blue);
-    cursor: pointer;
-    border-radius: 4px;
+.bh-btn-accent-outline:hover, 
+.bh-btn-accent-outline.active {
+    background-color: var(--accent-blue) !important;
+    border-color: var(--accent-blue) !important;
+    color: var(--white) !important;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+/* Пагинация */
+.page-link {
+    padding: 10px 18px;
+    border: 1px solid var(--border-color);
+    background-color: var(--white);
+    color: var(--text-main);
+    margin: 0 4px;
+    border-radius: 8px !important;
     font-weight: 600;
     transition: 0.3s;
 }
 
-.page-btn:hover {
+.page-link:hover {
     background-color: var(--bg-accent-light);
-}
-
-.page-btn.active {
-    background-color: var(--accent-blue);
-    color: var(--white);
-}
-
-/* Фильтры */
-.news-filters {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.filter-btn {
-    padding: 8px 20px;
-    border: 1px solid var(--border-dark);
-    background: var(--white);
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.filter-btn:hover {
-    border-color: var(--accent-blue);
     color: var(--accent-blue);
+    border-color: var(--accent-blue);
 }
 
-.filter-btn.active {
-    background-color: var(--accent-blue);
-    color: var(--white);
-    border-color: var(--accent-blue);
+.page-item.active .page-link {
+    background-color: var(--accent-blue) !important;
+    border-color: var(--accent-blue) !important;
+    color: var(--white) !important;
+}
+
+.page-item.disabled .page-link {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    border-color: var(--border-color);
 }

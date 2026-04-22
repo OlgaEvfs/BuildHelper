@@ -7,7 +7,8 @@
     /* Текст */
     --text-main: #1b263b;
     --text-muted: #555555;    
-    --text-light: #888888;    
+    --text-light: #888888;
+    --bh-dark: #333;
     
     /* Фоны и границы */
     --bg-light: #f8f9fa;

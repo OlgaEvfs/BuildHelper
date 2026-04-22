@@ -10,18 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loadNews();
 
     // Обработка кликов по фильтрам
-    filters.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') {
-            // Убираем active у всех
-            filters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-            // Добавляем active нажатой
-            e.target.classList.add('active');
-
-            currentCategory = e.target.getAttribute('data-category');
-            currentPage = 1;
-            loadNews();
-        }
-    });
+    if (filters) {
+        filters.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                filters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-category');
+                currentPage = 1;
+                loadNews();
+            }
+        });
+    }
 
     async function loadNews() {
         showLoader();
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small>${getCategoryName(item.category)} • ${new Date(item.createdAt).toLocaleDateString()}</small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
-                        <a href="#" class="btn bh-btn-outline mt-auto">Читать полностью</a>
+                        <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline mt-auto">Читать полностью</a>
                     </div>
                 </div>
             </div>
@@ -67,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const { totalPages, currentPage: page } = pageInfo;
         let html = '';
 
-        if (totalPages <= 1) {
+        // Теперь показываем пагинацию, даже если страница одна, чтобы убедиться в работоспособности
+        if (!totalPages || totalPages === 0) {
             pagination.innerHTML = '';
             return;
         }
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Кнопка Назад
         html += `
             <li class="page-item ${page === 1 ? 'disabled' : ''}">
-                <button class="page-link" onclick="changePage(${page - 1})">«</button>
+                <button class="page-link" onclick="window.changePage(${page - 1})">«</button>
             </li>
         `;
 
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= totalPages; i++) {
             html += `
                 <li class="page-item ${i === page ? 'active' : ''}">
-                    <button class="page-link ${i === page ? 'bh-btn-primary' : ''}" onclick="changePage(${i})">${i}</button>
+                    <button class="page-link" onclick="window.changePage(${i})">${i}</button>
                 </li>
             `;
         }
@@ -91,14 +91,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Кнопка Вперед
         html += `
             <li class="page-item ${page === totalPages ? 'disabled' : ''}">
-                <button class="page-link" onclick="changePage(${page + 1})">»</button>
+                <button class="page-link" onclick="window.changePage(${page + 1})">»</button>
             </li>
         `;
 
         pagination.innerHTML = html;
     }
 
+    // Делаем функцию глобальной, чтобы onclick в HTML её видел
     window.changePage = (page) => {
+        if (page < 1) return;
         currentPage = page;
         loadNews();
         window.scrollTo({ top: 0, behavior: 'smooth' });

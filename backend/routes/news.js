@@ -29,4 +29,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Получить одну новость по ID
+router.get('/:id', async (req, res) => {
+    try {
+        const newsItem = await News.findById(req.params.id);
+        if (!newsItem) {
+            return res.status(404).json({ message: 'Новость не найдена' });
+        }
+        res.json(newsItem);
+    } catch (err) {
+        console.error("Ошибка API News Detail:", err);
+        // Если ID передан в неправильном формате (не 24 символа MongoDB)
+        if (err.kind === 'ObjectId') {
+            return res.status(400).json({ message: 'Некорректный ID новости' });
+        }
+        res.status(500).json({ message: 'Ошибка сервера при получении новости' });
+    }
+});
+
 module.exports = router;
