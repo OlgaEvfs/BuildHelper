@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildHelper - Вход</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="bh-bg-dark">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
+            <div class="container">
+                <!-- Логотип -->
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-img me-2">
+                    <span class="fw-bold bh-brand-name">BuildHelper</span>
+                </a>
+
+                <!-- Кнопка-бургер для мобильных -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Ссылки навигации -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Блок для авторизации (заполнится из app.js) -->
+                    <div id="auth-links" class="ms-auto d-flex gap-2">
+                        <a href="/login.html" class="btn btn-sm bh-btn-outline">Вход</a>
+                        <a href="/register.html" class="btn btn-sm bh-btn-primary">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="login-bg-grid"></div>
+
+    <main class="container auth-container">
+        <div class="card auth-card border-0 shadow-lg">
+            <h2 class="text-center fw-bold mb-4">Вход в систему</h2>
+
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label small fw-bold">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label small fw-bold">Пароль</label>
+                    <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                </div>
+
+                <!-- Вывод ошибок -->
+                <div id="login-error" class="text-danger small mb-3 d-none"></div>
+
+                <button type="submit" class="btn bh-btn-primary w-100 py-2 fw-bold">Войти</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="small text-muted">Еще нет аккаунта? <a href="register.html" class="bh-text-accent fw-bold text-decoration-none">Зарегистрироваться</a></p>
+                <a href="/" class="small text-secondary text-decoration-none">Вернуться на главную</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>

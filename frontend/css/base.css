@@ -36,6 +36,28 @@ body {
     color: var(--text-main); 
 }
 
+.navbar {
+    width: 95% !important;
+    margin: 0 auto !important;
+    background-color: var(--white) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px var(--shadow-medium) !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    position: sticky !important;
+    top: 15px;
+    z-index: 1050;
+}
+
+.navbar .bh-brand-name {
+    color: var(--accent-blue) !important;
+    font-weight: 500;
+}
+
+.navbar .nav-link {
+    color: var(--text-main) !important;
+}
+
 /* logo */
 .navbar-brand img, footer img[alt="Logo"] {
     border-radius: 12px;

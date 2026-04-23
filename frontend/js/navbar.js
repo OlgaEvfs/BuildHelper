@@ -2,7 +2,7 @@ window.updateNavbar = function() {
     const authLinks = document.getElementById('auth-links');
     if (!authLinks) return; // Если элемент не найден, выходим
 
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem('userInfo');
 
     if (userData) {
         try {
@@ -13,7 +13,7 @@ window.updateNavbar = function() {
 
             // Если роль пользователя - администратор, показываем ссылку на админ панель
             if (user.role === 'admin') {
-                navHtml += `<a href="/admin/index.html" class="btn btn-sm btn-warning me-2">Админ</a>`;
+                navHtml += `<a href="/admin/index.html" class="btn btn-sm bh-btn-accent me-2">Админ</a>`;
             }
 
             navHtml += `<button id="logout-btn" class="btn btn-sm btn-outline-danger">Выйти</button>`;
@@ -23,20 +23,21 @@ window.updateNavbar = function() {
             // Добавляем обработчик для кнопки выхода
             document.getElementById('logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('user'); // Удаляем данные пользователя из localStorage
-                localStorage.removeItem('token'); // Удаляем токен из localStorage
+                localStorage.removeItem('userInfo'); // Удаляем данные пользователя из localStorage
                 window.location.href = '/'; // Перенаправляем на главную страницу
             });
 
         } catch (error) {
             console.error("Ошибка при парсинге данных пользователя:", error);
-            localStorage.removeItem('user'); // Если данные повреждены, удаляем их
+            localStorage.removeItem('userInfo'); // Если данные повреждены, удаляем их
         }
     }
 
     const reminder = document.getElementById('reg-reminder');
     if (reminder) {
         // Если данные пользователя есть — скрываем плашку (none), если нет — показываем (block)
-        reminder.style.display = localStorage.getItem('user') ? 'none' : 'block';
+        reminder.style.display = localStorage.getItem('userInfo') ? 'none' : 'block';
     }
 };
+
+updateNavbar();
