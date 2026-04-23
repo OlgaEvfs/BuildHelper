@@ -45,22 +45,27 @@
         </div>
 
         <!-- Комментарии -->
-        <section class="comments-section">
-            <h3 class="mb-4">Комментарии</h3>
-            <div id="comments-list">
-                <!-- Список комментариев -->
-            </div>
+        <section class="comments-section mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h3 class="mb-4 fw-bold">Комментарии</h3>
+                    <div id="comments-list" class="mb-5">
+                        <!-- Список комментариев -->
+                    </div>
 
-            <!-- Форма -->
-            <div id="comment-form-wrapper" class="mt-5 d-none">
-                <h4>Оставить комментарий</h4>
-                <form id="comment-form">
-                    <textarea class="form-control mb-3" id="comment-text" rows="3" placeholder="Ваш комментарий..." required></textarea>
-                    <button type="submit" class="btn bh-btn-accent">Отправить</button>
-                </form>
-            </div>
-            <div id="login-reminder" class="alert bh-bg-light mt-5 text-center">
-                Пожалуйста, <a href="/login.html" class="bh-text-orange fw-bold">войдите</a>, чтобы оставить комментарий.
+                    <!-- Форма -->
+                    <div id="comment-form-wrapper" class="p-4 bh-bg-light rounded-4 shadow-sm mt-5 d-none">
+                        <h4 class="mb-3 fw-bold">Оставить комментарий</h4>
+                        <form id="comment-form">
+                            <textarea class="form-control mb-3 border-0 shadow-sm" id="comment-text" rows="3" placeholder="Ваш комментарий..." required></textarea>
+                            <button type="submit" class="btn bh-btn-accent px-4 py-2">Отправить</button>
+                        </form>
+                    </div>
+                    <div id="login-reminder" class="alert bh-bg-light border-0 rounded-4 shadow-sm mt-5 text-center p-4">
+                        <p class="mb-2">Хотите поделиться своим мнением?</p>
+                        <a href="/login.html" class="bh-text-orange fw-bold text-decoration-none">Войдите</a>, чтобы оставить комментарий.
+                    </div>
+                </div>
             </div>
         </section>
     </main>

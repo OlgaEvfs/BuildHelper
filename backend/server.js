@@ -25,6 +25,10 @@ app.use('/api/auth', authRoutes); // Все маршруты к авториза
 const newsRoutes = require('./routes/news');
 app.use('/api/news', newsRoutes); // Все маршруты к новостям будут начинаться с /api/news
 
+// Роуты для комментариев
+const commentRoutes = require('./routes/comments');
+app.use('/api/comments', commentRoutes);
+
 // test route
 app.get('/api/test', (req, res) => {
     // Обязательно res.json, чтобы фронтенд понял ответ

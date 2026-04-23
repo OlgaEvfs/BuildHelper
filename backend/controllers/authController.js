@@ -7,6 +7,16 @@ const generateToken = require('../config/utils');
 const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
+    // Простая проверка на наличие данных
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
+    }
+
+    // Проверка длины пароля
+    if (password.length < 6) {
+        return res.status(400).json({ message: 'Пароль должен быть не менее 6 символов' });
+    }
+
     try {
         // Проверяем, есть ли уже пользователь с таким email
         const userExists = await User.findOne({ email });
@@ -43,6 +53,11 @@ const registerUser = async (req, res) => {
 // @route   POST /api/auth/login
 const authUser = async (req, res) => {
     const { email, password } = req.body;
+
+    // Простая проверка на наличие данных
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
+    }
 
     try {
         // Находим пользователя по email

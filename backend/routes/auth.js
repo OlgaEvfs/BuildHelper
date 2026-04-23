@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 // Добавляем authUser в импорт
 const { registerUser, authUser } = require('../controllers/authController'); // Импортируем функцию для регистрации из контроллера
-const { protect } = require('../middleware/authMiddleware'); // Импортируем middleware для защиты маршрутов
+const protect = require('../middleware/authMiddleware'); // Импортируем middleware для защиты маршрутов
 
 // Маршрут для регистрации
 router.post('/register', registerUser);
