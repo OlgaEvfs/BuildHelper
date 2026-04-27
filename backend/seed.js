@@ -63,6 +63,12 @@ const newsData = [
         Мы предлагаем: сдельную оплату (выше рынка), профессиональный инструмент и возможность обучения работе с новейшими европейскими материалами. Собеседования проводятся ежедневно по предварительной записи.`,
         category: "jobs",
         jobType: "finishing",
+        location: "Таллинн",
+        employment: "Полная занятость",
+        salary: "от 2500€ в месяц",
+        contactName: "Анна",
+        contactEmail: "anna@finish.ee",
+        contactPhone: "+372 5555 5555",
         imageUrl: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800"
     },
     {
@@ -77,6 +83,12 @@ const newsData = [
         Идеальный кандидат понимает разницу между KNX и Zigbee и готов к постоянному профессиональному росту. Работа предполагает как выезды на объекты, так и работу в мастерской по сборке индивидуальных решений.`,
         category: "jobs",
         jobType: "electrical",
+        location: "Таллинн",
+        employment: "Полная занятость",
+        salary: "от 2000€ в месяц",
+        contactName: "Александр",
+        contactEmail: "alexander@elekter.ee",
+        contactPhone: "+372 5685 1234",
         imageUrl: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800"
     }
 ];

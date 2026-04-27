@@ -6,8 +6,7 @@ window.fetchNews = async function() {
     if (!contentContainer || !itemsContainer) return;
 
     // Показываем лоадер перед загрузкой
-    contentContainer.innerHTML = '<div class="loader text-muted p-5 text-center">Загрузка новостей...</div>';
-    itemsContainer.innerHTML = '';
+    contentContainer.innerHTML = '<div class="bh-loader-container"><div class="bh-spinner"></div><div class="bh-loader-text">Загрузка новостей...</div></div>';
 
     try {
         const response = await fetch('/api/news?limit=5');

@@ -35,6 +35,50 @@ document.addEventListener('DOMContentLoaded', async () => {
             year: 'numeric'
         });
 
+        // Создаем переменную для вакансии
+        let jobDetailsHtml = '';
+
+        // Если это вакансия добавляем информацию
+        if (news.category === 'jobs') {
+            jobDetailsHtml = `
+                <div class="p-4 mb-4 rounded-4 border shadow-sm" style="background-color: #f8f9fa; border-left: 5px solid var(--accent-blue) !important;">
+                    <div class="row text-center text-sm-start mb-3">
+                        <div class="col-sm-4 mb-2 mb-sm-0">
+                            <div class="text-muted small text-uppercase">Место работы</div>
+                            <div class="fw-bold">${news.location || 'Не указано'}</div>
+                        </div>
+                        <div class="col-sm-4 mb-2 mb-sm-0">
+                            <div class="text-muted small text-uppercase">Занятость</div>
+                            <div class="fw-bold">${news.employment || 'Не указано'}</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-muted small text-uppercase">Оплата</div>
+                            <div class="fw-bold text-success">${news.salary || 'Договорная'}</div>
+                        </div>
+                        <!-- Контакты -->
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="text-muted small text-uppercase">Контактное лицо</div>
+                                <div class="fw-bold">${news.contactName || 'Работодатель'}</div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted small text-uppercase">Email</div>
+                                <a href="mailto:${news.contactEmail}" class="fw-bold text-decoration-none text-dark">
+                                    ${news.contactEmail || 'Не указан'}
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-muted small text-uppercase">Телефон</div>
+                                <a href="tel:${news.contactPhone}" class="fw-bold text-decoration-none mb-0" style="color: var(--accent-blue);">
+                                    ${news.contactPhone || 'Не указан'}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         contentContainer.innerHTML = `
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -55,6 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <img src="${news.imageUrl}" class="img-fluid" alt="${news.title}">
                         </div>
                         
+                        ${jobDetailsHtml}
                         <div class="news-content fs-5 lh-lg">${news.content}</div>
                     </article>
                 </div>

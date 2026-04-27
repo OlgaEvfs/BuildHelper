@@ -22,8 +22,57 @@ const newsSchema = new mongoose.Schema({
     },
     jobType: {
         type: String,
-        enum: ['finishing', 'plumbing', 'electrical', 'general', null],
+        enum: [
+            'finishing', // Отделочные работы
+            'plumbing', // Сантехника
+            'electrical', // Электрика
+            'masonry', // Каменные работы
+            'roofing', // Кровельные работы
+            'hvac', // Вентиляция и отопление
+            'general', // Разнорабочие / Общие работы
+            null
+        ],
         default: null
+    },
+    location: {
+        type: String,
+        trim: true
+    },
+    employment: {
+        type: String,
+        enum: ['Полная занятость', 'Частичная занятость', 'Подряд', 'Временная работа', 'Стажировка', null],
+        default: null
+    },
+    salary: {
+        type: String,
+        trim: true
+    },
+    contactName: {
+        type: String,
+        trim: true
+    },
+    contactEmail: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        validate: {
+            validator: function(v) {
+                return /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v);
+            }
+        }
+    },
+    contactPhone: {
+        type: String,
+        trim: true,
+        required: function() {
+            return this.category === 'jobs';
+        },
+        validate: {
+            validator: function(v) {
+                return /^[\d\s+-]{5,20}$/.test(v);
+            },
+            message: 'Укажите корректный номер телефона (минимум 5 цифр)'
+        }
     },
     createdAt: { 
         type: Date,

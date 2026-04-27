@@ -5,29 +5,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentCategory = 'all';
     let currentPage = 1;
-
-    // Инициализация
-    loadNews();
+    let currentJobType = 'all';
 
     // Обработка кликов по фильтрам
-    if (filters) {
-        filters.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                filters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                currentCategory = e.target.getAttribute('data-category');
-                currentPage = 1;
-                loadNews();
-            }
-        });
-    }
+    filters.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            filters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            currentCategory = e.target.getAttribute('data-category');
+            currentPage = 1;
+            currentJobType = 'all'; // Сбрасываем подкатегорию при смене основной категории
 
+            // Показываем или скрываем подкатегории для вакансий
+            const jobFilters = document.getElementById('job-filters');
+            if (currentCategory === 'jobs') {
+                jobFilters.classList.remove('d-none');
+            } else {
+                jobFilters.classList.add('d-none');
+            }
+
+            loadNews();
+        }
+    });
+
+    // Добавляем обработчик для подкатегорий вакансий
+    const jobFilters = document.getElementById('job-filters');
+    jobFilters.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            jobFilters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            currentJobType = e.target.getAttribute('data-jobtype');
+            currentPage = 1;
+            loadNews();
+        }
+    });
+
+    // Функция загрузки новостей с сервера
     async function loadNews() {
-        showLoader();
+        // Если новостей еще нет — показываем спиннер, если есть — только прозрачность
+        if (newsGrid.children.length === 0 || newsGrid.querySelector('.bh-loader-container')) {
+            showLoader();
+        } else {
+            newsGrid.classList.add('loading');
+        }
+        
         try {
             let url = `/api/news?page=${currentPage}&limit=6`;
+
             if (currentCategory !== 'all') {
                 url += `&category=${currentCategory}`;
+            }
+
+            if (currentCategory === 'jobs' && currentJobType !== 'all') {
+                url += `&jobType=${currentJobType}`;
             }
 
             const response = await fetch(url);
@@ -36,14 +66,23 @@ document.addEventListener('DOMContentLoaded', () => {
             renderNews(data.news);
             renderPagination(data.pagination);
         } catch (error) {
-            console.error('Ошибка загрузки новостей:', error);
-            newsGrid.innerHTML = '<div class="col-12 text-center text-danger">Ошибка при загрузке новостей. Попробуйте позже.</div>';
+            newsGrid.innerHTML = '<div class="text-center text-danger">Ошибка загрузки</div>';
+        } finally {
+            newsGrid.classList.remove('loading'); // Убираем эффект загрузки в любом случае
         }
     }
 
+    // Функция для рендера новостей на страницу
     function renderNews(news) {
         if (!news || news.length === 0) {
-            newsGrid.innerHTML = '<div class="col-12 text-center p-5"><h3>Новостей не найдено</h3></div>';
+            newsGrid.innerHTML = `
+                <div class="col-12" style="width: 100% !important; display: flex !important; justify-content: center !important; padding: 80px 0;">
+                    <div style="text-align: center !important;">
+                        <h3 class="fw-bold">Новостей не найдено</h3>
+                        <p class="text-muted">Попробуйте выбрать другую категорию или фильтр</p>
+                    </div>
+                </div>
+            `;
             return;
         }
 
@@ -62,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
+    // Функция для рендера пагинации
     function renderPagination(pageInfo) {
         const { totalPages, currentPage: page } = pageInfo;
         let html = '';
@@ -106,17 +146,19 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    // Изначальная загрузка новостей
     function showLoader() {
         newsGrid.innerHTML = `
-            <div class="col-12 text-center p-5">
-                <div class="spinner-border bh-text-accent" role="status">
-                    <span class="visually-hidden">Загрузка...</span>
+            <div class="col-12" style="width: 100% !important;">
+                <div class="bh-loader-container">
+                    <div class="bh-spinner"></div>
+                    <div class="bh-loader-text">Загружаем список новостей...</div>
                 </div>
-                <p class="mt-2 text-muted">Загрузка новостей...</p>
             </div>
         `;
     }
 
+    // Функция для получения читаемого названия категории
     function getCategoryName(cat) {
         const categories = {
             'tech': 'Технологии',
@@ -127,4 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return categories[cat] || 'Новости';
     }
+
+    loadNews();
 });
