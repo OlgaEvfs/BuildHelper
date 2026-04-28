@@ -46,14 +46,17 @@
                 <div class="mb-3">
                     <label for="username" class="form-label small fw-bold">Имя пользователя</label>
                     <input type="text" class="form-control" id="username" required>
+                    <div class="invalid-feedback">Имя пользователя должно быть не менее 3 символов.</div>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label small fw-bold">Email</label>
                     <input type="email" class="form-control" id="email" required>
+                    <div class="invalid-feedback">Введите корректный адрес почты (name@gmail.com).</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label small fw-bold">Пароль</label>
-                    <input type="password" class="form-control" id="password" placeholder=" Минимум 6 символов" required minlength="6">
+                    <input type="password" class="form-control" id="password" required>
+                    <div class="invalid-feedback">Пароль должен быть не короче 6 символов.</div>
                 </div>
 
                 <!-- Вывод ошибок -->

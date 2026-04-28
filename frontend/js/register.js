@@ -2,18 +2,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const errorDisplay = document.getElementById('register-error');
 
+    // ссылки на поля, чтобы менять классы
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    // Снимаем красную подсветку, когда пользователь начинает вводить текст
+    [usernameInput, emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('is-invalid');
+        });
+    });
+
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // Скрываем прошлые ошибки
             errorDisplay.classList.add('d-none');
-            errorDisplay.textContent = '';
+            [usernameInput, emailInput, passwordInput].forEach(input => input.classList.remove('is-invalid'));
 
-            // Собираем данные из полей
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            // Собираем данные из полей (используем .trim() для удаления лишних пробелов)
+            const username = usernameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // ПРОВЕРКА
+            let isInvalid = true;
+
+            if (username.length < 3) {
+                usernameInput.classList.add('is-invalid');
+                isInvalid = false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailInput.classList.add('is-invalid');
+                isInvalid = false;
+            }
+
+            if (password.length < 6) {
+                passwordInput.classList.add('is-invalid');
+                isInvalid = false;
+            }
+
+            // Если хоть одно поле неверно — прерываем выполнение и не идем в fetch
+            if (!isInvalid) {
+                errorDisplay.textContent = 'Пожалуйста, проверьте правильность заполнения полей.';
+                errorDisplay.classList.remove('d-none');
+                return;
+            }
 
             try {
                 const response = await fetch('/api/auth/register', {

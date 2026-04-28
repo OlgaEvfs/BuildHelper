@@ -316,3 +316,19 @@ body {
 .navbar-brand:hover .logo-img {
     transform: scale(1.05);
 }
+
+/* 404 page */
+.error-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: 900;
+    color: #ffc107;
+    line-height: 1;
+}

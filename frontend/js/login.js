@@ -1,12 +1,34 @@
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault(); // Предотвращаем стандартное поведение формы
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
     const errorDiv = document.getElementById('login-error');
+
+    [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('is-invalid');
+        });
+    });
 
     // Очищаем старые ошибки
     errorDiv.classList.add('d-none');
+    emailInput.classList.remove('is-invalid');
+    passwordInput.classList.remove('is-invalid');
+
+    // берем значения
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    // Проверяем на пустоту
+    if (!email || !password) {
+        if (!email) emailInput.classList.add('is-invalid');
+        if (!password) passwordInput.classList.add('is-invalid');
+
+        errorDiv.textContent = 'Пожалуйста, заполните все поля';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
 
     try {
         const response = await fetch('/api/auth/login', {

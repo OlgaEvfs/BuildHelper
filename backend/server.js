@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Все остальные GET запросы перенапрявляем на index.html (для SPA в будущем)
 app.get('*path', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.status(404).sendFile(path.join(__dirname, '../frontend/404.html'));
 });
 
 // Берем порт из env
