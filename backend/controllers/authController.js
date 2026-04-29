@@ -64,7 +64,7 @@ const authUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         // Если нашли, проверяем совпадает ли пароль
-   11   // (мы используем метод matchPassword, который добавили в модель User.js ранее)
+        // (мы используем метод matchPassword, который добавили в модель User.js ранее)
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user._id,
@@ -82,4 +82,36 @@ const authUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, authUser }; // Экспортируем функции для использования в маршрутах
+// @desc Смена пароля
+// @route PUT /api/auth/updatepassword
+// @access  Private (только для авторизованных)
+const updatePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    // Проверяем, прислал ли пользователь данные
+    if (!oldPassword || !newPassword) {
+        return res.status(400).json({ message: 'Пожалуйста, заполните все поля' });
+    }
+
+    try {
+        // Находим пользователя в базе
+        // req.user._id берется из middleware protect, который мы добавим в роуты
+        const user = await User.findById(req.user._id);
+
+        // Проверяем, совпадает ли старый пароль с тем, что в базе
+        const isMatch = await user.matchPassword(oldPassword);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Неверный текущий пароль' });
+        }
+
+        // Если ок, записываем новый пароль
+        user.password = newPassword;
+        await user.save();
+
+        res.json({ message: 'Пароль успешно изменен' });
+    } catch (error) {
+        res.status(500).json({ message: 'Ошибка сервера при смене пароля' });
+    }
+};
+
+module.exports = { registerUser, authUser, updatePassword }; // Экспортируем функции для использования в маршрутах

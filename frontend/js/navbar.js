@@ -9,7 +9,11 @@ window.updateNavbar = function() {
             const user = JSON.parse(userData);
 
             // Если пользователь авторизован, показываем его имя и кнопку выхода
-            let navHtml = `<span class="navbar-text me-3">Привет, <strong>${user.username}</strong>!</span>`;
+            let navHtml = `
+                <span class="navbar-text me-3 d-none d-lg-inline">Привет, <strong>${user.username}</strong>!</span>
+                <a href="/user/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>
+            `;
+            
 
             // Если роль пользователя - администратор, показываем ссылку на админ панель
             if (user.role === 'admin') {

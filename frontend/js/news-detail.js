@@ -13,8 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Проверяем авторизацию для показа формы
+    // Проверяем авторизацию и получаем данные пользователя
     const token = localStorage.getItem('token');
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
     if (token) {
         commentFormWrapper.classList.remove('d-none');
         loginReminder.classList.add('d-none');
@@ -134,19 +136,63 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            commentsList.innerHTML = comments.map(c => `
-                <div class="comment-item mb-4 shadow-sm border-0">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="comment-author">${c.author ? c.author.username : 'Аноним'}</span>
-                        <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+            commentsList.innerHTML = comments.map(c => {
+                // Проверяем автор это или админ
+                const isAuthor = c.author && c.author._id === userInfo._id;
+                const isAdmin = userInfo.role === 'admin';
+                const showDelete = isAuthor || isAdmin;
+
+                return `
+                    <div class="comment-item mb-4 shadow-sm border-0">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <span class="comment-author">${c.author ? c.author.username : 'Аноним'}</span>
+                                ${isAdmin ? '<span class="badge bg-secondary ms-2" style="font-size: 0.6rem;">Admin</span>' : ''}
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                ${showDelete ? `
+                                    <button class="btn btn-sm text-danger p-0 lh-1 delete-comment-btn" data-id="${c._id}" title="Удалить">&times;</button>
+                                ` : ''}
+                            </div>    
+                        </div>
+                        <div class="comment-text">${c.content}</div>
                     </div>
-                    <div class="comment-text">${c.content}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         } catch (err) {
             console.error("Error loading comments:", err);
         }
     }
+
+    //Обработка удаления комментария
+    commentsList.addEventListener('click', async (e) => {
+        //Если нажали на кнопку удаления
+        if (e.target.classList.contains('delete-comment-btn')) {
+            const commentId = e.target.getAttribute('data-id');
+
+            if (confirm('Удалить этот комментарий?')) {
+                try {
+                    const res = await fetch(`/api/comments/${commentId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (res.ok) {
+                        loadComments(newsId);
+                    } else {
+                        const data = await res.json();
+                        alert(data.message || 'Ошибка при удалении');
+                    }
+                } catch (err) {
+                    console.error("Delete error:", err);
+                    alert('Сервер недоступен');
+                }
+            }
+        }
+    });
 
     // Отправка комментария
     if (commentForm) {
@@ -168,7 +214,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     document.getElementById('comment-text').value = ''; // Очищаем форму
                     loadComments(newsId); // Перезагружаем список
                 } else {
-                    alert('Ошибка при отправке комментария');
+                    const errorData = await res.json();
+                    alert(errorData.message || 'Ошибка при отправке комментария');
                 }
             } catch (err) {
                 console.error("Error posting comment:", err);

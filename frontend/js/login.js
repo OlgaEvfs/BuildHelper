@@ -43,6 +43,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
         if (response.ok) {
             // Если ок - сохраняем данные и переходим на главную
+            localStorage.setItem('token', data.token);
             localStorage.setItem('userInfo', JSON.stringify(data));
             window.location.href = '/';
         } else {
