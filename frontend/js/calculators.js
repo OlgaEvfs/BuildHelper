@@ -113,6 +113,7 @@ window.openCalculatorModal = function(type) {
                 <button class="btn bh-btn-primary btn-full" onclick="calculateWallpaper()">Рассчитать</button>
             `;
             break;
+
         case 'tiles':
             title = "Расчет плитки";
             content = `
@@ -165,6 +166,7 @@ window.openCalculatorModal = function(type) {
                 <button class="btn bh-btn-primary btn-full" onclick="calculateTiles()">Рассчитать</button>
             `;
             break;
+
         case 'waterproofing':
             title = "Расчет гидроизоляции";
             content = `
@@ -201,6 +203,7 @@ window.openCalculatorModal = function(type) {
                 <button class="btn bh-btn-primary btn-full" onclick="calculateWP()">Рассчитать</button>
             `;
             break;
+
         case 'floor':
             title = "Расчет стяжки пола";
             content = `
@@ -224,6 +227,114 @@ window.openCalculatorModal = function(type) {
                 </div>
 
                 <button class="btn bh-btn-primary btn-full" onclick="calculateFloor()">Рассчитать</button>
+            `;
+            break;
+
+        case 'drywall':
+            title = "Расчет гипрока (ГКЛ)";
+            content = `
+                <div class="form-group">
+                    <label>Площадь поверхности (м²):</label>
+                    <input type="number" id="drywall-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                </div>
+                <div class="form-group">
+                    <label>Размер листа:</label>
+                    <select id="drywall-size">
+                        <option value="3">1.2 x 2.5 м (3.0 м²)</option>
+                        <option value="3.6">1.2 x 3.0 м (3.6 м²)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Запас (%):</label>
+                    <input type="number" id="drywall-stock" value="10" step="1">
+                </div>
+                <div id="drywall-result" class="result-box"></div>
+                <button class="btn bh-btn-primary btn-full" onclick="calculateDrywall()">Рассчитать</button>
+            `;
+            break;
+
+        case 'profiles':
+            title = "Расчет профилей для ГКЛ";
+            content = `
+                <div class="form-group">
+                    <label>Площадь стены/потолка (м²):</label>
+                    <input type="number" id="profile-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    ${savedWallArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                </div>
+                <div class="form-group">
+                    <label>Периметр (м.п):</label>
+                    <input type="number" id="profile-perimeter" value="${savedPerimeter || ''}" placeholder="0.0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Высота стены (м):</label>
+                    <input type="number" id="profile-height" value="2.7" step="0.1">
+                    <small style="color:#666;">Введите фактическую высоту стены (обычно 2.5–3 м)</small>
+                </div>
+                <div class="form-group">
+                    <label>Шаг стоек (см):</label>
+                    <select id="profile-step">
+                        <option value="60">60 см (стандарт)</option>
+                        <option value="40">40 см (усиленный)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Длина профиля (м):</label>
+                    <select id="profile-lenght">
+                        <option value="3">3 м</option>
+                        <option value="2.5">2.5 м</option>
+                    </select>
+                </div>
+                <div id="profiles-result" class="result-box></div>
+                <button class="btn bh-btn-primary btn-full" onclick="calculateProfiles()">Рассчитать</button>
+            `;
+            break;
+
+        case 'laminate':
+            title = "Расчет ламината";
+            content = `
+                <div class="form-group">
+                    <label>Площадь пола (м²):</label>
+                    <input type="number" id="laminate-area" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                    ${savedFloorArea ? '<small style="color:green;">Подставлено из Геометрии</small>' : '<small style="color:#666;">(Возьмите из расчета Геометрии)</small>'}
+                </div>
+                <div class="form-group">
+                    <label>Площадь в одной упаковке (м²):</label>
+                    <input type="number" id="laminate-pack" value="2.2" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Способ укладки:</label>
+                    <select id="laminate-type">
+                        <option value="5">Прямая (запас 5%)</option>
+                        <option value="12">Диагональная (запас 12%)</option>
+                    </select>
+                </div>
+                <div id="laminate-result" class="result-box"></div>
+                <button class="btn bh-btn-primary btn-full" onclick="calculateLaminate()">Рассчитать</button>
+            `;
+            break;
+
+        case 'bricks':
+            title = "Расчет кирпича / блоков";
+            content = `
+                <div class="form-group">
+                    <label>Площадь стен (м²):</label>
+                    <input type="number" id="brick-area" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Толщина стены (м):</label>
+                    <input type="number" id="brick-wall-th" value="0.2" step="0.05">
+                </div>
+                <div class="form-group">
+                    <label>Размер блока (м):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="brick-l" placeholder="Длина" value="0.6">
+                        <input type="number" id="brick-h" placeholder="Высота" value="0.2">
+                        <input type="number" id="brick-w" placeholder="Ширина" value="0.2">
+                    </div>
+                </div>
+                <div id="bricks-result" class="result-box"></div>
+                <button class="btn bh-btn-primary btn-full" onclick="calculateBricks()">Рассчитать</button>
             `;
             break;
     }
@@ -294,6 +405,7 @@ window.calculateGeometry = function() {
         <p>Площадь пола: <strong>${floorArea} м²</strong></p>
         <p>Сумма проемов: <strong>${totalOpeningsArea.toFixed(2)} м²</strong></p>
         <p style="color:var(--accent-blue); font-size:1.1rem;">Чистая площадь стен: <strong>${netWallArea} м²</strong></p>
+        ${getSaveButtonHtml('Геометрия', `Стены: ${netWallArea} м², Пол: ${floorArea} м²`)}
     `;
 
     sessionStorage.setItem('lastNetWallArea', netWallArea);
@@ -338,6 +450,7 @@ window.calculatePaint = function() {
         <p>Для покраски в ${layers} слоя(ев):</p>
         <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо: <strong>${totalLiters} л.</strong></p>
         <p style="font-size:0.9rem; margin-top:10px;">(Рекомендуем взять запас 10% - это примерно ${(totalLiters * 1.1).toFixed(2)} л.)</p>
+        ${getSaveButtonHtml('Краска/Грунтовка', `${totalLiters} л.`)}
     `;
 };
 
@@ -370,6 +483,7 @@ window.calculateWallpaper = function() {
         <p>Полос в рулоне: <strong>${stripsPerRoll}</strong></p>
         <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо рулонов: <strong>${rollsNeeded} шт.</strong></p>
         <p style="font-size:0.8rem; margin-top:10px; color:#666;">(Расчет без учета подгона рисунка. Рекомендуем взять +1 рулон в запас)</p>
+        ${getSaveButtonHtml('Обои', `${rollsNeeded} шт., Полос: ${stripsNeeded}`)}
     `;
 };
 
@@ -400,6 +514,7 @@ window.calculateTiles = function() {
         <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо плиток: <strong>${finalCount} шт.</strong></p>
         <p style="font-size:0.8rem; margin-top:10px; color:#666;">(Шов: ${grout} мм, запас ${stock}%)</p>
         <p style="font-size:1.2rem; color:var(--accent-blue);">Общая площадь с запасом: ${(area * (1 + stock / 100)).toFixed(2)} м²</p>
+        ${getSaveButtonHtml('Плитка', `${finalCount} шт.`)}
     `;
 };
 
@@ -451,6 +566,7 @@ window.calculateWP = function() {
             - ${Math.ceil(totalWeight / 5)} ведер по 5 кг или ${Math.ceil(totalWeight / 15)} ведер по 15 кг.<br>
             - Ленты: рулоны по 10 или 20 метров.
         </p>
+        ${getSaveButtonHtml('Гидроизоляция', `${totalWeight.toFixed(1)} кг.`)}
     `;
 };
 
@@ -482,7 +598,158 @@ window.calculateFloor = function() {
         <p>Общий вес смеси: <strong>${totalWeight.toFixed(0)} кг</strong></p>
         <p>С учетом запаса: <strong>${totalWithReserve.toFixed(0)} кг</strong></p>
         
-        <p style="font-size:1.2rem; color: var(--accent-blue);">Необходимо мешков (${weight} кг): <strong>${bags} шт</strong></p>
+        <p style="font-size:1.2rem; color: var(--accent-blue);">Необходимо мешков (${weight} кг): <strong>${bags} шт.</strong></p>
         <p style="font-size:0.8rem; margin-top:10px; color: #666;">(Расход: ~20 кг/м² на 1 см толщины)</p>
+        ${getSaveButtonHtml('Стяжка', `${weight} кг., Мешков: ${bags} шт.`)}
     `;
+};
+
+window.calculateDrywall = function() {
+    const area = parseFloat(document.getElementById('drywall-area').value);
+    const size = parseFloat(document.getElementById('drywall-size').value);
+    const stock = parseFloat(document.getElementById('drywall-stock').value) || 0;
+
+    if (isNaN(area) || area <= 0) {
+        showCalcError('drywall-result', "Пожалуйста, введите площадь.");
+        return;
+    }
+
+    const count = Math.ceil((area / size) * (1 + stock / 100));
+    const resultBox = document.getElementById('drywall-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Необходимо листов: <strong>${count} шт.</strong></p>
+        <p class="small text-muted">Запас: ${stock}%</p>
+        ${getSaveButtonHtml('ГКЛ', `${count} шт.`)}
+    `;
+};
+
+window.calculateProfiles = function() {
+    const area = parseFloat(document.getElementById('profile-area').value) || 0;
+    const perimeter = parseFloat(document.getElementById('profile-perimeter').value) || 0;
+    const height = parseFloat(document.getElementById('profile-height').value) || 0;
+    const step = parseFloat(document.getElementById('profile-step').value) / 100;
+    const profileLength = parseFloat(document.getElementById('profile-length').value) || 3;
+
+    if (area <= 0 || perimeter <= 0 || height <= 0 || step <= 0) {
+        showCalcError('profiles-result', "Введите площадь, периметр и высоту стены.");
+        return;
+    }
+
+    const wallWidth = area / height;
+
+    const udTotalLength = perimeter;
+    const udProfileCount = Math.ceil(udTotalLength / profileLength);
+
+    const cdPostsCount = Math.ceil(wallWidth / step) + 1;
+
+    const cdTotalLength = cdPostsCount * height;
+
+    const cdProfileCount = Math.ceil(cdTotalLength / profileLength);
+
+    const resultBox = document.getElementById('profiles-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Расчетная ширина стены: <strong>${wallWidth.toFixed(2)} м</strong></p>
+        <p>Количество стоек CD: <strong>${cdPostsCount} шт.</strong></p>
+        <p>Направляющий профиль UD: <strong>${udProfileCount} шт.</strong></p>
+        <p>Стоечный профиль CD: <strong>${cdProfileCount} шт.</strong></p>
+        
+        <p class="small text-muted">Длина профиля: ${profileLength} м. Шаг стоек: ${step * 100} см.</p>
+        ${getSaveButtonHtml('Профили ГКЛ', `${udProfileCount} UD / ${cdProfileCount} CD`)}
+    `;
+};
+
+window.calculateLaminate = function() {
+    const area = parseFloat(document.getElementById('laminate-area').value);
+    const packArea = parseFloat(document.getElementById('laminate-pack').value);
+    const stock = parseFloat(document.getElementById('laminate-type').value);
+
+    if (isNaN(area) || isNaN(packArea) || area <= 0 || packArea <= 0) {
+        showCalcError('laminate-result', "Введите площадь пола и упаковки.");
+        return;
+    }
+
+    const totalAreaWithStock = area * (1 + stock / 100);
+    const packsNeeded = Math.ceil(totalAreaWithStock / packArea);
+
+    const resultBox = document.getElementById('laminate-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Площадь с запасом: <strong>${totalAreaWithStock.toFixed(2)} м²</strong></p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Упаковок: <strong>${packsNeeded} шт.</strong></p>
+        ${getSaveButtonHtml('Ламинат', `${packsNeeded} упак.`)}
+    `;
+};
+
+window.calculateBricks = function() {
+    const area = parseFloat(document.getElementById('brick-area').value);
+    const wallTh = parseFloat(document.getElementById('brick-wall-th').value);
+    const l = parseFloat(document.getElementById('brick-l').value);
+    const h = parseFloat(document.getElementById('brick-h').value);
+    const w = parseFloat(document.getElementById('brick-w').value);
+
+    if (isNaN(area) || isNaN(wallTh) || isNaN(l) || isNaN(h) || isNaN(w) || area <= 0 || wallTh <= 0 || l <= 0 || h <= 0 || w <= 0) {
+        showCalcError('bricks-result', "Заполните все поля.");
+        return;
+    }
+
+    const blockVolume = l * h * w;
+    const wallVolume = area * wallTh;
+
+    const countWithoutStock = wallVolume / blockVolume;
+    const count = Math.ceil(countWithoutStock * 1.05);
+
+    const resultBox = document.getElementById('bricks-result');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <p>Объем стены: <strong>${wallVolume.toFixed(2)} м³</strong></p>
+        <p>Объем одного блока: <strong>${blockVolume.toFixed(3)} м³</strong></p>
+        <p style="font-size:1.2rem; color:var(--accent-blue);">Количество блоков с запасом 5%: <strong>${count} шт.</strong></p>
+        ${getSaveButtonHtml('Кирпич/Блоки', `${count} шт.`)}
+    `;
+};
+
+//  Вспомогательная функция
+// Функция для генерации кнопки сохранения (для авторизированных)
+function getSaveButtonHtml(calcName, resultValue) {
+    if (localStorage.getItem('userInfo')) {
+        return `<button class="btn btn-sm btn-outline-success mt-2" onclick="saveCalculation('${calcName}', '${resultValue}')">Сохранить в профиль</button>`;
+    }
+    return '';
+}
+
+// Функция сохранения
+window.saveCalculation = async function(calcName, resultValue) {
+    const userData = localStorage.getItem('userInfo');
+    if (!userData) {
+        alert('Пожалуйста, войдите в систему, чтобы сохранить расчет.');
+        return;
+    }
+
+    const { token } = JSON.parse(userData);
+
+    try {
+        const response = await fetch('/api/calculations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                type: calcName,
+                result: resultValue
+            })
+        });
+
+        if (response.ok) {
+            alert(`Расчет "${calcName}" успешно сохранен в вашем профиле!`);
+        } else {
+            const error = await response.json();
+            alert(`Ошибка: ${error.message}`);
+        }
+    } catch (err) {
+        console.error('Ошибка при сохранении:', err);
+        alert('Не удалось связаться с сервером.');
+    }
 };

@@ -182,6 +182,47 @@
                             <button class="btn bh-btn-accent-outline mt-auto">Рассчитать</button>
                         </div>
                     </div>
+
+                    <!-- Cкрытые калькуляторы (только для авторизированных) -->
+                    <!-- ГКЛ -->
+                    <div class="col auth-only-calc" style="display: none;">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="drywall">
+                            <div class="display-4 mb-3">🧱</div>
+                            <h3 class="h5 fw-bold">Гипрок (ГКЛ)</h3>
+                            <p class="text-muted small">Расчет количества листов для стен и потолков.</p>
+                            <button class="btn bh-btn-accent-outline mt-auto">Рассчитать</button>
+                        </div>
+                    </div>
+
+                    <!-- Металлические профили -->
+                    <div class="col auth-only-calc" style="display: none;">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="profiles">
+                            <div class="display-4 mb-3">🏗️</div>
+                            <h3 class="h5 fw-bold">Профили</h3>
+                            <p class="text-muted small">Расчет направляющих и стоичных профилей (UD/CD).</p>
+                            <button class="btn bh-btn-accent-outline mt-auto">Рассчитать</button>
+                        </div>
+                    </div>
+
+                    <!-- Ламинат -->
+                    <div class="col auth-only-calc" style="display: none;">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="laminate">
+                            <div class="display-4 mb-3">🪵</div>
+                            <h3 class="h5 fw-bold">Ламинат</h3>
+                            <p class="text-muted small">Расчет количества упаковок и досок с учетом подрезки.</p>
+                            <button class="btn bh-btn-accent-outline mt-auto">Рассчитать</button>
+                        </div>
+                    </div>
+
+                    <!-- Кирпич/Блоки -->
+                    <div class="col auth-only-calc" style="display: none;">
+                        <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="bricks">
+                            <div class="display-4 mb-3">🧱</div>
+                            <h3 class="h5 fw-bold">Кирпич и блоки</h3>
+                            <p class="text-muted small">Расчет стеновых материалов по обьему или площади.</p>
+                            <button class="btn bh-btn-accent-outline mt-auto">Рассчитать</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -361,6 +402,11 @@
             </div>
         </div>
     </footer>
+    <button class="btn-up" aria-label="Вверх">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/navbar.js"></script>

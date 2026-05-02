@@ -1,6 +1,12 @@
 const filter = require('leo-profanity');
+const { words: russianBadWords } = require('russian-bad-words');
+
 filter.loadDictionary('en');
-const russianList = require('leo-profanity/lib/dictionary/ru.json');
+// Извлекаем все формы слов из russian-bad-words и добавляем в фильтр
+const russianList = russianBadWords.flatMap(obj => {
+    const { type, ...rest } = obj;
+    return Object.values(rest);
+});
 filter.add(russianList);
 // filter.add(['слово1', 'слово2']); Если отдельные слова
 

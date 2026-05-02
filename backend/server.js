@@ -29,6 +29,10 @@ app.use('/api/news', newsRoutes); // Все маршруты к новостям
 const commentRoutes = require('./routes/comments');
 app.use('/api/comments', commentRoutes);
 
+// Роуты для сохранения расчетов
+const calculationRoutes = require('./routes/calculations');
+app.use('/api/calculations', calculationRoutes);
+
 // test route
 app.get('/api/test', (req, res) => {
     // Обязательно res.json, чтобы фронтенд понял ответ

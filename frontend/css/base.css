@@ -332,3 +332,42 @@ body {
     color: #ffc107;
     line-height: 1;
 }
+
+/* Кнопка "Вверх" */
+.btn-up {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: none;
+    outline: none;
+}
+
+.btn-up.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-up:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-5px);
+    color: var(--white);
+}
+
+.btn-up svg {
+    width: 24px;
+    height: 24px;
+}

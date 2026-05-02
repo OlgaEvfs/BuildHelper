@@ -24,4 +24,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // 5. Кнопка "Вверх"
+    const btnUp = document.querySelector('.btn-up');
+    if (btnUp) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                btnUp.classList.add('show');
+            } else {
+                btnUp.classList.remove('show');
+            }
+        });
+
+        btnUp.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // 6. Отображение калькуляторов только для авторизованных
+    const authOnlyCalcs = document.querySelectorAll('.auth-only-calc');
+    if (localStorage.getItem('userInfo')) {
+        authOnlyCalcs.forEach(calc => {
+            calc.computedStyleMap.display = 'block';
+        });
+    }
 });
