@@ -29,7 +29,7 @@ router.post('/', authMiddleware, async (req, res) => {
 // Получить все расчеты текущего пользователя
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        const calcs = (await Calculation.find({ user: req.user.id })).sort({ createdAt: -1 });
+        const calcs = await Calculation.find({ user: req.user.id }).sort({ createdAt: -1 });
         res.json(calcs);
     } catch (err) {
         console.error('Ошибка получения расчетов:', err);

@@ -56,39 +56,92 @@
 
                 <!-- Контент --> 
                 <div class="col-md-8">
-                    <div class="card border-0 shadow-sm p-4 mb-4">
-                        <h2 class="fw-bold mb-4">Данные аккаунта</h2>
-                        <div class="row mb-3">
-                            <div class="col-sm-4 text-muted">Имя пользователя:</div>
-                            <div class="col-sm-8 fw-bold" id="profile-username">Загрузка...</div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-sm-4 text-muted">Email:</div>
-                            <div class="col-sm-8 fw-bold" id="profile-email">Загрузка...</div>
-                        </div>
-                    </div>
-
-                    <!-- Форма смены пароля -->
-                    <div class="card border-0 shadow-sm p-4">
-                        <h4 class="fw-bold mb-3">Безопасность</h4>
-                        <p class="text-muted small">Вы можете сменить свой текущий пароль.</p>
-
-                        <form id="change-password-form">
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Текущий пароль</label>
-                                <input type="password" class="form-control" id="old-password" required>
+                    <section id="profile-section">
+                        <div class="card border-0 shadow-sm p-4 mb-4">
+                            <h2 class="fw-bold mb-4">Данные аккаунта</h2>
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Имя пользователя:</div>
+                                <div class="col-sm-8 fw-bold" id="profile-username">Загрузка...</div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Новый пароль</label>
-                                <input type="password" class="form-control" id="new-password" required minlength="6">
+                            <div class="row mb-3">
+                                <div class="col-sm-4 text-muted">Email:</div>
+                                <div class="col-sm-8 fw-bold" id="profile-email">Загрузка...</div>
                             </div>
-                            <div id="password-message" class="alert d-none mb-3"></div>
-                            <button type="submit" class="btn bh-btn-primary">Сменить пароль</button>
-                        </form>
-                    </div>
+                        </div>
+                    
+
+                        <!-- Форма смены пароля -->
+                        <div class="card border-0 shadow-sm p-4">
+                            <h4 class="fw-bold mb-3">Безопасность</h4>
+                            <p class="text-muted small">Вы можете сменить свой текущий пароль.</p>
+
+                            <form id="change-password-form">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Текущий пароль</label>
+                                    <input type="password" class="form-control" id="old-password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Новый пароль</label>
+                                    <input type="password" class="form-control" id="new-password" required minlength="6">
+                                </div>
+                                <div id="password-message" class="alert d-none mb-3"></div>
+                                <button type="submit" class="btn bh-btn-primary">Сменить пароль</button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <!-- 2D Планировщик -->
+                    <section id="planner-section" class="d-none">
+                        <div class="card border-0 shadow-sm p-4 text-center">
+                            <h2 class="fw-bold mb-3">2D Планировщик помещения</h2>
+                            <p class="text-muted">Инструмент находится в разработке. Скоро здесь появится удобный конструктор для визуализации вашего ремонта.</p>
+                            <div class="py-5">
+                                <span style="font-size: 5rem;">📐</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Мои вакансии -->
+                    <section id="jobs-section" class="d-none">
+                        <div class="card border-0 shadow-sm p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2 class="fw-bold mb-0">Мои вакансии</h2>
+                                <a href="/news.html?category=jobs" class="btn btn-sm bh-btn-accent">+ Добавить</a>
+                            </div>
+                            <div id="my-jobs-list">
+                                <p class="text-muted italic">У вас пока нет размещенных вакансий.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- История расчетов -->
+                    <section id="calculations-section" class="d-none">
+                        <div class="card border-0 shadow-sm p-4">
+                            <h2 class="fw-bold mb-4">История ваших расчетов</h2>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Тип расчета</th>
+                                            <th>Результат</th>
+                                            <th>Дата</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="calculations-list">
+                                        <!-- Будут сохраняться данные -->
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">Загрузка данных...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
+
         <footer class="bh-bg-dark text-light py-5 mt-5">
             <div class="container">
                 <div class="row g-4">

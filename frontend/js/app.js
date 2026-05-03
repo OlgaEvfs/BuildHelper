@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const authOnlyCalcs = document.querySelectorAll('.auth-only-calc');
     if (localStorage.getItem('userInfo')) {
         authOnlyCalcs.forEach(calc => {
-            calc.computedStyleMap.display = 'block';
+            calc.style.display = 'block';
         });
     }
 });

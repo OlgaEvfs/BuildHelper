@@ -280,12 +280,12 @@ window.openCalculatorModal = function(type) {
                 </div>
                 <div class="form-group">
                     <label>Длина профиля (м):</label>
-                    <select id="profile-lenght">
+                    <select id="profile-length">
                         <option value="3">3 м</option>
                         <option value="2.5">2.5 м</option>
                     </select>
                 </div>
-                <div id="profiles-result" class="result-box></div>
+                <div id="profiles-result" class="result-box"></div>
                 <button class="btn bh-btn-primary btn-full" onclick="calculateProfiles()">Рассчитать</button>
             `;
             break;
@@ -604,6 +604,7 @@ window.calculateFloor = function() {
     `;
 };
 
+// Функция расчета гипрока
 window.calculateDrywall = function() {
     const area = parseFloat(document.getElementById('drywall-area').value);
     const size = parseFloat(document.getElementById('drywall-size').value);
@@ -624,6 +625,7 @@ window.calculateDrywall = function() {
     `;
 };
 
+// Функция расчета профилей
 window.calculateProfiles = function() {
     const area = parseFloat(document.getElementById('profile-area').value) || 0;
     const perimeter = parseFloat(document.getElementById('profile-perimeter').value) || 0;
@@ -660,6 +662,7 @@ window.calculateProfiles = function() {
     `;
 };
 
+// Функция расчета ламината
 window.calculateLaminate = function() {
     const area = parseFloat(document.getElementById('laminate-area').value);
     const packArea = parseFloat(document.getElementById('laminate-pack').value);
@@ -682,6 +685,7 @@ window.calculateLaminate = function() {
     `;
 };
 
+// Функция расчета блоков
 window.calculateBricks = function() {
     const area = parseFloat(document.getElementById('brick-area').value);
     const wallTh = parseFloat(document.getElementById('brick-wall-th').value);
