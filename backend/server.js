@@ -33,6 +33,10 @@ app.use('/api/comments', commentRoutes);
 const calculationRoutes = require('./routes/calculations');
 app.use('/api/calculations', calculationRoutes);
 
+// Роуты для чек-листа
+const checklistRoutes = require('./routes/checklist');
+app.use('/api/checklist', checklistRoutes);
+
 // test route
 app.get('/api/test', (req, res) => {
     // Обязательно res.json, чтобы фронтенд понял ответ

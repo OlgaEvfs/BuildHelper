@@ -9,6 +9,13 @@ window.initChecklist = function() {
     // 1. Загружаем состояние из localStorage
     const savedState = JSON.parse(localStorage.getItem('repairChecklist')) || {};
 
+    // Скрываем напоминание о регистрации, если пользователь вошел
+    const regReminder = document.getElementById('reg-reminder');
+    if (regReminder && localStorage.getItem('userInfo')) {
+        regReminder.classList.add('d-none');
+        regReminder.classList.remove('d-flex');
+    }
+
     checkboxes.forEach(cb => {
         const id = cb.getAttribute('data-id');
         if (savedState[id]) {

@@ -39,8 +39,13 @@ window.updateNavbar = function() {
 
     const reminder = document.getElementById('reg-reminder');
     if (reminder) {
-        // Если данные пользователя есть — скрываем плашку (none), если нет — показываем (block)
-        reminder.style.display = localStorage.getItem('userInfo') ? 'none' : 'block';
+        if (localStorage.getItem('userInfo')) {
+            reminder.classList.add('d-none');
+            reminder.classList.remove('d-flex');
+        } else {
+            reminder.classList.remove('d-none');
+            reminder.classList.add('d-flex');
+        }
     }
 };
 

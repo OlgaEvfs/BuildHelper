@@ -49,6 +49,7 @@
                             <a href="#" class="list-group-item list-group-item-action border-0" data-target="planner-section">2D Планировщик</a>
                             <a href="#" class="list-group-item list-group-item-action border-0" data-target="jobs-section">Мои вакансии</a>
                             <a href="#" class="list-group-item list-group-item-action border-0" data-target="calculations-section">История расчетов</a>
+                            <a href="#" class="list-group-item list-group-item-action border-0" data-target="checklist-section">Мой чек-лист</a>
                             <button class="list-group-item list-group-item-action border-0 text-danger" id="logout-btn">Выйти из системы</button> 
                         </div>
                     </div>
@@ -135,6 +136,37 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Мой чек-лист -->
+                    <section id="checklist-section" class="d-none">
+                        <div class="card border-0 shadow-sm p-4">
+                            <h2 class="fw-bold mb-4">Мой план ремонта</h2>
+
+                            <!-- Форма добавления -->
+                            <form id="add-task-form" class="mb-4">
+                                <div class="input-group">
+                                    <input type="text" id="task-input" class="form-control" placeholder="Например: Купить краску для кухни" required>
+                                    <button class="btn bh-btn-primary" type="submit">Добавить</button>
+                                </div>
+                            </form>
+
+                            <!-- Прогресс-бар -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between fw-bold mb-2">
+                                    <span>Прогресс выполнения</span>
+                                    <span id="checklist-progress-text" class="bh-text-orange">0%</span>
+                                </div>
+                                <div class="progress" style="height: 12px;">
+                                    <div id="checklist-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bh-bg-orange" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Список задач -->
+                            <div id="user-checklist-container">
+                                <p class="text-muted text-center py-3">Ваш список задач пуст.</p>
                             </div>
                         </div>
                     </section>

@@ -1,3 +1,81 @@
 main {
     min-height: 80vh;
 }
+
+.task-item {
+    transition: background-color 0.2s;
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.task-item:hover {
+    background-color: var(--bg-accent-light);
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 0; /* Сбрасываем для списка */
+}
+
+.check-item input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 22px;
+    width: 22px;
+    background-color: var(--white);
+    border: 2px solid var(--border-dark);
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.check-item:hover input ~ .checkmark {
+    border-color: var(--accent-blue);
+}
+
+.check-item input:checked ~ .checkmark {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.check-item input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.check-item input:checked ~ .item-text {
+    color: var(--text-light);
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.item-text {
+    font-size: 0.95rem;
+    transition: 0.2s;
+}

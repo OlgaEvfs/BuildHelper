@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadUserCalculations();
             } else if (targetId === 'jobs-section') {
                 loadMyJobs();
+            } else if (targetId === 'checklist-section') {
+                loadUserChecklist();
             }
         });
     });
@@ -276,6 +278,116 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Не удалось удалить расчет.');
         }
     }
+
+    // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С ЧЕК-ЛИСТОМ ------------
+
+    // Загрузка задач с сервера
+    async function loadUserChecklist() {
+        const container = document.getElementById('user-checklist-container');
+        try {
+            const res = await fetch('/api/checklist', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const tasks = await res.json();
+            if (tasks.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-3">Ваш список задач пуст.</p>';
+                updateChecklistProgress(0, 0);
+                return;
+            }
+
+            // Рендерим список
+            container.innerHTML = tasks.map(task => `
+                <div class="d-flex align-items-center justify-content-between p-2 task-item">
+                    <label class="check-item">
+                        <input class="task-checkbox" type="checkbox"
+                            ${task.completed ? 'checked' : ''} data-id="${task._id}">
+                        <span class="checkmark"></span>
+                        <span class="item-text">${task.text}</span>
+                    </label>
+                    <button class="btn btn-sm text-danger delete-task-btn" data-id="${task._id}" title="Удалить">&times;</button>
+                </div>
+            `).join('');
+
+            // Считаем прогресс
+            const completedCount = tasks.filter(t => t.completed).length;
+            updateChecklistProgress(completedCount, tasks.length);
+
+            // Вешаем события на чекбоксы
+            document.querySelectorAll('.task-checkbox').forEach(cb => {
+                cb.onchange = () => toggleTaskStatus(cb.getAttribute('data-id'));
+            });
+
+            // Вешаем события на удаление
+            document.querySelectorAll('.delete-task-btn').forEach(btn => {
+                btn.onclick = () => deleteTask(btn.getAttribute('data-id'));
+            });
+        } catch (err) {
+            container.innerHTML = '<p class="text-danger">Ошибка загрузки списка.</p>';
+        }
+    }
+
+    // Добавление новой задачи
+    const addTaskForm = document.getElementById('add-task-form');
+    if (addTaskForm) {
+        addTaskForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+
+            try {
+                const res = await fetch('/api/checklist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (res.ok) {
+                    input.value = ''; // очищаем поле
+                    loadUserChecklist(); // перегружаем список
+                }
+            } catch (err) {
+                alert('Не удалось добавить задачу');
+            }
+        };
+    }
+
+    // Переключение статуса задачи
+    async function toggleTaskStatus(id) {
+        try {
+            await fetch(`/api/checklist/${id}`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            loadUserChecklist(); // обновляем UI
+        } catch (err) {
+            alert('Ошибка обновления');
+        }
+    }
+
+    // Удаление задачи
+    async function deleteTask(id) {
+        if (!confirm('Удалить задачу?')) return;
+        try {
+            await fetch(`/api/checklist/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            loadUserChecklist();
+        } catch (err) {
+            alert('Ошибка удаления');
+        }
+    }
+
+    // Обновление прогресс-бара
+    function updateChecklistProgress(completed, total) {
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        document.getElementById('checklist-progress-bar').style.width = percent + '%';
+        document.getElementById('checklist-progress-text').textContent = percent + '%';
+    }
+    //----------------------------------------------------------------------------------
 
     // --- ВЫХОД ---
     const logoutBtn = document.getElementById('logout-btn');
