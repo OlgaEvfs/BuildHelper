@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const newsGrid = document.getElementById('news-grid');
     const filters = document.getElementById('news-filters');
+    const token = localStorage.getItem('token');
+    const addJobContainer = document.getElementById('add-job-container');
     const pagination = document.getElementById('pagination');
 
     let currentCategory = 'all';
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             loadNews();
+            checkAddJobButton();
         }
     });
 
@@ -94,11 +97,79 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small>${getCategoryName(item.category)} • ${new Date(item.createdAt).toLocaleDateString()}</small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
-                        <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline mt-auto">Читать полностью</a>
+                        <div class="text-center mt-auto">
+                            <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline">Читать полностью</a>
+                        </div>
                     </div>
                 </div>
             </div>
         `).join('');
+    }
+
+    // Логика показа кнопки "Добавить"
+    // Проверяем: залогинен ли пользователь и выбрана ли категория 'jobs'
+    function checkAddJobButton() {
+        const token = localStorage.getItem('token');
+        if (token && currentCategory === 'jobs') {
+            addJobContainer.classList.remove('d-none');
+        } else {
+            addJobContainer.classList.add('d-none');
+        }
+    }
+
+    checkAddJobButton();
+   
+    // Обработка отправки формы вакансии
+    const addJobForm = document.getElementById('add-job-form');
+    if (addJobForm) {
+        addJobForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('job-form-message');
+               
+            const jobData = {
+                title: document.getElementById('job-title').value,
+                category: 'jobs',
+                jobType: document.getElementById('job-type').value,
+                employment: document.getElementById('job-employment').value,
+                location: document.getElementById('job-location').value,
+                salary: document.getElementById('job-salary').value,
+                content: document.getElementById('job-content').value,
+                contactName: document.getElementById('job-contact-name').value,
+                contactPhone: document.getElementById('job-contact-phone').value,
+                contactEmail: document.getElementById('job-contact-email').value,
+            };
+   
+            try {
+                const res = await fetch('/api/news', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                if (res.ok) {
+                    msg.textContent = 'Вакансия успешно опубликована!';
+                    msg.className = 'alert alert-success mt-3';
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addJobModal'));
+                        modal.hide();
+                        addJobForm.reset();
+                        msg.classList.add('d-none');
+                        // Перезагружаем страницу, чтобы увидеть новую вакансию в списке
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const err = await res.json();
+                    msg.textContent = err.message || 'Ошибка при создании';
+                    msg.className = 'alert alert-danger mt-3';
+                }
+            } catch (error) {
+                msg.textContent = 'Ошибка сети';
+                msg.className = 'alert alert-danger mt-3';
+            }
+        });
     }
 
     // Функция для рендера пагинации
