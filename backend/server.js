@@ -37,6 +37,10 @@ app.use('/api/calculations', calculationRoutes);
 const checklistRoutes = require('./routes/checklist');
 app.use('/api/checklist', checklistRoutes);
 
+// Роуты для планировщика
+const plannerRoutes = require('./routes/planner');
+app.use('/api/planner', plannerRoutes);
+
 // test route
 app.get('/api/test', (req, res) => {
     // Обязательно res.json, чтобы фронтенд понял ответ

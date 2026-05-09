@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadMyJobs();
             } else if (targetId === 'checklist-section') {
                 loadUserChecklist();
+            } else if (targetId === 'planner-section') {
+                if (typeof initCanvas === 'function') setTimeout(initCanvas, 100);
             }
         });
     });
