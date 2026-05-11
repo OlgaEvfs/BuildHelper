@@ -66,11 +66,18 @@ const authUser = async (req, res) => {
         // Если нашли, проверяем совпадает ли пароль
         // (мы используем метод matchPassword, который добавили в модель User.js ранее)
         if (user && (await user.matchPassword(password))) {
+
+            if (user.status === 'banned') {
+                return res.status(403).json({ message: 'Доступ запрещен. Ваш аккаунт заблокирован' });
+            }
+
             res.json({
                 _id: user._id,
                 username: user.username,
                 email: user.email,
                 role: user.role,
+                status: user.status,
+                resetPasswordRequired: user.resetPasswordRequired,
                 token: generateToken(user._id) // Генерируем JWT токен
             });
         } else {
@@ -106,6 +113,8 @@ const updatePassword = async (req, res) => {
 
         // Если ок, записываем новый пароль
         user.password = newPassword;
+        user.resetPasswordRequired = false;
+        
         await user.save();
 
         res.json({ message: 'Пароль успешно изменен' });

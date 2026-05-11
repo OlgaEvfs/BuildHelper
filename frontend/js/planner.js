@@ -318,16 +318,23 @@ canvas.onmousemove = (e) => {
     const rect = canvas.getBoundingClientRect();
     const mx = (e.clientX - rect.left) / scale;
     const my = (e.clientY - rect.top) / scale;
+
     if (isDragging && selectedObject) {
         let newX = mx - dragOffsetX;
         let newY = my - dragOffsetY;
         const objW = selectedObject.type === 'room' ? selectedObject.l : selectedObject.w;
         const objH = selectedObject.type === 'room' ? selectedObject.w : selectedObject.h;
+
+        // базовые границы холста
         if (newX < 0) newX = 0;
         if (newX + objW > canvas.width / scale) newX = (canvas.width / scale) - objW;
         if (newY < 0) newY = 0;
         if (newY + objH > canvas.height / scale) newY = (canvas.height / scale) - objH;
+
+        const SNAP_THRESHOLD = 0.2;
+
         if (selectedObject.type === 'room') {
+            // ЛОГИКА ПРИЛИПАНИЯ КОМНАТ
             const SNAP_THRESHOLD = 0.2;
             rooms.forEach(other => {
                 if (other === selectedObject) return;
@@ -338,10 +345,38 @@ canvas.onmousemove = (e) => {
                 if (Math.abs((newY + selectedObject.w) - other.y) < SNAP_THRESHOLD) newY = other.y - selectedObject.w;
                 if (Math.abs(newY - other.y) < SNAP_THRESHOLD) newY = other.y;
             });
-            if (newX < 0) newX = 0;
-            if (newX + selectedObject.l > canvas.width / scale) newX = (canvas.width / scale) - selectedObject.l;
-            if (newY < 0) newY = 0;
-            if (newY + selectedObject.w > canvas.height / scale) newY = (canvas.height / scale) - selectedObject.w;
+        } else if (selectedObject.type === 'furniture') {
+            // ЛОГИКА ПРИЛИПАНИЯ К МЕБЕЛИ
+            furniture.forEach(other => {
+                if (other === selectedObject) return;
+
+                // вплотную по Х
+                if (Math.abs(newX - (other.x + other.w)) < SNAP_THRESHOLD) newX = other.x + other.w;
+                if (Math.abs((newX + objW) - other.x) < SNAP_THRESHOLD) newX = other.x - objW;
+                // вплотную по Y
+                if (Math.abs(newY - (other.y + other.h)) < SNAP_THRESHOLD) newY = other.y + other.h;
+                if (Math.abs((newY + objH) - other.y) < SNAP_THRESHOLD) newY = other.y - objH;
+
+                // выравнивание по краям
+                if (Math.abs(newX - other.x) < SNAP_THRESHOLD) newX = other.x;
+                if (Math.abs(newY - other.y) < SNAP_THRESHOLD) newY = other.y;
+            })
+
+            // Прилипание мебели к внутренним стенам комнаты
+            rooms.forEach(room => {
+                // Левая внутренняя стена (если мебель внутри комнаты)
+                if (Math.abs(newX - room.x) < SNAP_THRESHOLD && newX >= room.x) newX = room.x;
+                // Правая внутренняя стена
+                if (Math.abs((newX + objW) - (room.x + room.l)) < SNAP_THRESHOLD && (newX + objW) <= (room.x + room.l)) {
+                    newX = room.x + room.l - objW;
+                }
+                // Верхняя внутренняя стена
+                if (Math.abs(newY - room.y) < SNAP_THRESHOLD && newY >= room.y) newY = room.y;
+                // Нижняя внутренняя стена
+                if (Math.abs((newY + objH) - (room.y + room.w)) < SNAP_THRESHOLD && (newY + objH) <= (room.y + room.w)) {
+                    newY = room.y + room.w - objH;
+                }
+            });
         }
         selectedObject.x = newX;
         selectedObject.y = newY;

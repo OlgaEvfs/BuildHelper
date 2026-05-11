@@ -16,17 +16,24 @@ const protect = async (req, res, next) => {
             // Находим пользователя по ID и прикрепляем его к объекту запроса
             // Мы не хотим возвращать пароль, поэтому используем select('-password')
             req.user = await User.findById(decoded.id).select('-password');
+            
+            if (req.user && req.user.status === 'banned') {
+                return res.status(403).json({ message: 'Ваш аккаунт заблокирован администратором' });
+            }
 
             next(); // переходим к следующему middleware
         } catch (error) {
             console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            res.status(401).json({ message: 'Неверный или истекший токен' });
         }
     }
     
     if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+        res.status(401).json({ message: 'Неверный или истекший токен' });
     }
+
+    
+
 };
 
 module.exports = protect;

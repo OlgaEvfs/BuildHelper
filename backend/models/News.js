@@ -79,6 +79,11 @@ const newsSchema = new mongoose.Schema({
             message: 'Укажите корректный номер телефона (минимум 5 цифр)'
         }
     },
+    status: {
+        type: String,
+        enum: ['pending', 'published'],
+        default: 'published' // Сейчас оставим 'published', чтобы ничего не пропало
+    },
     createdAt: { 
         type: Date,
         default: Date.now
