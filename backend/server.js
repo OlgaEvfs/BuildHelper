@@ -3,6 +3,14 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const authRoutes = require('./routes/auth');
+const newsRoutes = require('./routes/news');
+const commentRoutes = require('./routes/comments');
+const calculationRoutes = require('./routes/calculations');
+const checklistRoutes = require('./routes/checklist');
+const plannerRoutes = require('./routes/planner');
+const adminRoutes = require('./routes/admin');
+const supportRoutes = require('./routes/support');
 
 // Подключаем функцию из db.js
 const connectDB = require('./config/db');
@@ -18,28 +26,28 @@ app.use(cors()); // Настраиваем cors, чтобы фронтенд о�
 app.use(express.json()); // Позволяет серверу понимать JSON в запросах(для POST/PUT)
 
 // Подключаем маршруты
-const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes); // Все маршруты к авторизации будут начинаться с /api/auth
 
 // Роуты для новостей
-const newsRoutes = require('./routes/news');
 app.use('/api/news', newsRoutes); // Все маршруты к новостям будут начинаться с /api/news
 
 // Роуты для комментариев
-const commentRoutes = require('./routes/comments');
 app.use('/api/comments', commentRoutes);
 
 // Роуты для сохранения расчетов
-const calculationRoutes = require('./routes/calculations');
 app.use('/api/calculations', calculationRoutes);
 
 // Роуты для чек-листа
-const checklistRoutes = require('./routes/checklist');
 app.use('/api/checklist', checklistRoutes);
 
 // Роуты для планировщика
-const plannerRoutes = require('./routes/planner');
 app.use('/api/planner', plannerRoutes);
+
+// Роуты для поддержки
+app.use('/api/support', supportRoutes);
+
+// Роуты для админки
+app.use('/api/admin', adminRoutes);
 
 // test route
 app.get('/api/test', (req, res) => {
