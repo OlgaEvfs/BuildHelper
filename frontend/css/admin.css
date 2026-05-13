@@ -1,0 +1,60 @@
+ /* Бейджи ролей и статусов */
+.admin-badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.status-banned {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Стили таблицы */
+.user-row {
+    transition: background-color 0.2s ease;
+}
+
+.user-row:hover {
+    background-color: #f1f4f9 !important;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: #6c757d;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Контейнеры действий */
+.btn-group-sm > .btn {
+    padding: 0.4rem 0.6rem;
+}
+
+.card.admin-card {
+    border: none;
+    border-radius: 10px;
+}
+/* Анимация спиннера */
+.loading-container {
+    padding: 3rem 0;
+    text-align: center;
+    color: #6c757d;
+}

@@ -3,19 +3,18 @@ const router = express.Router();
 const News = require('../models/News');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// 1. Получить вакансии текущего пользователя (САМЫЙ ВАЖНЫЙ РОУТ)
+// Получить вакансии текущего пользователя (САМЫЙ ВАЖНЫЙ РОУТ)
 // Он должен идти ПЕРЕД /:id, чтобы Express не спутал "my-jobs" с ID вакансии
 router.get('/my-jobs', authMiddleware, async (req, res) => {
     try {
         const jobs = await News.find({ author: req.user.id, category: 'jobs' }).sort({ createdAt: -1 });
         res.json(jobs);
     } catch (err) {
-        console.error("Ошибка API My Jobs:", err);
         res.status(500).json({ message: 'Ошибка при получении вакансий' });
     }
 });
 
-// 2. Получить новости с пагинацией и фильтрацией
+// Получить новости с пагинацией и фильтрацией
 router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -34,39 +33,35 @@ router.get('/', async (req, res) => {
             News.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
         ]);
 
-        const totalPages = Math.ceil(totalItems / limit);
-        res.json({news, pagination: { totalItems, totalPages, currentPage: page, limit } });
+        res.json({ news, pagination: { totalItems, totalPages: Math.ceil(totalItems / limit), currentPage: page } });
     } catch (err) {
-        console.error("Ошибка API News:", err);
         res.status(500).json({ message: 'Ошибка сервера при получении новостей' });
     }
 });
 
-// 3. Получить одну новость по ID
+// Получить одну новость по ID
 router.get('/:id', async (req, res) => {
     try {
-        const newsItem = await News.findById(req.params.id);
-        if (!newsItem) {
+        const item = await News.findById(req.params.id);
+        if (!item) {
             return res.status(404).json({ message: 'Новость не найдена' });
         }
-        res.json(newsItem);
+        res.json(item);
     } catch (err) {
-        console.error("Ошибка API News Detail:", err);
-        if (err.kind === 'ObjectId') {
-            return res.status(400).json({ message: 'Некорректный ID новости' });
-        }
         res.status(500).json({ message: 'Ошибка сервера при получении новости' });
     }
 });
 
-// 4. Создать новую вакансию
+// Создать новую вакансию
 router.post('/', authMiddleware, async (req, res) => {
     try {
-        const {
-            title, content, category, imageUrl,
-            jobType, location, employment, salary,
-            contactName, contactEmail, contactPhone
-        } = req.body;
+        const { title, content, category, imageUrl, jobType, location, employment, salary, contactName, contactEmail, contactPhone } = req.body;
+        const isAdmin = req.user.role === 'admin';
+
+        // ПРОВЕРКА: Обычный пользователь может создавать ТОЛЬКО 'jobs'
+        if (category !== 'jobs' && !isAdmin) {
+            return res.status(403).json({ message: 'Обычные пользователи могут создавать только вакансии' });
+        }
 
         if (!title || !content || !category) {
             return res.status(400).json({ message: 'Заполните обязательные поля' });
@@ -98,18 +93,46 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// 5. Удалить свою вакансию
+// Редактировать (Автор или Админ)
+router.put('/:id', authMiddleware, async (req, res) => {
+    try {
+        const post = await News.findById(req.params.id);
+        if (!post) return res.status(404).json({ message: 'Запись не найдена' });
+
+        const isAuthor = post.author.toString() === req.user.id;
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isAuthor && !isAdmin) {
+            return res.status(403).json({ message: 'Нет прав на редактирование' });
+        }
+
+        // Защита: нельзя сменить категорию на новостную, если ты не админ
+        if (req.body.category && req.body.category !== 'jobs' && !isAdmin) {
+            return res.status(403).json({ message: 'Только администратор может использовать эту категорию' });
+        }
+
+        const updatePost = await News.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+        res.json(updatePost);
+    } catch (err) {
+        res.status(500).json({ message: 'Ошибка при обновлении' });
+    }
+});
+
+// Удалить (Автор или Админ)
 router.delete('/:id', authMiddleware, async (req,res) => {
     try {
         const post = await News.findById(req.params.id);
-        if (!post) return res.status(404).json({ message: 'Вакансия не найдена' });
+        if (!post) return res.status(404).json({ message: 'Запись не найдена' });
 
-        if (post.author.toString() !== req.user.id) {
+        const isAuthor = post.author.toString() === req.user.id;
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isAuthor && !isAdmin) {
             return res.status(403).json({ message: 'Нет прав на удаление' });
         }
 
         await News.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Вакансия удалена' });
+        res.json({ message: 'Запись удалена' });
     } catch (err) {
         res.status(500).json({ message: 'Ошибка при удалении' });
     }

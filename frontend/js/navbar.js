@@ -11,13 +11,13 @@ window.updateNavbar = function() {
             // Если пользователь авторизован, показываем его имя и кнопку выхода
             let navHtml = `
                 <span class="navbar-text me-3 d-none d-lg-inline">Привет, <strong>${user.username}</strong>!</span>
-                <a href="/user/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>
             `;
-            
 
             // Если роль пользователя - администратор, показываем ссылку на админ панель
             if (user.role === 'admin') {
-                navHtml += `<a href="/admin/index.html" class="btn btn-sm bh-btn-accent me-2">Админ</a>`;
+                navHtml += `<a href="/admin/users.html" class="btn btn-sm btn-dark me-2">Админ-панель</a>`;
+            } else {
+                navHtml += `<a href="/user/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>`;
             }
 
             navHtml += `<button id="logout-btn" class="btn btn-sm btn-outline-danger">Выйти</button>`;
