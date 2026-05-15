@@ -49,6 +49,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // Обработка кнопок "Назад к профилю" внутри секций
+    document.querySelectorAll('.back-to-profile').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const profileTab = document.querySelector('[data-target="profile-section"]');
+            if (profileTab) profileTab.click(); // Просто имитируем клик по первой вкладке меню
+        });
+    });
+
     // Загружаем данные профиля
     try {
         const response = await fetch('/api/auth/profile', {
@@ -214,7 +223,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (res.ok) {
-                    msg.textContent = 'Вакансия успешно создана!';
+                    const isUser = userInfo.role !== 'admin';
+                    msg.textContent = isUser 
+                        ? 'Вакансия отправлена на модерацию и появится в ленте после проверки!' 
+                        : 'Вакансия успешно опубликована!';
                     msg.className = 'alert alert-success mt-3';
                     msg.classList.remove('d-none');
                     setTimeout(() => {
@@ -223,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         addJobForm.reset();
                         msg.classList.add('d-none');
                         loadMyJobs();
-                    }, 1500);
+                    }, 3000); // Увеличил время, чтобы успели прочитать
                 } else {
                     const err = await res.json();
                     msg.textContent = err.message || 'Ошибка при создании';
@@ -394,14 +406,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
         document.getElementById('checklist-progress-bar').style.width = percent + '%';
         document.getElementById('checklist-progress-text').textContent = percent + '%';
-    }
-
-    // --- ВЫХОД ---
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = '/';
-        });
     }
 });

@@ -78,3 +78,13 @@
 #copyPasswordBtn:active {
     transform: scale(0.9);
 }
+
+.clickable-message {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.clickable-message:hover {
+    color: #007bff;
+    text-decoration: underline;
+}

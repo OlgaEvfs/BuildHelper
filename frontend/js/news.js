@@ -19,6 +19,7 @@ window.fetchNews = async function() {
         const news = data.news; 
 
         contentContainer.innerHTML = ''; 
+        itemsContainer.innerHTML = ''; // Очищаем список заголовков перед добавлением новых
 
         if (!news || news.length === 0) {
             contentContainer.innerHTML = `

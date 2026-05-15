@@ -37,15 +37,15 @@ body {
 }
 
 .navbar {
-    width: 95% !important;
-    margin: 0 auto !important;
+    width: 100% !important;
+    margin: 0 !important;
     background-color: var(--white) !important;
-    border-radius: 16px !important;
+    border-radius: 0 !important;
     box-shadow: 0 10px 30px var(--shadow-medium) !important;
     border: none !important;
-    padding: 8px 20px !important;
+    padding: 12px 0 !important;
     position: sticky !important;
-    top: 15px;
+    top: 0;
     z-index: 1050;
 }
 

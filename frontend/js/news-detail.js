@@ -85,8 +85,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange">Все новости</a></li>
+                        <ol class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item">
+                                <a href="/news.html" class="bh-text-orange text-decoration-none fw-bold">
+                                    <i class="fas fa-arrow-left me-2"></i> Назад к списку
+                                </a>
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">${news.title}</li>
                         </ol>
                     </nav>

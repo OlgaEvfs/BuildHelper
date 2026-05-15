@@ -124,6 +124,20 @@ router.get('/content', async (req, res) => {
     }
 });
 
+// @desc Изменить статус публикации (Одобрить/Снять)
+router.put('/content/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['pending', 'published'].includes(status)) {
+            return res.status(400).json({ message: 'Некорректный статус' });
+        }
+        await News.findByIdAndUpdate(req.params.id, { status });
+        res.json({ message: `Запись ${status === 'published' ? 'опубликована' : 'отправлена на модерацию'}` });
+    } catch (err) {
+        res.status(500).json({ message: 'Ошибка при обновлении статуса' });
+    }
+});
+
 // --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
 // @desc    Просмотр всех заявок
 router.get('/support', async (req, res) => {

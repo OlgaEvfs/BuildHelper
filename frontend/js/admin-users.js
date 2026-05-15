@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="small text-muted">${r.name}</div>
                 </td>
                 <td>
-                    <div class="small text-truncate cursor-pointer" style="max-width: 300px;" onclick="viewSupportDetail('${r._id}')">
+                    <div class="small text-truncate clickable-message" style="max-width: 300px;" onclick="viewSupportDetail('${r._id}')">
                         ${r.message}
                     </div>
                 </td>
@@ -275,10 +275,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         container.innerHTML = items.map(item => `
-            <tr>
+            <tr class="${item.status === 'pending' ? 'table-warning' : ''}">
                 <td class="ps-4">
                     <div class="fw-bold text-truncate" style="max-width: 250px;">${item.title}</div>
-                    <span class="badge ${item.category === 'news' ? 'bg-info' : 'bg-warning text-dark'}">${item.category === 'news' ? 'Новость' : 'Вакансия'}</span>
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="badge ${item.category === 'news' ? 'bg-info' : 'bg-warning text-dark'}">${item.category === 'news' ? 'Новость' : 'Вакансия'}</span>
+                        <span class="badge ${item.status === 'published' ? 'bg-success' : 'bg-secondary'} small" style="font-size: 0.65rem;">
+                            ${item.status === 'published' ? 'Опубликовано' : 'Ожидает'}
+                        </span>
+                    </div>
                 </td>
                 <td>
                     <div class="small">${item.author ? item.author.username : '<span class="text-danger italic">Удален</span>'}</div>
@@ -287,6 +292,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="small text-muted">${new Date(item.createdAt).toLocaleDateString()}</td>
                 <td class="text-end pe-4">
                     <div class="btn-group btn-group-sm">
+                        ${item.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="approvePost('${item._id}')" title="Одобрить и опубликовать">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        ` : `
+                            <button class="btn btn-outline-secondary" onclick="unpublishPost('${item._id}')" title="Снять с публикации">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        `}
                         <a href="/news-detail.html?id=${item._id}" class="btn btn-outline-primary" target="_blank" title="Просмотр">
                             <i class="fas fa-eye"></i>
                         </a>
@@ -298,6 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
             </tr>
         `).join('');
     }
+
+    window.approvePost = async (id) => {
+        try {
+            const res = await fetch(`${API_URL}/content/${id}/status`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: 'published' })
+            });
+            if (res.ok) fetchContent();
+        } catch (err) { alert('Ошибка'); }
+    };
+
+    window.unpublishPost = async (id) => {
+        if (!confirm('Снять запись с публикации? Она пропадет из общей ленты.')) return;
+        try {
+            const res = await fetch(`${API_URL}/content/${id}/status`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: 'pending' })
+            });
+            if (res.ok) fetchContent();
+        } catch (err) { alert('Ошибка'); }
+    };
 
     window.deletePost = async (id) => {
         if (!confirm('Удалить эту запись безвозвратно?')) return;

@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
         const category = req.query.category;
         const jobType = req.query.jobType;
 
-        let query = {};
+        let query = { status: 'published' }; // По умолчанию показываем только опубликованное
         if (category && category !== 'all') query.category = category;
         if (jobType && jobType !== 'all') query.jobType = jobType;
 
@@ -83,7 +83,8 @@ router.post('/', authMiddleware, async (req, res) => {
             author: req.user.id,
             title, content, category, imageUrl: finalImageUrl,
             jobType, location, employment, salary,
-            contactName, contactEmail, contactPhone
+            contactName, contactEmail, contactPhone,
+            status: isAdmin ? 'published' : 'pending' // Админ публикует сразу, юзер - на модерацию
         });
 
         await newPost.save();
