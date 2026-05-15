@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ОБЩИЕ ФУНКЦИИ ---
-
     async function fetchStats() {
         try {
             const res = await fetch(`${API_URL}/stats`, {
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ---
-
     window.fetchUsers = async () => {
         try {
             const res = await fetch(`${API_URL}/users`, {
@@ -75,10 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="text-end">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-warning" onclick="toggleStatus('${u._id}', '${u.status}')" title="Бан/Разбан" ${u.role === 'admin' || isMe ? 'disabled' : ''}>
+                        <button class="btn btn-outline-warning" onclick="toggleStatus(this, '${u._id}', '${u.status}')" title="Бан/Разбан" ${u.role === 'admin' || isMe ? 'disabled' : ''}>
                             <i class="fas fa-ban"></i>
                         </button>
-                        <button class="btn btn-outline-info" onclick="resetPassword('${u._id}')" title="Сброс пароля">
+                        <button class="btn btn-outline-info" onclick="resetPassword(this, '${u._id}')" title="Сброс пароля">
                             <i class="fas fa-key"></i>
                         </button>
                         <button class="btn btn-outline-danger" onclick="openDeleteModal('${u._id}', '${u.username}')" title="Удалить" ${u.role === 'admin' || isMe ? 'disabled' : ''}>
@@ -90,7 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `}).join('');
     }
 
-    window.toggleStatus = async (id, currentStatus) => {
+    window.toggleStatus = async (btn, id, currentStatus) => {
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         const newStatus = currentStatus === 'active' ? 'banned' : 'active';
         try {
             const res = await fetch(`${API_URL}/users/${id}/status`, {
@@ -102,11 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: newStatus })
             });
             if (res.ok) fetchUsers();
-        } catch (err) { alert('Ошибка сети'); }
+            else { btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { showNotification('Ошибка сети', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
-    window.resetPassword = async (id) => {
+    window.resetPassword = async (btn, id) => {
         if (!confirm('Сбросить пароль и выдать временный?')) return;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`${API_URL}/users/${id}/reset-password`, {
                 method: 'PUT',
@@ -117,7 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('tempPasswordInput').textContent = data.tempPassword;
                 passwordModal.show();
             }
-        } catch (err) { alert('Ошибка сети'); }
+        } catch (err) { showNotification('Ошибка сети', 'danger'); }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
     };
 
     window.openDeleteModal = (id, name) => {
@@ -128,6 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confirmDeleteBtn.addEventListener('click', async () => {
         if (!userToDelete) return;
+        const originalHtml = confirmDeleteBtn.innerHTML;
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Удаление...';
         try {
             const res = await fetch(`${API_URL}/users/${userToDelete}`, {
                 method: 'DELETE',
@@ -138,12 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchUsers();
                 fetchStats();
             }
-        } catch (err) { alert('Ошибка при удалении'); }
+        } catch (err) { showNotification('Ошибка при удалении', 'danger'); }
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.innerHTML = originalHtml;
     });
 
     // --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
-
-    let allSupportRequests = []; // Храним локально для быстрого доступа
+    let allSupportRequests = []; 
 
     async function fetchSupport() {
         try {
@@ -183,10 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn btn-outline-primary" onclick="viewSupportDetail('${r._id}')" title="Просмотр">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-outline-success" onclick="toggleSupportStatus('${r._id}', '${r.status}')" title="${r.status === 'open' ? 'Отметить решенной' : 'Вернуть в работу'}">
+                        <button class="btn btn-outline-success" onclick="toggleSupportStatus(this, '${r._id}', '${r.status}')" title="${r.status === 'open' ? 'Отметить решенной' : 'Вернуть в работу'}">
                             <i class="fas ${r.status === 'open' ? 'fa-check' : 'fa-undo'}"></i>
                         </button>
-                        <button class="btn btn-outline-danger" onclick="deleteSupport('${r._id}')" title="Удалить навсегда">
+                        <button class="btn btn-outline-danger" onclick="deleteSupport(this, '${r._id}')" title="Удалить навсегда">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -198,9 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.viewSupportDetail = (id) => {
         const req = allSupportRequests.find(r => r._id === id);
         if (!req) return;
-        
         currentSupportRequest = req;
-        
         document.getElementById('supportViewSubject').textContent = req.subject || 'Без темы';
         document.getElementById('supportViewName').textContent = req.name;
         document.getElementById('supportViewEmail').textContent = req.email;
@@ -215,11 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
             statusBtn.textContent = 'Вернуть в работу';
             statusBtn.className = 'btn btn-warning';
         }
-        
         supportViewModal.show();
     };
 
-    window.toggleSupportStatus = async (id, currentStatus) => {
+    window.toggleSupportStatus = async (btn, id, currentStatus) => {
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         const newStatus = currentStatus === 'open' ? 'resolved' : 'open';
         try {
             const res = await fetch(`${API_URL}/support/${id}/status`, {
@@ -231,33 +242,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: newStatus })
             });
             if (res.ok) {
-                if (currentSupportRequest && currentSupportRequest._id === id) {
-                    supportViewModal.hide();
-                }
+                if (currentSupportRequest && currentSupportRequest._id === id) supportViewModal.hide();
                 fetchSupport();
             }
-        } catch (err) { alert('Ошибка при обновлении статуса'); }
+        } catch (err) { showNotification('Ошибка при обновлении статуса', 'danger'); }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
     };
 
-    window.deleteSupport = async (id) => {
-        if (!confirm('Вы уверены, что хотите удалить эту заявку безвозвратно?')) return;
+    window.deleteSupport = async (btn, id) => {
+        if (!confirm('Вы уверены?')) return;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`${API_URL}/support/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
-                if (currentSupportRequest && currentSupportRequest._id === id) {
-                    supportViewModal.hide();
-                }
+                if (currentSupportRequest && currentSupportRequest._id === id) supportViewModal.hide();
                 fetchSupport();
                 fetchStats();
             }
-        } catch (err) { alert('Ошибка при удалении заявки'); }
+        } catch (err) { showNotification('Ошибка при удалении заявки', 'danger'); }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
     };
 
     // --- УПРАВЛЕНИЕ КОНТЕНТОМ ---
-
     async function fetchContent() {
         try {
             const res = await fetch(`${API_URL}/content`, {
@@ -293,18 +306,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="text-end pe-4">
                     <div class="btn-group btn-group-sm">
                         ${item.status === 'pending' ? `
-                            <button class="btn btn-success" onclick="approvePost('${item._id}')" title="Одобрить и опубликовать">
+                            <button class="btn btn-success" onclick="approvePost(this, '${item._id}')" title="Одобрить и опубликовать">
                                 <i class="fas fa-check"></i>
                             </button>
                         ` : `
-                            <button class="btn btn-outline-secondary" onclick="unpublishPost('${item._id}')" title="Снять с публикации">
+                            <button class="btn btn-outline-secondary" onclick="unpublishPost(this, '${item._id}')" title="Снять с публикации">
                                 <i class="fas fa-undo"></i>
                             </button>
                         `}
                         <a href="/news-detail.html?id=${item._id}" class="btn btn-outline-primary" target="_blank" title="Просмотр">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <button class="btn btn-outline-danger" onclick="deletePost('${item._id}')" title="Удалить">
+                        <button class="btn btn-outline-danger" onclick="deletePost(this, '${item._id}')" title="Удалить">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -313,7 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    window.approvePost = async (id) => {
+    window.approvePost = async (btn, id) => {
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`${API_URL}/content/${id}/status`, {
                 method: 'PUT',
@@ -324,11 +340,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'published' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { alert('Ошибка'); }
+        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
-    window.unpublishPost = async (id) => {
-        if (!confirm('Снять запись с публикации? Она пропадет из общей ленты.')) return;
+    window.unpublishPost = async (btn, id) => {
+        if (!confirm('Снять с публикации?')) return;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`${API_URL}/content/${id}/status`, {
                 method: 'PUT',
@@ -339,11 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'pending' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { alert('Ошибка'); }
+        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
-    window.deletePost = async (id) => {
-        if (!confirm('Удалить эту запись безвозвратно?')) return;
+    window.deletePost = async (btn, id) => {
+        if (!confirm('Удалить навсегда?')) return;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`/api/news/${id}`, {
                 method: 'DELETE',
@@ -353,30 +375,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchContent();
                 fetchStats();
             }
-        } catch (err) { alert('Ошибка при удалении'); }
+        } catch (err) { showNotification('Ошибка при удалении', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     // Слушатели для кнопок в модалке просмотра
     document.getElementById('supportStatusBtn').addEventListener('click', () => {
         if (currentSupportRequest) {
-            toggleSupportStatus(currentSupportRequest._id, currentSupportRequest.status);
+            toggleSupportStatus(supportStatusBtn, currentSupportRequest._id, currentSupportRequest.status);
         }
     });
 
     document.getElementById('supportDeleteBtn').addEventListener('click', () => {
         if (currentSupportRequest) {
-            deleteSupport(currentSupportRequest._id);
+            deleteSupport(supportDeleteBtn, currentSupportRequest._id);
         }
     });
 
     // --- ИНИЦИАЛИЗАЦИЯ ---
-
-    // Загружаем данные при переключении вкладок
     document.getElementById('support-tab').addEventListener('click', fetchSupport);
     document.getElementById('users-tab').addEventListener('click', fetchUsers);
     document.getElementById('content-tab').addEventListener('click', fetchContent);
 
-    // Копирование пароля
     copyBtn.addEventListener('click', () => {
         const passwordText = document.getElementById('tempPasswordInput').textContent;
         navigator.clipboard.writeText(passwordText).then(() => {
@@ -389,8 +408,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     });
+// Стартовая загрузка
+fetchStats();
+fetchUsers();
+fetchSupport();
+fetchContent();
 
-    // Стартовая загрузка
-    fetchStats();
-    fetchUsers();
+// Автоматический переход к вкладке, если в URL есть #hash
+const hash = window.location.hash;
+if (hash) {
+    const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+    if (tabTrigger) {
+        const tab = new bootstrap.Tab(tabTrigger);
+        tab.show();
+        // Также вызываем загрузку для нужной вкладки
+        if (hash === '#support-section') fetchSupport();
+        if (hash === '#content-section') fetchContent();
+    }
+}
 });

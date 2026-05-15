@@ -90,7 +90,7 @@ router.post('/', authMiddleware, async (req, res) => {
         await newPost.save();
         res.status(201).json(newPost);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: 'Ошибка при сохранении данных' });
     }
 });
 

@@ -86,6 +86,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         changePasswordForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const passwordMessage = document.getElementById('password-message');
+            const submitBtn = changePasswordForm.querySelector('button[type="submit"]');
+            
+            // Блокируем кнопку
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Обновление...';
+
             const oldPassword = document.getElementById('old-password').value;
             const newPassword = document.getElementById('new-password').value;
 
@@ -123,6 +130,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (error) {
                 passwordMessage.textContent = 'Ошибка соединения с сервером';
                 passwordMessage.classList.add('alert-danger');
+            } finally {
+                // Возвращаем кнопку
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }
@@ -198,6 +209,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         addJobForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = document.getElementById('job-form-message');
+            const submitBtn = addJobForm.querySelector('button[type="submit"]');
+            
+            // Блокируем кнопку
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Публикация...';
             
             const jobData = {
                 title: document.getElementById('job-title').value,
@@ -234,18 +251,27 @@ document.addEventListener('DOMContentLoaded', async () => {
                         modal.hide();
                         addJobForm.reset();
                         msg.classList.add('d-none');
+                        // Возвращаем кнопку в исходное состояние
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
                         loadMyJobs();
-                    }, 3000); // Увеличил время, чтобы успели прочитать
+                    }, 3000);
                 } else {
                     const err = await res.json();
                     msg.textContent = err.message || 'Ошибка при создании';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
+                    // Возвращаем кнопку
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                 }
             } catch (error) {
                 msg.textContent = 'Ошибка сети';
                 msg.className = 'alert alert-danger mt-3';
                 msg.classList.remove('d-none');
+                // Возвращаем кнопку
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }
@@ -290,23 +316,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('');
 
             document.querySelectorAll('.delete-calc-btn').forEach(btn => {
-                btn.onclick = () => deleteCalculation(btn.getAttribute('data-id'));
+                btn.onclick = () => deleteCalculation(btn, btn.getAttribute('data-id'));
             });
         } catch (err) {
             list.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger">Ошибка загрузки данных.</td></tr>';
         }
     }
 
-    async function deleteCalculation(id) {
+    async function deleteCalculation(btn, id) {
         if (!confirm('Удалить этот расчет из истории?')) return;
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
         try {
             const res = await fetch(`/api/calculations/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (res.ok) loadUserCalculations();
+            if (res.ok) {
+                showNotification('Расчет удален', 'success');
+                loadUserCalculations();
+            } else {
+                showNotification('Не удалось удалить расчет.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
         } catch (err) {
-            alert('Не удалось удалить расчет.');
+            showNotification('Ошибка удаления', 'danger');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
         }
     }
 
@@ -396,9 +434,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            showNotification('Задача удалена', 'success');
             loadUserChecklist();
         } catch (err) {
-            alert('Ошибка удаления');
+            showNotification('Ошибка удаления', 'danger');
         }
     }
 

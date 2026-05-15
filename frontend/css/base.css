@@ -36,6 +36,23 @@ body {
     color: var(--text-main); 
 }
 
+/* Глобальное выравнивание футера */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* Исправление прыжка при открытии модалок */
+.modal-open {
+    padding-right: 0 !important;
+    overflow: auto;
+}
+
 .navbar {
     width: 100% !important;
     margin: 0 !important;
@@ -342,7 +359,20 @@ body {
     color: var(--white);
 }
 
-.btn-up svg {
-    width: 24px;
-    height: 24px;
+.img-wrapper {
+    background-color: #f0f0f0; 
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.img-wrapper img {
+    transition: opacity 0.5s ease;
+    opacity: 0;
+}
+
+.img-wrapper img.loaded {
+    opacity: 1;
 }

@@ -62,7 +62,7 @@ async function loadPlanFromServer() {
 async function savePlanToServer() {
     const token = localStorage.getItem('token');
     if (!token) {
-        alert('Пожалуйста, войдите в систему, чтобы сохранить проект.');
+        showNotification('Пожалуйста, войдите в систему, чтобы сохранить проект.', 'warning');
         return;
     }
 
@@ -77,13 +77,13 @@ async function savePlanToServer() {
         });
 
         if (response.ok) {
-            alert('Проект успешно сохранен в вашем профиле!');
+            showNotification('Проект успешно сохранен в вашем профиле!', 'success');
         } else {
-            alert('Ошибка при сохранении проекта.');
+            showNotification('Ошибка при сохранении проекта.', 'danger');
         }
     } catch (err) {
         console.error('Ошибка сохранения:', err);
-        alert('Ошибка связи с сервером.');
+        showNotification('Ошибка связи с сервером.', 'danger');
     }
 }
 
@@ -204,7 +204,7 @@ function applySingleRoomToCalculators() {
     sessionStorage.setItem('lastNetWallArea', wallArea);
     sessionStorage.setItem('lastFloorArea', floorArea);
     sessionStorage.setItem('lastPerimeter', perimeter);
-    alert(`Размеры комнаты "${selectedObject.name}" отправлены в калькуляторы!`);
+    showNotification(`Размеры комнаты "${selectedObject.name}" отправлены в калькуляторы!`, 'success');
 }
 
 function addOpening(type) {
@@ -403,7 +403,7 @@ function applyToCalculators() {
     sessionStorage.setItem('lastNetWallArea', totalNetWallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', totalFloorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', totalPerimeter.toFixed(2));
-    alert('Данные всей квартиры сохранены!');
+    showNotification('Данные всей квартиры сохранены!', 'success');
 }
 
 function updateInfo() {

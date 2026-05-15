@@ -125,7 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
         addJobForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = document.getElementById('job-form-message');
-               
+            const submitBtn = addJobForm.querySelector('button[type="submit"]');
+            
+            // Блокируем кнопку
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Публикация...';
+            
+            const email = document.getElementById('job-contact-email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                msg.textContent = 'Пожалуйста, введите корректный email адрес';
+                msg.className = 'alert alert-danger mt-3';
+                msg.classList.remove('d-none');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                return;
+            }
+            
             const jobData = {
                 title: document.getElementById('job-title').value,
                 category: 'jobs',
@@ -150,24 +167,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (res.ok) {
-                    msg.textContent = 'Вакансия успешно опубликована!';
+                    msg.textContent = 'Вакансия успешно отправлена на модерацию!';
                     msg.className = 'alert alert-success mt-3';
+                    msg.classList.remove('d-none');
                     setTimeout(() => {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('addJobModal'));
-                        modal.hide();
-                        addJobForm.reset();
-                        msg.classList.add('d-none');
-                        // Перезагружаем страницу, чтобы увидеть новую вакансию в списке
                         window.location.reload();
                     }, 1500);
                 } else {
                     const err = await res.json();
                     msg.textContent = err.message || 'Ошибка при создании';
                     msg.className = 'alert alert-danger mt-3';
+                    msg.classList.remove('d-none');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                 }
             } catch (error) {
                 msg.textContent = 'Ошибка сети';
                 msg.className = 'alert alert-danger mt-3';
+                msg.classList.remove('d-none');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }

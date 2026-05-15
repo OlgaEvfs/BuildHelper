@@ -4,7 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateNavbar();
     }
 
-    // 2. Загружаем новости
+    // 2. Глобальная функция уведомлений
+    window.showNotification = (message, type = 'success') => {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type} shadow-sm position-fixed top-0 end-0 m-3 z-index-1060`;
+        toast.style.minWidth = '250px';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    };
+
+    // 3. Загружаем новости
     if (typeof fetchNews === 'function') {
         fetchNews();
     }

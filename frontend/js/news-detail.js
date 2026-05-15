@@ -85,12 +85,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <nav aria-label="breadcrumb" class="mb-4">
-                        <ol class="breadcrumb bg-transparent p-0">
-                            <li class="breadcrumb-item">
-                                <a href="/news.html" class="bh-text-orange text-decoration-none fw-bold">
-                                    <i class="fas fa-arrow-left me-2"></i> Назад к списку
+                        <div class="d-flex justify-content-end mb-3">
+                            ${userInfo.role === 'admin' ? `
+                                <a href="/admin.html#content-section" class="btn btn-sm btn-outline-dark">
+                                    <i class="fas fa-shield-alt me-2"></i> Вернуться к модерации
                                 </a>
-                            </li>
+                            ` : ''}
+                        </div>
+                        <ol class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">Все новости</a></li>
                             <li class="breadcrumb-item active" aria-current="page">${news.title}</li>
                         </ol>
                     </nav>
@@ -102,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <time datetime="${news.createdAt}">${date}</time>
                         </div>
                         <div class="img-wrapper mb-5 shadow-sm rounded-4 overflow-hidden">
-                            <img src="${news.imageUrl}" class="img-fluid" alt="${news.title}">
+                            <img src="${news.imageUrl}" class="img-fluid" alt="${news.title}" style="opacity: 1 !important;">
                         </div>
                         
                         ${jobDetailsHtml}

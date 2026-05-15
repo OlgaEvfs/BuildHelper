@@ -1,12 +1,16 @@
- /* Бейджи ролей и статусов */
-.admin-badge {
-    background-color: #6c757d;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+ /* Прижимаем футер к низу */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+.admin-card {
+    min-height: 400px;
 }
 
 .status-active {

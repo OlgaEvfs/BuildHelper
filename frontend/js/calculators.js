@@ -444,15 +444,19 @@ window.calculateFloor = function() {
 
 function getSaveButtonHtml(calcName, resultValue) {
     if (localStorage.getItem('userInfo')) {
-        return `<button class="btn btn-sm btn-success mt-2 w-100" onclick="saveCalculation('${calcName}', '${resultValue}')">Сохранить в профиль</button>`;
+        return `<button class="btn btn-sm btn-success mt-2 w-100" onclick="saveCalculation(this, '${calcName}', '${resultValue}')">Сохранить в профиль</button>`;
     }
     return '';
 }
 
-window.saveCalculation = async function(calcName, resultValue) {
+window.saveCalculation = async function(btn, calcName, resultValue) {
     const userData = localStorage.getItem('userInfo');
-    if (!userData) return alert('Войдите в систему.');
+    if (!userData) return showNotification('Войдите в систему.', 'warning');
     const { token } = JSON.parse(userData);
+
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Сохранение...';
 
     try {
         const response = await fetch('/api/calculations', {
@@ -460,8 +464,21 @@ window.saveCalculation = async function(calcName, resultValue) {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ type: calcName, result: resultValue })
         });
-        if (response.ok) alert(`Расчет "${calcName}" сохранен!`);
+        if (response.ok) {
+            showNotification(`Расчет "${calcName}" сохранен!`, 'success');
+            btn.innerHTML = 'Сохранено!';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        } else {
+            showNotification('Ошибка связи с сервером.', 'danger');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
     } catch (err) {
-        alert('Ошибка связи с сервером.');
+        showNotification('Ошибка связи с сервером.', 'danger');
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
     }
 };
