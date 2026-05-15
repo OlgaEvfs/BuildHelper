@@ -15,9 +15,9 @@ window.updateNavbar = function() {
 
             // Если роль пользователя - администратор, показываем ссылку на админ панель
             if (user.role === 'admin') {
-                navHtml += `<a href="/admin/users.html" class="btn btn-sm btn-dark me-2">Админ-панель</a>`;
+                navHtml += `<a href="/admin.html" class="btn btn-sm btn-dark me-2">Админ-панель</a>`;
             } else {
-                navHtml += `<a href="/user/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>`;
+                navHtml += `<a href="/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>`;
             }
 
             navHtml += `<button id="logout-btn" class="btn btn-sm btn-outline-danger">Выйти</button>`;

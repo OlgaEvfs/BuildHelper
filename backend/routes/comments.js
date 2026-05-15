@@ -43,7 +43,7 @@ router.post('/', authMiddleware, async (req, res) => {
         const savedComment = await newComment.save();
 
         // Сразу загружаем данные автора, чтобы вернуть фронтенду красивый ответ
-        const populatedComment = await Comment.findById(savedComment._id).populate('author', 'username');
+        const populatedComment = await Comment.findById(savedComment._id).populate('author', 'username role');
 
         res.status(201).json(populatedComment);
     } catch (err) {
@@ -56,7 +56,7 @@ router.post('/', authMiddleware, async (req, res) => {
 router.get('/:newsId', async (req, res) => {
     try {
         const comments = await Comment.find({ news: req.params.newsId })
-            .populate('author', 'username') // Подтягиваем имя автора из модели User
+            .populate('author', 'username role') // Подтягиваем имя и роль автора из модели User
             .sort({ createdAt: -1 }); // Сначала новые
         res.json(comments);
     } catch (err) {

@@ -3,8 +3,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // если токена нет отправляем на логин
     if (!token) {
-        window.location.href = '../login.html';
+        window.location.href = 'login.html';
         return;
+    }
+
+    // Проверка необходимости смены пароля (временный пароль от админа)
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    if (userInfo.resetPasswordRequired) {
+        const resetAlert = document.getElementById('reset-password-alert');
+        if (resetAlert) {
+            resetAlert.classList.remove('d-none');
+        }
     }
 
     //------ ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ---------
@@ -39,7 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     });
-    //------------------------------------------------------
 
     // Загружаем данные профиля
     try {
@@ -57,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('user-initials').textContent = user.username[0].toUpperCase();
         } else {
             localStorage.clear();
-            window.location.href = '../login.html';
+            window.location.href = 'login.html';
         }
     } catch (error) {
         console.error('Ошибка загрузки профиля:', error);
@@ -89,6 +97,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     passwordMessage.textContent = 'Пароль успешно изменен!';
                     passwordMessage.classList.add('alert-success');
                     changePasswordForm.reset();
+
+                    // Обновляем данные в localStorage, чтобы убрать уведомление
+                    const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                    currentUser.resetPasswordRequired = false;
+                    localStorage.setItem('userInfo', JSON.stringify(currentUser));
+
+                    // Скрываем само уведомление
+                    const resetAlert = document.getElementById('reset-password-alert');
+                    if (resetAlert) resetAlert.classList.add('d-none');
+
                 } else {
                     passwordMessage.textContent = data.message || 'Ошибка смены пароля';
                     passwordMessage.classList.add('alert-danger');
@@ -139,7 +157,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="/news-detail.html?id=${job._id}" class="btn btn-sm btn-outline-primary">Просмотр</a>
                             <button class="btn btn-sm btn-outline-danger delete-job-btn" data-id="${job._id}">Удалить</button>
                         </div>
                     </div>
@@ -283,7 +300,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С ЧЕК-ЛИСТОМ ------------
 
-    // Загрузка задач с сервера
     async function loadUserChecklist() {
         const container = document.getElementById('user-checklist-container');
         try {
@@ -297,7 +313,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Рендерим список
             container.innerHTML = tasks.map(task => `
                 <div class="d-flex align-items-center justify-content-between p-2 task-item">
                     <label class="check-item">
@@ -310,16 +325,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `).join('');
 
-            // Считаем прогресс
             const completedCount = tasks.filter(t => t.completed).length;
             updateChecklistProgress(completedCount, tasks.length);
 
-            // Вешаем события на чекбоксы
             document.querySelectorAll('.task-checkbox').forEach(cb => {
                 cb.onchange = () => toggleTaskStatus(cb.getAttribute('data-id'));
             });
 
-            // Вешаем события на удаление
             document.querySelectorAll('.delete-task-btn').forEach(btn => {
                 btn.onclick = () => deleteTask(btn.getAttribute('data-id'));
             });
@@ -328,14 +340,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Добавление новой задачи
     const addTaskForm = document.getElementById('add-task-form');
     if (addTaskForm) {
         addTaskForm.onsubmit = async (e) => {
             e.preventDefault();
             const input = document.getElementById('task-input');
             const text = input.value.trim();
-
             try {
                 const res = await fetch('/api/checklist', {
                     method: 'POST',
@@ -345,10 +355,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     },
                     body: JSON.stringify({ text })
                 });
-
                 if (res.ok) {
-                    input.value = ''; // очищаем поле
-                    loadUserChecklist(); // перегружаем список
+                    input.value = '';
+                    loadUserChecklist();
                 }
             } catch (err) {
                 alert('Не удалось добавить задачу');
@@ -356,20 +365,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // Переключение статуса задачи
     async function toggleTaskStatus(id) {
         try {
             await fetch(`/api/checklist/${id}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            loadUserChecklist(); // обновляем UI
+            loadUserChecklist();
         } catch (err) {
             alert('Ошибка обновления');
         }
     }
 
-    // Удаление задачи
     async function deleteTask(id) {
         if (!confirm('Удалить задачу?')) return;
         try {
@@ -383,13 +390,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Обновление прогресс-бара
     function updateChecklistProgress(completed, total) {
         const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
         document.getElementById('checklist-progress-bar').style.width = percent + '%';
         document.getElementById('checklist-progress-text').textContent = percent + '%';
     }
-    //----------------------------------------------------------------------------------
 
     // --- ВЫХОД ---
     const logoutBtn = document.getElementById('logout-btn');

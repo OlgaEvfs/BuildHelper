@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
 // Хешируем пароль перед сохранением
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        next(); // если пароль не изменился, переходим к следующему middleware
+        return next(); // если пароль не изменился, переходим к следующему middleware
     }
     const salt = await bcrypt.genSalt(10); // генерируем соль
     this.password = await bcrypt.hash(this.password, salt); // хешируем пароль

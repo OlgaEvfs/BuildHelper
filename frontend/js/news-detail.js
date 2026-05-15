@@ -137,17 +137,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             commentsList.innerHTML = comments.map(c => {
-                // Проверяем автор это или админ
-                const isAuthor = c.author && c.author._id === userInfo._id;
-                const isAdmin = userInfo.role === 'admin';
-                const showDelete = isAuthor || isAdmin;
+                // Проверяем автор это или админ (для кнопки удаления)
+                const isMyComment = c.author && c.author._id === userInfo._id;
+                const iAmAdmin = userInfo.role === 'admin';
+                const showDelete = isMyComment || iAmAdmin;
+                
+                // Проверяем, является ли АВТОР комментария админом (для значка)
+                const authorIsAdmin = c.author && c.author.role === 'admin';
 
                 return `
                     <div class="comment-item mb-4 shadow-sm border-0">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
                                 <span class="comment-author">${c.author ? c.author.username : 'Аноним'}</span>
-                                ${isAdmin ? '<span class="badge bg-secondary ms-2" style="font-size: 0.6rem;">Admin</span>' : ''}
+                                ${authorIsAdmin ? '<span class="badge bg-dark ms-2" style="font-size: 0.6rem;">Admin</span>' : ''}
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>

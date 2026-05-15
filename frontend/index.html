@@ -377,6 +377,7 @@
                         <li class="mb-2"><a href="#calculators" class="text-secondary text-decoration-none hover-white">Калькуляторы</a></li>
                         <li class="mb-2"><a href="#news" class="text-secondary text-decoration-none hover-white">Новости</a></li>
                         <li class="mb-2"><a href="#checklist" class="text-secondary text-decoration-none hover-white">Чек-лист ремонта</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none hover-white" data-bs-toggle="modal" data-bs-target="#supportModal">Поддержка</a></li>
                     </ul>
                 </div>
 
@@ -408,6 +409,59 @@
         </svg>
     </button>
 
+    <!-- Модальное окно поддержки -->
+    <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bh-bg-dark text-white border-0">
+                    <h5 class="modal-title fw-bold" id="supportModalLabel">
+                        <i class="fas fa-headset me-2 text-primary"></i>Служба поддержки
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-4">Возникли вопросы или проблемы? Опишите их, и наш администратор свяжется с вами по электронной почте.</p>
+                    
+                    <form id="support-form">
+                        <div class="mb-3">
+                            <label for="support-name" class="form-label small fw-bold text-uppercase">Ваше имя</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                                <input type="text" id="support-name" class="form-control bg-light border-start-0" required placeholder="Иван Иванов">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-email" class="form-label small fw-bold text-uppercase">Email для связи</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                                <input type="email" id="support-email" class="form-control bg-light border-start-0" required placeholder="example@mail.ru">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-subject" class="form-label small fw-bold text-uppercase">Тема обращения</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-tag text-muted"></i></span>
+                                <input type="text" id="support-subject" class="form-control bg-light border-start-0" required placeholder="Напр: Проблема с калькулятором">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-message" class="form-label small fw-bold text-uppercase">Сообщение</label>
+                            <textarea id="support-message" class="form-control bg-light" rows="4" required placeholder="Опишите вашу проблему максимально подробно..."></textarea>
+                        </div>
+                        
+                        <div id="support-form-message" class="alert d-none mt-3"></div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn bh-btn-primary w-100 py-3 fw-bold text-uppercase letter-spacing-1">
+                                Отправить запрос <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Универсальное модальное окно для калькуляторов -->
     <div class="modal fade" id="calcModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -428,5 +482,6 @@
     <script src="js/checklist.js"></script>
     <script src="js/calculators.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/support.js"></script>
 </body>
 </html>

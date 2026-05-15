@@ -12,6 +12,26 @@ const admin = require('../middleware/adminMiddleware');
 router.use(protect); // Все роуты ниже требуют аутентификации
 router.use(admin); // Все роуты ниже требуют прав администратора
 
+// -------- ОБЩАЯ СТАТИСТИКА (DASHBOARD) --------
+
+// @desc Получить статистику для дашборда
+router.get('/stats', async (req, res) => {
+    try {
+        const [userCount, newsCount, supportCount] = await Promise.all([
+            User.countDocuments(),
+            News.countDocuments(),
+            SupportRequest.countDocuments()
+        ]);
+        res.json({
+            users: userCount,
+            news: newsCount,
+            support: supportCount
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Ошибка при получении статистики' });
+    }
+});
+
 // -------- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ --------
 
 // @desc Получить список всех пользователей
@@ -28,15 +48,23 @@ router.get('/users', async (req, res) => {
 router.put('/users/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
-        const user = await User.findById(req.params.id);
+        const userId = req.params.id;
 
+        // Сначала проверим, не админ ли это
+        const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
         if (user.role === 'admin') return res.status(400).json({ message: 'Нельзя забанить администратора' });
 
-        user.status = status;
-        await user.save();
-        res.json({ message: `Статус изменен на ${status}`, user });
+        // Используем findByIdAndUpdate вместо .save(), чтобы избежать проблем с валидацией других полей
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { status: status },
+            { returnDocument: 'after', runValidators: true }
+        ).select('-password');
+
+        res.json({ message: `Статус изменен на ${status}`, user: updatedUser });
     } catch (err) {
+        console.error('Ошибка при смене статуса:', err);
         res.status(500).json({ message: 'Ошибка при смене статуса' });
     }
 });
@@ -82,6 +110,20 @@ router.delete('/users/:id', async (req, res) => {
     }
 });
 
+// -------- УПРАВЛЕНИЕ КОНТЕНТОМ (НОВОСТИ И ВАКАНСИИ) --------
+
+// @desc Получить все новости и вакансии
+router.get('/content', async (req, res) => {
+    try {
+        const content = await News.find({})
+            .populate('author', 'username email')
+            .sort({ createdAt: -1 });
+        res.json(content);
+    } catch (error) {
+        res.status(500).json({ message: 'Ошибка при получении контента' });
+    }
+});
+
 // --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
 // @desc    Просмотр всех заявок
 router.get('/support', async (req, res) => {
@@ -100,6 +142,25 @@ router.delete('/support/:id', async (req, res) => {
         res.json({ message: 'Заявка удалена' });
     } catch (err) {
         res.status(500).json({ message: 'Ошибка при удалении заявки' });
+    }
+});
+
+// @desc    Изменить статус заявки (open/resolved)
+router.put('/support/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['open', 'resolved'].includes(status)) {
+            return res.status(400).json({ message: 'Некорректный статус' });
+        }
+        const request = await SupportRequest.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+        if (!request) return res.status(404).json({ message: 'Заявка не найдена' });
+        res.json({ message: 'Статус обновлен', request });
+    } catch (err) {
+        res.status(500).json({ message: 'Ошибка при обновлении статуса' });
     }
 });
 

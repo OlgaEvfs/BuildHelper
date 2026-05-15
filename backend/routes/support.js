@@ -5,16 +5,17 @@ const SupportRequest = require('../models/SupportRequest');
 // @desc Отправить запрос в поддержку (публичный)
 router.post('/', async (req, res) => {
     try {
-        const { email, message, contactInfo } = req.body;
+        const { name, email, subject, message } = req.body;
 
-        if (!email || !message || !contactInfo) {
+        if (!name || !email || !subject || !message) {
             return res.status(400).json({ message: 'Пожалуйста, заполните все поля формы' });
         }
 
         const newRequest = new SupportRequest({
+            name,
             email,
-            message,
-            contactInfo
+            subject,
+            message
         });
         await newRequest.save();
         res.status(201).json({ message: 'Ваша заявка принята. Администратор свяжется с вами.' });
