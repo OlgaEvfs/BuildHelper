@@ -19,19 +19,16 @@
         </div>
     </div>
 
-    <footer class="bh-bg-dark text-light py-5">
-        <div class="container">
+    <footer class="bh-bg-dark text-light py-4 mt-5">
+        <div class="container-fluid px-4">
             <div class="row g-4">
-                <!-- Логотип и описание -->
                 <div class="col-lg-4 col-md-6">
                     <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
                         <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
-                        <span class="h5 mb-0 fw-bold bh-brand-name">BuildHelper</span>
+                        <span class="h5 mb-0 fw-bold bh-brand-name text-white">BuildHelper</span>
                     </a>
                     <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта. Расчитывайте материалы быстро и точно.</p>
                 </div>
-
-                <!-- Ссылки -->
                 <div class="col-lg-4 col-md-6">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
                     <ul class="list-unstyled small">
@@ -39,30 +36,63 @@
                         <li class="mb-2"><a href="index.html#news" class="text-secondary text-decoration-none hover-white">Новости</a></li>
                         <li class="mb-2"><a href="index.html#checklist" class="text-secondary text-decoration-none hover-white">Чек-лист ремонта</a></li>
                         <li class="mb-2"><a href="#" class="text-secondary text-decoration-none hover-white" data-bs-toggle="modal" data-bs-target="#supportModal">Поддержка</a></li>
-                    </ul>                </div>
-
-                <!-- Социальные сети -->
+                    </ul>
+                </div>
                 <div class="col-lg-4 col-md-12">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
                     <div class="d-flex gap-3 mb-3">
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.074 19c-5.908 0-9.28-4.047-9.422-10.74h3.01c.106 4.912 2.27 6.992 3.986 7.42V8.26h2.835v4.24c1.737-.186 3.522-2.112 4.137-4.24h2.835a8.4 8.4 0 0 1-3.797 5.292 8.56 8.56 0 0 1 4.39 5.448h-3.155a4.99 4.99 0 0 0-3.664-3.513v3.513h-.155z"/></svg>
-                        </a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/></svg>
-                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px"><i class="fas fa-paper-plane"></i></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px"><i class="fas fa-envelope"></i></a>
                     </div>
                     <p class="text-secondary small">support@buildhelper.ee</p>
                 </div>
             </div>
-
             <hr class="my-4 border-secondary opacity-25">
-            
             <div class="text-center text-secondary small">
                 <p class="mb-0">&copy; 2026 BuildHelper. Все права защищены.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Модальное окно поддержки -->
+    <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bh-bg-dark text-white border-0">
+                    <h5 class="modal-title fw-bold" id="supportModalLabel"><i class="fas fa-headset me-2 text-primary"></i>Служба поддержки</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted small mb-4">Возникли вопросы или проблемы? Опишите их, и наш администратор свяжется с вами по электронной почте.</p>
+                    <form id="support-form">
+                        <div class="mb-3">
+                            <label for="support-name" class="form-label small fw-bold text-uppercase">Ваше имя</label>
+                            <input type="text" id="support-name" class="form-control" required placeholder="Иван Иванов">
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-email" class="form-label small fw-bold text-uppercase">Email для связи</label>
+                            <input type="email" id="support-email" class="form-control" required placeholder="example@mail.ru">
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-subject" class="form-label small fw-bold text-uppercase">Тема обращения</label>
+                            <input type="text" id="support-subject" class="form-control" required placeholder="Проблема с калькулятором">
+                        </div>
+                        <div class="mb-3">
+                            <label for="support-message" class="form-label small fw-bold text-uppercase">Сообщение</label>
+                            <textarea id="support-message" class="form-control" rows="4" required placeholder="Опишите проблему..."></textarea>
+                        </div>
+                        <div id="support-form-message" class="alert d-none mt-3"></div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn bh-btn-primary w-100 py-3 fw-bold text-uppercase">Отправить запрос</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/support.js"></script>
+
 
     <!-- Модальное окно поддержки -->
     <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">

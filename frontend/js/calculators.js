@@ -1,3 +1,11 @@
+// Вспомогательная функция для корректного парсинга чисел с запятой
+function parseNumber(val) {
+    if (typeof val === 'string') {
+        return parseFloat(val.replace(',', '.'));
+    }
+    return parseFloat(val);
+}
+
 // Функция для открытия модалки калькулятора (теперь через Bootstrap)
 window.openCalculatorModal = function(type) {
     const modalElement = document.getElementById('calcModal');
@@ -24,15 +32,15 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Длина (м):</label>
-                    <input type="number" id="room-length" class="form-control" placeholder="0.0" step="0.1">
+                    <input type="text" id="room-length" class="form-control" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Ширина (м):</label>
-                    <input type="number" id="room-width" class="form-control" placeholder="0.0" step="0.1">
+                    <input type="text" id="room-width" class="form-control" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Высота (м):</label>
-                    <input type="number" id="room-height" class="form-control" placeholder="0.0" step="0.1">
+                    <input type="text" id="room-height" class="form-control" placeholder="0.0">
                 </div>
                 
                 <div id="openings-list">
@@ -50,17 +58,23 @@ window.openCalculatorModal = function(type) {
             title = "Расход грунтовки или краски";
             content = `
                 <div class="form-group mb-3">
-                    <label class="form-label small fw-bold">Площадь стен (м²):</label>
-                    <input type="number" id="paint-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
-                    ${savedWallArea ? '<small class="text-success">Подставлено из Геометрии</small>' : '<small class="text-muted">(Возьмите из расчета Геометрии)</small>'}
+                    <label class="form-label small fw-bold">Площадь (м²):</label>
+                    <div class="d-flex gap-2 mb-2">
+                        <input type="text" id="paint-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('paint-area').value='${savedWallArea}'">Стены</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('paint-area').value='${savedFloorArea}'">Пол</button>
+                        </div>
+                    </div>
+                    ${savedWallArea || savedFloorArea ? '<small class="text-success">Подставлено из Геометрии / 2D Планировщика</small>' : '<small class="text-muted">(Возьмите из расчета Геометрии)</small>'}
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Расход (м²/л):</label>
-                    <input type="number" id="paint-consumption" class="form-control" placeholder="например 10" step="1">
+                    <input type="text" id="paint-consumption" class="form-control" placeholder="например 10">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Количество слоев:</label>
-                    <input type="number" id="paint-layers" class="form-control" value="2" step="1">
+                    <input type="text" id="paint-layers" class="form-control" value="2">
                 </div>
 
                 <div id="paint-result" class="result-box mb-3" style="display:none;"></div>
@@ -74,7 +88,8 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь стен (м²):</label>
-                    <input type="number" id="wallpaper-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="wallpaper-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
+                    ${savedWallArea ? '<small class="text-success">Подставлено из Геометрии / 2D Планировщика</small>' : ''}
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Ширина рулона (м):</label>
@@ -92,7 +107,7 @@ window.openCalculatorModal = function(type) {
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Высота стены (м):</label>
-                    <input type="number" id="wall-height" class="form-control" value="2.5" step="0.1">
+                    <input type="text" id="wall-height" class="form-control" value="2.5">
                 </div>
 
                 <div id="wallpaper-result" class="result-box mb-3" style="display:none;"></div>
@@ -106,13 +121,20 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь поверхности (м²):</label>
-                    <input type="number" id="tile-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    <div class="d-flex gap-2 mb-2">
+                        <input type="text" id="tile-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('tile-area').value='${savedWallArea}'">Стены</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('tile-area').value='${savedFloorArea}'">Пол</button>
+                        </div>
+                    </div>
+                    ${savedWallArea || savedFloorArea ? '<small class="text-success">Подставлено из Геометрии / 2D Планировщика</small>' : ''}
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Размер плитки (мм):</label>
                     <div class="d-flex gap-2 mb-2">
-                        <input type="number" id="tile-w" class="form-control" placeholder="Ш" value="300">
-                        <input type="number" id="tile-h" class="form-control" placeholder="В" value="300">
+                        <input type="text" id="tile-w" class="form-control" placeholder="Ш" value="300">
+                        <input type="text" id="tile-h" class="form-control" placeholder="В" value="300">
                     </div>
                     <div class="btn-group btn-group-sm w-100">
                         <button type="button" class="btn btn-outline-secondary" onclick="setTileSize(300, 300)">30x30</button>
@@ -122,11 +144,11 @@ window.openCalculatorModal = function(type) {
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Шов (мм):</label>
-                    <input type="number" id="tile-grout" class="form-control" value="2" step="0.5">
+                    <input type="text" id="tile-grout" class="form-control" value="2">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Запас (%):</label>
-                    <input type="number" id="tile-stock" class="form-control" value="10">
+                    <input type="text" id="tile-stock" class="form-control" value="10">
                 </div>
 
                 <div id="tiles-result" class="result-box mb-3" style="display:none;"></div>
@@ -140,15 +162,15 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь обработки (м²):</label>
-                    <input type="number" id="wp-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="wp-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Расход (кг/м²):</label>
-                    <input type="number" id="wp-consumption" class="form-control" step="0.1" value="1.5">
+                    <input type="text" id="wp-consumption" class="form-control" value="1.5">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Периметр стыков (м.п):</label>
-                    <input type="number" id="wp-perimeter" class="form-control" value="${savedPerimeter || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="wp-perimeter" class="form-control" value="${savedPerimeter || ''}" placeholder="0.0">
                 </div>
 
                 <div id="wp-result" class="result-box mb-3" style="display:none;"></div>
@@ -162,15 +184,15 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь пола (м²):</label>
-                    <input type="number" id="floor-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="floor-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Толщина слоя (см):</label>
-                    <input type="number" id="floor-thickness" class="form-control" value="3" step="0.5">
+                    <input type="text" id="floor-thickness" class="form-control" value="3">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Вес мешка (кг):</label>
-                    <input type="number" id="bag-weight" class="form-control" value="25">
+                    <input type="text" id="bag-weight" class="form-control" value="25">
                 </div>
 
                 <div id="floor-result" class="result-box mb-3" style="display:none;"></div>
@@ -184,7 +206,7 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь поверхности (м²):</label>
-                    <input type="number" id="drywall-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="drywall-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Размер листа:</label>
@@ -195,7 +217,7 @@ window.openCalculatorModal = function(type) {
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Запас (%):</label>
-                    <input type="number" id="drywall-stock" class="form-control" value="10">
+                    <input type="text" id="drywall-stock" class="form-control" value="10">
                 </div>
                 <div id="drywall-result" class="result-box mb-3" style="display:none;"></div>
                 <button class="btn bh-btn-primary w-100" onclick="calculateDrywall()">Рассчитать</button>
@@ -207,15 +229,15 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь (м²):</label>
-                    <input type="number" id="profile-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="profile-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Периметр (м.п):</label>
-                    <input type="number" id="profile-perimeter" class="form-control" value="${savedPerimeter || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="profile-perimeter" class="form-control" value="${savedPerimeter || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Высота стены (м):</label>
-                    <input type="number" id="profile-height" class="form-control" value="2.7">
+                    <input type="text" id="profile-height" class="form-control" value="2.7">
                 </div>
                 <div id="profiles-result" class="result-box mb-3" style="display:none;"></div>
                 <button class="btn bh-btn-primary w-100" onclick="calculateProfiles()">Рассчитать</button>
@@ -227,11 +249,11 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь пола (м²):</label>
-                    <input type="number" id="laminate-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0" step="0.1">
+                    <input type="text" id="laminate-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Упаковка (м²):</label>
-                    <input type="number" id="laminate-pack" class="form-control" value="2.2">
+                    <input type="text" id="laminate-pack" class="form-control" value="2.2">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Укладка:</label>
@@ -250,11 +272,11 @@ window.openCalculatorModal = function(type) {
             content = `
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь стен (м²):</label>
-                    <input type="number" id="brick-area" class="form-control" value="${savedWallArea || ''}">
+                    <input type="text" id="brick-area" class="form-control" value="${savedWallArea || ''}">
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Толщина стены (м):</label>
-                    <input type="number" id="brick-wall-th" class="form-control" value="0.2">
+                    <input type="text" id="brick-wall-th" class="form-control" value="0.2">
                 </div>
                 <div id="bricks-result" class="result-box mb-3" style="display:none;"></div>
                 <button class="btn bh-btn-primary w-100" onclick="calculateBricks()">Рассчитать</button>
@@ -280,9 +302,9 @@ function showCalcError(boxId, message) {
 }
 
 window.calculateGeometry = function() {
-    const length = parseFloat(document.getElementById('room-length').value);
-    const width = parseFloat(document.getElementById('room-width').value);
-    const height = parseFloat(document.getElementById('room-height').value);
+    const length = parseNumber(document.getElementById('room-length').value);
+    const width = parseNumber(document.getElementById('room-width').value);
+    const height = parseNumber(document.getElementById('room-height').value);
     const resultBox = document.getElementById('calc-result');
 
     if (isNaN(length) || isNaN(width) || isNaN(height) || length <= 0 || width <= 0 || height <= 0) {
@@ -296,9 +318,9 @@ window.calculateGeometry = function() {
     let totalOpeningsArea = 0;
 
     document.querySelectorAll('.opening-row').forEach(row => {
-        const opW = parseFloat(row.querySelector('.op-width').value) || 0;
-        const opH = parseFloat(row.querySelector('.op-height').value) || 0;
-        const opQty = parseFloat(row.querySelector('.op-qty').value) || 1;
+        const opW = parseNumber(row.querySelector('.op-width').value) || 0;
+        const opH = parseNumber(row.querySelector('.op-height').value) || 0;
+        const opQty = parseNumber(row.querySelector('.op-qty').value) || 1;
         totalOpeningsArea += (opW * opH * opQty);
     });
 
@@ -325,18 +347,18 @@ window.addOpeningRow = function() {
     const row = document.createElement('div');
     row.className = 'opening-row input-group input-group-sm mb-2';
     row.innerHTML = `
-        <input type="number" class="form-control op-width" placeholder="Ш (м)">
-        <input type="number" class="form-control op-height" placeholder="В (м)">
-        <input type="number" class="form-control op-qty" placeholder="Кол" value="1">
+        <input type="text" class="form-control op-width" placeholder="Ш (м)">
+        <input type="text" class="form-control op-height" placeholder="В (м)">
+        <input type="text" class="form-control op-qty" placeholder="Кол" value="1">
         <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">&times;</button>
     `;
     openingsList.appendChild(row);
 };
 
 window.calculatePaint = function() {
-    const area = parseFloat(document.getElementById('paint-area').value);
-    const cons = parseFloat(document.getElementById('paint-consumption').value);
-    const layers = parseInt(document.getElementById('paint-layers').value) || 1;
+    const area = parseNumber(document.getElementById('paint-area').value);
+    const cons = parseNumber(document.getElementById('paint-consumption').value);
+    const layers = parseNumber(document.getElementById('paint-layers').value) || 1;
     const resultBox = document.getElementById('paint-result');
 
     if (isNaN(area) || isNaN(cons) || area <= 0 || cons <= 0) {
@@ -354,10 +376,10 @@ window.calculatePaint = function() {
 };
 
 window.calculateWallpaper = function() {
-    const area = parseFloat(document.getElementById('wallpaper-area').value);
-    const rollWidth = parseFloat(document.getElementById('roll-width').value);
-    const rollLength = parseFloat(document.getElementById('roll-length').value);
-    const wallHeight = parseFloat(document.getElementById('wall-height').value);
+    const area = parseNumber(document.getElementById('wallpaper-area').value);
+    const rollWidth = parseNumber(document.getElementById('roll-width').value);
+    const rollLength = parseNumber(document.getElementById('roll-length').value);
+    const wallHeight = parseNumber(document.getElementById('wall-height').value);
     const resultBox = document.getElementById('wallpaper-result');
 
     if (isNaN(area) || isNaN(wallHeight) || area <= 0 || wallHeight <= 0) {
@@ -375,11 +397,11 @@ window.calculateWallpaper = function() {
 };
 
 window.calculateTiles = function() {
-    const area = parseFloat(document.getElementById('tile-area').value);
-    const w = parseFloat(document.getElementById('tile-w').value);
-    const h = parseFloat(document.getElementById('tile-h').value);
-    const grout = parseFloat(document.getElementById('tile-grout').value) || 0;
-    const stock = parseFloat(document.getElementById('tile-stock').value) || 0;
+    const area = parseNumber(document.getElementById('tile-area').value);
+    const w = parseNumber(document.getElementById('tile-w').value);
+    const h = parseNumber(document.getElementById('tile-h').value);
+    const grout = parseNumber(document.getElementById('tile-grout').value) || 0;
+    const stock = parseNumber(document.getElementById('tile-stock').value) || 0;
     const resultBox = document.getElementById('tiles-result');
 
     if (isNaN(area) || isNaN(w) || isNaN(h)) {
@@ -404,8 +426,8 @@ window.setTileSize = function(w, h) {
 };
 
 window.calculateWP = function() {
-    const area = parseFloat(document.getElementById('wp-area').value);
-    const cons = parseFloat(document.getElementById('wp-consumption').value);
+    const area = parseNumber(document.getElementById('wp-area').value);
+    const cons = parseNumber(document.getElementById('wp-consumption').value);
     const resultBox = document.getElementById('wp-result');
 
     if (isNaN(area) || isNaN(cons)) {
@@ -423,9 +445,9 @@ window.calculateWP = function() {
 };
 
 window.calculateFloor = function() {
-    const area = parseFloat(document.getElementById('floor-area').value);
-    const thickness = parseFloat(document.getElementById('floor-thickness').value);
-    const weight = parseFloat(document.getElementById('bag-weight').value) || 25;
+    const area = parseNumber(document.getElementById('floor-area').value);
+    const thickness = parseNumber(document.getElementById('floor-thickness').value);
+    const weight = parseNumber(document.getElementById('bag-weight').value) || 25;
     const resultBox = document.getElementById('floor-result');
 
     if (isNaN(area) || isNaN(thickness)) {

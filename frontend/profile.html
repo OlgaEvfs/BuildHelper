@@ -219,11 +219,6 @@
                 <!-- Мои вакансии -->
                 <section id="jobs-section" class="d-none">
                     <div class="card border-0 shadow-sm p-4">
-                        <div class="mb-3">
-                            <a href="#" class="text-decoration-none small text-muted back-to-profile">
-                                <i class="fas fa-arrow-left me-1"></i> К данным аккаунта
-                            </a>
-                        </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h2 class="fw-bold mb-0">Мои вакансии</h2>
                             <button class="btn btn-sm bh-btn-accent" data-bs-toggle="modal" data-bs-target="#addJobModal">+ Добавить</button>
@@ -303,7 +298,7 @@
         </div>
     </main>
 
-    <footer class="bh-bg-dark text-light py-5 mt-5">
+    <footer class="bh-bg-dark text-light py-4 mt-5">
         <div class="container-fluid px-4">
             <div class="row g-4">
                 <!-- Логотип и описание -->
@@ -359,47 +354,31 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header bh-bg-dark text-white border-0">
-                    <h5 class="modal-title fw-bold" id="supportModalLabel">
-                        <i class="fas fa-headset me-2 text-primary"></i>Служба поддержки
-                    </h5>
+                    <h5 class="modal-title fw-bold" id="supportModalLabel"><i class="fas fa-headset me-2 text-primary"></i>Служба поддержки</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <p class="text-muted small mb-4">Возникли вопросы или проблемы? Опишите их, и наш администратор свяжется с вами по электронной почте.</p>
-                    
                     <form id="support-form">
                         <div class="mb-3">
                             <label for="support-name" class="form-label small fw-bold text-uppercase">Ваше имя</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
-                                <input type="text" id="support-name" class="form-control bg-light border-start-0" required placeholder="Иван Иванов">
-                            </div>
+                            <input type="text" id="support-name" class="form-control" required placeholder="Иван Иванов">
                         </div>
                         <div class="mb-3">
                             <label for="support-email" class="form-label small fw-bold text-uppercase">Email для связи</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
-                                <input type="email" id="support-email" class="form-control bg-light border-start-0" required placeholder="example@mail.ru">
-                            </div>
+                            <input type="email" id="support-email" class="form-control" required placeholder="example@mail.ru">
                         </div>
                         <div class="mb-3">
                             <label for="support-subject" class="form-label small fw-bold text-uppercase">Тема обращения</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-tag text-muted"></i></span>
-                                <input type="text" id="support-subject" class="form-control bg-light border-start-0" required placeholder="Напр: Проблема с калькулятором">
-                            </div>
+                            <input type="text" id="support-subject" class="form-control" required placeholder="Проблема с калькулятором">
                         </div>
                         <div class="mb-3">
                             <label for="support-message" class="form-label small fw-bold text-uppercase">Сообщение</label>
-                            <textarea id="support-message" class="form-control bg-light" rows="4" required placeholder="Опишите вашу проблему максимально подробно..."></textarea>
+                            <textarea id="support-message" class="form-control" rows="4" required placeholder="Опишите проблему..."></textarea>
                         </div>
-                        
                         <div id="support-form-message" class="alert d-none mt-3"></div>
-                        
                         <div class="mt-4">
-                            <button type="submit" class="btn bh-btn-primary w-100 py-3 fw-bold text-uppercase letter-spacing-1">
-                                Отправить запрос <i class="fas fa-paper-plane ms-2"></i>
-                            </button>
+                            <button type="submit" class="btn bh-btn-primary w-100 py-3 fw-bold text-uppercase">Отправить запрос</button>
                         </div>
                     </form>
                 </div>
@@ -474,6 +453,83 @@
                         <div class="mt-4 text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                             <button type="submit" class="btn bh-btn-primary px-4">Опубликовать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно вакансий -->
+    <div class="modal fade" id="addJobModal" tabindex="-1" aria-hidden="true">
+        ... (existing content) ...
+    </div>
+
+    <!-- Модальное окно редактирования вакансии -->
+    <div class="modal fade" id="editJobModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bh-bg-dark text-white">
+                    <h5 class="modal-title fw-bold">Редактирование вакансии</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="edit-job-form">
+                        <input type="hidden" id="edit-job-id">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Заголовок *</label>
+                                <input type="text" id="edit-job-title" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Тип работ *</label>
+                                <select id="edit-job-type" class="form-select" required>
+                                    <option value="finishing">Отделочные работы</option>
+                                    <option value="plumbing">Сантехника</option>
+                                    <option value="electrical">Электрика</option>
+                                    <option value="masonry">Каменные работы</option>
+                                    <option value="roofing">Кровельные работы</option>
+                                    <option value="hvac">Вентиляция/Отопление</option>
+                                    <option value="general">Общие работы</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Занятость</label>
+                                <select id="edit-job-employment" class="form-select">
+                                    <option value="Полная занятость">Полная занятость</option>
+                                    <option value="Частичная занятость">Частичная занятость</option>
+                                    <option value="Подряд">Подряд</option>
+                                    <option value="Временная работа">Временная работа</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Город</label>
+                                <input type="text" id="edit-job-location" class="form-control"> 
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Оплата</label>
+                                <input type="text" id="edit-job-salary" class="form-control"> 
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold">Описание *</label>
+                                <textarea id="edit-job-content" class="form-control" rows="4" required></textarea>
+                            </div>
+                            <h6 class="fw-bold mt-3">Контакты</h6>
+                            <div class="col-md-4">
+                                <label class="form-label small">Имя</label>
+                                <input type="text" id="edit-job-contact-name" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Телефон *</label>
+                                <input type="tel" id="edit-job-contact-phone" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Email</label>
+                                <input type="email" id="edit-job-contact-email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-warning px-4">Сохранить изменения</button>
                         </div>
                     </form>
                 </div>

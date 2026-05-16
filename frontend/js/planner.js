@@ -1,5 +1,13 @@
 // frontend/js/planner.js
 
+// Вспомогательная функция для корректного парсинга чисел с запятой
+function parseNumber(val) {
+    if (typeof val === 'string') {
+        return parseFloat(val.replace(',', '.'));
+    }
+    return parseFloat(val);
+}
+
 const canvas = document.getElementById('roomCanvas');
 const ctx = canvas.getContext('2d');
 const infoBox = document.getElementById('plan-info');
@@ -88,9 +96,9 @@ async function savePlanToServer() {
 }
 
 function addRoom() {
-    const l = parseFloat(document.getElementById('plan-length').value) || 5;
-    const w = parseFloat(document.getElementById('plan-width').value) || 4;
-    const h = parseFloat(document.getElementById('plan-height')?.value) || 2.5;
+    const l = parseNumber(document.getElementById('plan-length').value) || 5;
+    const w = parseNumber(document.getElementById('plan-width').value) || 4;
+    const h = parseNumber(document.getElementById('plan-height')?.value) || 2.5;
 
     const newRoom = {
         type: 'room',
@@ -161,8 +169,8 @@ function selectObject(obj) {
 function updateObjectProps() {
     if (!selectedObject) return;
     selectedObject.name = document.getElementById('prop-name').value;
-    const valW = parseFloat(document.getElementById('prop-w').value) || 0.1;
-    const valL = parseFloat(document.getElementById('prop-l').value) || 0.1;
+    const valW = parseNumber(document.getElementById('prop-w').value) || 0.1;
+    const valL = parseNumber(document.getElementById('prop-l').value) || 0.1;
     if (selectedObject.type === 'room') {
         selectedObject.l = valW;
         selectedObject.w = valL;
@@ -403,14 +411,22 @@ function applyToCalculators() {
     sessionStorage.setItem('lastNetWallArea', totalNetWallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', totalFloorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', totalPerimeter.toFixed(2));
-    showNotification('Данные всей квартиры сохранены!', 'success');
+    showNotification('Данные перенесены в калькуляторы!', 'success');
 }
 
 function updateInfo() {
     if (rooms.length === 0) { infoBox.classList.add('d-none'); return; }
     const totalArea = rooms.reduce((sum, r) => sum + (r.l * r.w), 0).toFixed(2);
+    const totalWallArea = rooms.reduce((sum, r) => sum + (2 * (r.l + r.w) * r.h), 0).toFixed(2);
     infoBox.classList.remove('d-none');
-    infoBox.innerHTML = `<div class="d-flex justify-content-between align-items-center flex-wrap gap-2"><div><div class="fw-bold">Общая площадь: ${totalArea} м²</div></div><button class="btn btn-sm btn-success" onclick="applyToCalculators()">Применить всё</button></div>`;
+    infoBox.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="small">
+                <div class="fw-bold">Расчет пола: ${totalArea} м²</div>
+                <div class="fw-bold">Расчет стен: ${totalWallArea} м²</div>
+            </div>
+            <button class="btn btn-sm btn-success" onclick="applyToCalculators()">Применить всё</button>
+        </div>`;
 }
 
 window.addEventListener('resize', initCanvas);

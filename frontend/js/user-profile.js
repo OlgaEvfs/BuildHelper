@@ -158,15 +158,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- ФУНКЦИИ ДЛЯ РАБОТЫ С ВАКАНСИЯМИ ---
 
+    // Переменная для хранения списка всех вакансий пользователя
+    let myJobs = [];
+
     async function loadMyJobs() {
         const list = document.getElementById('my-jobs-list');
         try {
             const res = await fetch('/api/news/my-jobs', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            const jobs = await res.json();
+            myJobs = await res.json();
 
-            if (jobs.length === 0) {
+            if (myJobs.length === 0) {
                 list.innerHTML = '<p class="text-muted italic">У вас пока нет размещенных вакансий.</p>';
                 return;
             }
@@ -181,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 general: '🛠️'
             };
 
-            list.innerHTML = jobs.map(job => `
+            list.innerHTML = myJobs.map(job => `
                 <div class="card mb-3 border shadow-sm p-3">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="d-flex gap-3">
@@ -195,6 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                         </div>
                         <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-warning" onclick="openEditModal('${job._id}')">Редактировать</button>
                             <button class="btn btn-sm btn-outline-danger delete-job-btn" data-id="${job._id}">Удалить</button>
                         </div>
                     </div>
@@ -207,6 +211,68 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             list.innerHTML = '<p class="text-danger">Ошибка загрузки вакансий.</p>';
         }
+    }
+
+    // Редактирование вакансий
+    window.openEditModal = (id) => {
+        const job = myJobs.find(j => j._id === id);
+        if (!job) return;
+
+        document.getElementById('edit-job-id').value = job._id;
+        document.getElementById('edit-job-title').value = job.title;
+        document.getElementById('edit-job-type').value = job.jobType;
+        document.getElementById('edit-job-employment').value = job.employment;
+        document.getElementById('edit-job-location').value = job.location;
+        document.getElementById('edit-job-salary').value = job.salary;
+        document.getElementById('edit-job-content').value = job.content;
+        document.getElementById('edit-job-contact-name').value = job.contactName;
+        document.getElementById('edit-job-contact-phone').value = job.contactPhone;
+        document.getElementById('edit-job-contact-email').value = job.contactEmail;
+
+        const modal = new bootstrap.Modal(document.getElementById('editJobModal'));
+        modal.show();
+    };
+
+    const editJobForm = document.getElementById('edit-job-form');
+    if (editJobForm) {
+        editJobForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-job-id').value;
+            const jobData = {
+                title: document.getElementById('edit-job-title').value,
+                jobType: document.getElementById('edit-job-type').value,
+                employment: document.getElementById('edit-job-employment').value,
+                location: document.getElementById('edit-job-location').value,
+                salary: document.getElementById('edit-job-salary').value,
+                content: document.getElementById('edit-job-content').value,
+                contactName: document.getElementById('edit-job-contact-name').value,
+                contactPhone: document.getElementById('edit-job-contact-phone').value,
+                contactEmail: document.getElementById('edit-job-contact-email').value,
+            };
+
+            try {
+                const res = await fetch(`/api/news/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                if (res.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editJobModal'));
+                    modal.hide();
+                    loadMyJobs();
+                    showNotification('Вакансия обновлена и отправлена на модерацию!', 'success');
+                } else {
+                    const err = await res.json();
+                    alert(err.message || 'Ошибка обновления');
+                }
+            } catch (err) {
+                alert('Ошибка сети');
+            }
+        });
     }
 
     function getJobTypeName(type) {

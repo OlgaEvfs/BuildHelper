@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (res.ok) fetchUsers();
             else { btn.disabled = false; btn.innerHTML = originalHtml; }
-        } catch (err) { alert('Ошибка сети'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { showNotification('Ошибка сети', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.resetPassword = async (btn, id) => {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('tempPasswordInput').textContent = data.tempPassword;
                 passwordModal.show();
             }
-        } catch (err) { alert('Ошибка сети'); }
+        } catch (err) { showNotification('Ошибка сети', 'danger'); }
         btn.disabled = false;
         btn.innerHTML = originalHtml;
     };
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchUsers();
                 fetchStats();
             }
-        } catch (err) { alert('Ошибка при удалении'); }
+        } catch (err) { showNotification('Ошибка при удалении', 'danger'); }
     });
 
     // --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'published' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { alert('Ошибка'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.unpublishPost = async (btn, id) => {
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'pending' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { alert('Ошибка'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.deletePost = async (btn, id) => {
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchContent();
                 fetchStats();
             }
-        } catch (err) { alert('Ошибка при удалении'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { showNotification('Ошибка при удалении', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     // Слушатели для кнопок в модалке просмотра

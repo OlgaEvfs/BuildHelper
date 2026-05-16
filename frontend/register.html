@@ -61,7 +61,7 @@
     </main>
 
     <script src="js/register.js"></script>
-    <footer class="bh-bg-dark text-light py-5 mt-5">
+    <footer class="bh-bg-dark text-light py-4 mt-5">
         <div class="container-fluid px-4">
             <div class="row g-4">
                 <!-- Логотип и описание -->
@@ -128,28 +128,19 @@
                     <form id="support-form">
                         <div class="mb-3">
                             <label for="support-name" class="form-label small fw-bold text-uppercase">Ваше имя</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
-                                <input type="text" id="support-name" class="form-control bg-light border-start-0" required placeholder="Иван Иванов">
-                            </div>
+                            <input type="text" id="support-name" class="form-control" required placeholder="Иван Иванов">
                         </div>
                         <div class="mb-3">
                             <label for="support-email" class="form-label small fw-bold text-uppercase">Email для связи</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
-                                <input type="email" id="support-email" class="form-control bg-light border-start-0" required placeholder="example@mail.ru">
-                            </div>
+                            <input type="email" id="support-email" class="form-control" required placeholder="example@mail.ru">
                         </div>
                         <div class="mb-3">
                             <label for="support-subject" class="form-label small fw-bold text-uppercase">Тема обращения</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-tag text-muted"></i></span>
-                                <input type="text" id="support-subject" class="form-control bg-light border-start-0" required placeholder="Напр: Проблема с калькулятором">
-                            </div>
+                            <input type="text" id="support-subject" class="form-control" required placeholder="Напр: Проблема с калькулятором">
                         </div>
                         <div class="mb-3">
                             <label for="support-message" class="form-label small fw-bold text-uppercase">Сообщение</label>
-                            <textarea id="support-message" class="form-control bg-light" rows="4" required placeholder="Опишите вашу проблему максимально подробно..."></textarea>
+                            <textarea id="support-message" class="form-control" rows="4" required placeholder="Опишите вашу проблему максимально подробно..."></textarea>
                         </div>
                         
                         <div id="support-form-message" class="alert d-none mt-3"></div>

@@ -112,7 +112,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Только администратор может использовать эту категорию' });
         }
 
-        const updatePost = await News.findByIdAndUpdate(req.params.id, { $set: req.body }, { returnDocument: 'after' });
+        // Если автор не админ, сбрасываем статус на модерацию
+        const updateData = { ...req.body };
+        if (!isAdmin) {
+            updateData.status = 'pending';
+        }
+
+        const updatePost = await News.findByIdAndUpdate(req.params.id, { $set: updateData }, { returnDocument: 'after' });
         res.json(updatePost);
     } catch (err) {
         res.status(500).json({ message: 'Ошибка при обновлении' });
