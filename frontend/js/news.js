@@ -38,7 +38,7 @@ window.fetchNews = async function() {
             contentBlock.innerHTML = `
                 <img src="${item.imageUrl}" alt="${item.title}">
                 <div class="tabcontent-desc">
-                    <div class="news-date">${new Date(item.createdAt).toLocaleDateString()}</div>
+                    <div class="news-date">${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                     <h2>${item.title}</h2>
                     <p>${item.content.length > 120 ? item.content.substring(0, 120) + '...' : item.content}</p>
                     <a href="/news-detail.html?id=${item._id}" class="btn-read bh-btn-outline">${item.category === 'jobs' ? 'Откликнуться' : 'Читать далее'}</a>

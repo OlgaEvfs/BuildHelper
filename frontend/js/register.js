@@ -67,10 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     // Сохраняем токен и данные пользователя в localStorage
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('userInfo', JSON.stringify({
-                        username: data.username,
-                        role: data.role
-                    }));
+                    localStorage.setItem('userInfo', JSON.stringify(data));
 
                     // Показываем сообщение об успехе
                     const card = document.querySelector('.auth-card');

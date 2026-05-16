@@ -4,11 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
     const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
     const supportViewModal = new bootstrap.Modal(document.getElementById('supportViewModal'));
+    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const copyBtn = document.getElementById('copyPasswordBtn');
 
     let userToDelete = null;
     let currentSupportRequest = null;
+    let allSupportRequests = [];
+    let allContentItems = [];
 
     const API_URL = '/api/admin';
     const token = localStorage.getItem('token');
@@ -19,6 +22,24 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/login.html';
         return;
     }
+
+    // --- УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ---
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmModalBtn = document.getElementById('confirmModalBtn');
+    let confirmCallback = null;
+
+    window.showConfirm = (title, body, btnText, callback) => {
+        document.getElementById('confirmModalTitle').textContent = title || 'Вы уверены?';
+        document.getElementById('confirmModalBody').textContent = body || 'Это действие нельзя будет отменить.';
+        confirmModalBtn.textContent = btnText || 'Удалить';
+        confirmCallback = callback;
+        confirmModal.show();
+    };
+
+    confirmModalBtn.addEventListener('click', () => {
+        if (confirmCallback) confirmCallback();
+        confirmModal.hide();
+    });
 
     // --- ОБЩИЕ ФУНКЦИИ ---
     async function fetchStats() {
@@ -104,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (res.ok) fetchUsers();
             else { btn.disabled = false; btn.innerHTML = originalHtml; }
-        } catch (err) { showNotification('Ошибка сети', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { alert('Ошибка сети'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.resetPassword = async (btn, id) => {
@@ -122,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('tempPasswordInput').textContent = data.tempPassword;
                 passwordModal.show();
             }
-        } catch (err) { showNotification('Ошибка сети', 'danger'); }
+        } catch (err) { alert('Ошибка сети'); }
         btn.disabled = false;
         btn.innerHTML = originalHtml;
     };
@@ -135,9 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confirmDeleteBtn.addEventListener('click', async () => {
         if (!userToDelete) return;
-        const originalHtml = confirmDeleteBtn.innerHTML;
-        confirmDeleteBtn.disabled = true;
-        confirmDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Удаление...';
         try {
             const res = await fetch(`${API_URL}/users/${userToDelete}`, {
                 method: 'DELETE',
@@ -148,14 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchUsers();
                 fetchStats();
             }
-        } catch (err) { showNotification('Ошибка при удалении', 'danger'); }
-        confirmDeleteBtn.disabled = false;
-        confirmDeleteBtn.innerHTML = originalHtml;
+        } catch (err) { alert('Ошибка при удалении'); }
     });
 
     // --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
-    let allSupportRequests = []; 
-
     async function fetchSupport() {
         try {
             const res = await fetch(`${API_URL}/support`, {
@@ -245,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentSupportRequest && currentSupportRequest._id === id) supportViewModal.hide();
                 fetchSupport();
             }
-        } catch (err) { showNotification('Ошибка при обновлении статуса', 'danger'); }
+        } catch (err) { alert('Ошибка при обновлении статуса'); }
         btn.disabled = false;
         btn.innerHTML = originalHtml;
     };
@@ -265,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchSupport();
                 fetchStats();
             }
-        } catch (err) { showNotification('Ошибка при удалении заявки', 'danger'); }
+        } catch (err) { alert('Ошибка при удалении заявки'); }
         btn.disabled = false;
         btn.innerHTML = originalHtml;
     };
@@ -277,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
+            allContentItems = data;
             renderContent(data);
         } catch (err) { console.error('Ошибка контента:', err); }
     }
@@ -292,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="ps-4">
                     <div class="fw-bold text-truncate" style="max-width: 250px;">${item.title}</div>
                     <div class="d-flex gap-2 align-items-center">
-                        <span class="badge ${item.category === 'news' ? 'bg-info' : 'bg-warning text-dark'}">${item.category === 'news' ? 'Новость' : 'Вакансия'}</span>
+                        <span class="badge ${item.category === 'jobs' ? 'bg-warning text-dark' : 'bg-info'}">${item.category === 'jobs' ? 'Вакансия' : 'Новость'}</span>
                         <span class="badge ${item.status === 'published' ? 'bg-success' : 'bg-secondary'} small" style="font-size: 0.65rem;">
                             ${item.status === 'published' ? 'Опубликовано' : 'Ожидает'}
                         </span>
@@ -314,10 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <i class="fas fa-undo"></i>
                             </button>
                         `}
-                        <a href="/news-detail.html?id=${item._id}" class="btn btn-outline-primary" target="_blank" title="Просмотр">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewPostDetail('${item._id}')" title="Просмотр">
                             <i class="fas fa-eye"></i>
-                        </a>
-                        <button class="btn btn-outline-danger" onclick="deletePost(this, '${item._id}')" title="Удалить">
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePost(this, '${item._id}')" title="Удалить">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -325,6 +340,67 @@ document.addEventListener('DOMContentLoaded', () => {
             </tr>
         `).join('');
     }
+
+    window.viewPostDetail = (id) => {
+        const item = allContentItems.find(i => i._id === id);
+        if (!item) return;
+        
+        document.getElementById('previewModalHeaderTitle').textContent = item.title;
+        document.getElementById('previewModalContent').textContent = item.content;
+        
+        // Установка автора и даты
+        document.getElementById('previewModalAuthor').textContent = item.author ? item.author.username : 'Неизвестен';
+        document.getElementById('previewModalDate').textContent = new Date(item.createdAt).toLocaleDateString();
+
+        // Логика категории
+        const categoryEl = document.getElementById('previewModalCategory');
+        if (item.category === 'jobs') {
+            categoryEl.textContent = 'Вакансия';
+            categoryEl.className = 'badge bg-warning text-dark mb-2';
+        } else {
+            categoryEl.textContent = 'Новость';
+            categoryEl.className = 'badge bg-info mb-2';
+        }
+        
+        // Кнопка Одобрить
+        const approveBtn = document.getElementById('previewApproveBtn');
+        if (item.status === 'pending') {
+            approveBtn.classList.remove('d-none');
+            approveBtn.onclick = async () => {
+                const originalHtml = approveBtn.innerHTML;
+                approveBtn.disabled = true;
+                approveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+                try {
+                    await approvePost(approveBtn, item._id);
+                    previewModal.hide();
+                } finally {
+                    approveBtn.disabled = false;
+                    approveBtn.innerHTML = originalHtml;
+                }
+            };
+        } else {
+            approveBtn.classList.add('d-none');
+        }
+        
+        // Обработка изображения
+        const img = document.getElementById('previewModalImage');
+        const noImg = document.getElementById('previewModalNoImage');
+        
+        if (item.imageUrl) {
+            img.src = item.imageUrl;
+            img.classList.remove('d-none');
+            noImg.classList.add('d-none');
+            img.onerror = () => {
+                img.classList.add('d-none');
+                noImg.classList.remove('d-none');
+            };
+        } else {
+            img.classList.add('d-none');
+            noImg.classList.remove('d-none');
+        }
+
+        previewModal.show();
+    };
 
     window.approvePost = async (btn, id) => {
         const originalHtml = btn.innerHTML;
@@ -340,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'published' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { alert('Ошибка'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.unpublishPost = async (btn, id) => {
@@ -358,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: 'pending' })
             });
             if (res.ok) fetchContent();
-        } catch (err) { showNotification('Ошибка', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { alert('Ошибка'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     window.deletePost = async (btn, id) => {
@@ -375,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchContent();
                 fetchStats();
             }
-        } catch (err) { showNotification('Ошибка при удалении', 'danger'); btn.disabled = false; btn.innerHTML = originalHtml; }
+        } catch (err) { alert('Ошибка при удалении'); btn.disabled = false; btn.innerHTML = originalHtml; }
     };
 
     // Слушатели для кнопок в модалке просмотра
@@ -408,22 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
         });
     });
-// Стартовая загрузка
-fetchStats();
-fetchUsers();
-fetchSupport();
-fetchContent();
 
-// Автоматический переход к вкладке, если в URL есть #hash
-const hash = window.location.hash;
-if (hash) {
-    const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
-    if (tabTrigger) {
-        const tab = new bootstrap.Tab(tabTrigger);
-        tab.show();
-        // Также вызываем загрузку для нужной вкладки
-        if (hash === '#support-section') fetchSupport();
-        if (hash === '#content-section') fetchContent();
-    }
-}
+    fetchStats();
+    fetchUsers();
+    fetchSupport();
+    fetchContent();
 });

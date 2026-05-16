@@ -81,17 +81,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
         }
 
+        // Логика перевода категории
+        const categoryMap = {
+            'tech': 'Технологии',
+            'market': 'Рынок',
+            'experts': 'Эксперты',
+            'calendar': 'События',
+            'jobs': 'Вакансия'
+        };
+        const categoryLabel = categoryMap[news.category] || news.category;
+
         contentContainer.innerHTML = `
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <nav aria-label="breadcrumb" class="mb-4">
-                        <div class="d-flex justify-content-end mb-3">
-                            ${userInfo.role === 'admin' ? `
-                                <a href="/admin.html#content-section" class="btn btn-sm btn-outline-dark">
-                                    <i class="fas fa-shield-alt me-2"></i> Вернуться к модерации
-                                </a>
-                            ` : ''}
-                        </div>
                         <ol class="breadcrumb bg-transparent p-0">
                             <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">Все новости</a></li>
                             <li class="breadcrumb-item active" aria-current="page">${news.title}</li>
@@ -101,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <article class="news-article">
                         <h1 class="display-4 fw-bold mb-3">${news.title}</h1>
                         <div class="d-flex align-items-center gap-3 text-secondary mb-4">
-                            <span class="badge bh-bg-orange">${news.category}</span>
+                            <span class="badge bh-bg-orange">${categoryLabel}</span>
                             <time datetime="${news.createdAt}">${date}</time>
                         </div>
                         <div class="img-wrapper mb-5 shadow-sm rounded-4 overflow-hidden">
@@ -194,11 +197,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         loadComments(newsId);
                     } else {
                         const data = await res.json();
-                        alert(data.message || 'Ошибка при удалении');
+                        showNotification(data.message || 'Ошибка при удалении', 'danger');
                     }
                 } catch (err) {
                     console.error("Delete error:", err);
-                    alert('Сервер недоступен');
+                    showNotification('Сервер недоступен', 'danger');
                 }
             }
         }
@@ -225,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     loadComments(newsId); // Перезагружаем список
                 } else {
                     const errorData = await res.json();
-                    alert(errorData.message || 'Ошибка при отправке комментария');
+                    showNotification(errorData.message || 'Ошибка при отправке комментария', 'danger');
                 }
             } catch (err) {
                 console.error("Error posting comment:", err);

@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="news-card">
                     <img src="${item.imageUrl || 'images/logo.png'}" alt="${item.title}">
                     <div class="news-card-content">
-                        <small>${getCategoryName(item.category)} • ${new Date(item.createdAt).toLocaleDateString()}</small>
+                        <small>${getCategoryName(item.category)} • ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
                         <div class="text-center mt-auto">

@@ -58,6 +58,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // --- УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ---
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const confirmModalBtn = document.getElementById('confirmModalBtn');
+    let confirmCallback = null;
+
+    window.showConfirm = (title, body, btnText, callback) => {
+        document.getElementById('confirmModalTitle').textContent = title || 'Вы уверены?';
+        document.getElementById('confirmModalBody').textContent = body || 'Это действие нельзя будет отменить.';
+        confirmModalBtn.textContent = btnText || 'Удалить';
+        confirmCallback = callback;
+        confirmModal.show();
+    };
+
+    confirmModalBtn.addEventListener('click', () => {
+        if (confirmCallback) confirmCallback();
+        confirmModal.hide();
+    });
+
     // Загружаем данные профиля
     try {
         const response = await fetch('/api/auth/profile', {
@@ -172,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <h5 class="fw-bold mb-1">
                                     <a href="/news-detail.html?id=${job._id}" class="text-decoration-none text-dark hover-accent">${job.title}</a>
                                 </h5>
-                                <p class="small text-muted mb-2">${job.location || 'Локация не указана'} | ${new Date(job.createdAt).toLocaleDateString()}</p>
+                                <p class="small text-muted mb-2">${job.location || 'Локация не указана'} | ${new Date(job.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                 <span class="badge bh-bg-light text-dark mb-2">${getJobTypeName(job.jobType)}</span>
                             </div>
                         </div>
@@ -277,16 +295,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteJob(id) {
-        if (!confirm('Удалить эту вакансию?')) return;
-        try {
-            const res = await fetch(`/api/news/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) loadMyJobs();
-        } catch (err) {
-            alert('Не удалось удалить.');
-        }
+        showConfirm('Удалить вакансию?', 'Эта вакансия будет удалена навсегда.', 'Удалить', async () => {
+            try {
+                const res = await fetch(`/api/news/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) loadMyJobs();
+            } catch (err) {
+                showNotification('Не удалось удалить.', 'danger');
+            }
+        });
     }
 
     // --- ФУНКЦИИ ДЛЯ РАБОТЫ С РАСЧЕТАМИ ---
@@ -308,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <tr>
                     <td><span class="fw-bold text-dark">${calc.type}</span></td>
                     <td>${calc.result}</td>
-                    <td class="small text-muted">${new Date(calc.createdAt).toLocaleDateString()}</td>
+                    <td class="small text-muted">${new Date(calc.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
                     <td class="text-end">
                         <button class="btn btn-sm text-danger p-0 delete-calc-btn" data-id="${calc._id}" title="Удалить">&times;</button>
                     </td>
@@ -324,28 +343,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteCalculation(btn, id) {
-        if (!confirm('Удалить этот расчет из истории?')) return;
-        const originalHtml = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
-        try {
-            const res = await fetch(`/api/calculations/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                showNotification('Расчет удален', 'success');
-                loadUserCalculations();
-            } else {
-                showNotification('Не удалось удалить расчет.', 'danger');
+        showConfirm('Удалить расчет?', 'Этот расчет будет удален из вашей истории.', 'Удалить', async () => {
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+            try {
+                const res = await fetch(`/api/calculations/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    showNotification('Расчет удален', 'success');
+                    loadUserCalculations();
+                } else {
+                    showNotification('Не удалось удалить расчет.', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            } catch (err) {
+                showNotification('Ошибка удаления', 'danger');
                 btn.disabled = false;
                 btn.innerHTML = originalHtml;
             }
-        } catch (err) {
-            showNotification('Ошибка удаления', 'danger');
-            btn.disabled = false;
-            btn.innerHTML = originalHtml;
-        }
+        });
     }
 
     // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С ЧЕК-ЛИСТОМ ------------
@@ -395,7 +415,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         addTaskForm.onsubmit = async (e) => {
             e.preventDefault();
             const input = document.getElementById('task-input');
+            const submitBtn = addTaskForm.querySelector('button[type="submit"]');
             const text = input.value.trim();
+            
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+
             try {
                 const res = await fetch('/api/checklist', {
                     method: 'POST',
@@ -410,7 +436,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     loadUserChecklist();
                 }
             } catch (err) {
-                alert('Не удалось добавить задачу');
+                showNotification('Не удалось добавить задачу', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         };
     }
@@ -423,22 +452,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             loadUserChecklist();
         } catch (err) {
-            alert('Ошибка обновления');
+            showNotification('Ошибка обновления', 'danger');
         }
     }
 
     async function deleteTask(id) {
-        if (!confirm('Удалить задачу?')) return;
-        try {
-            await fetch(`/api/checklist/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            showNotification('Задача удалена', 'success');
-            loadUserChecklist();
-        } catch (err) {
-            showNotification('Ошибка удаления', 'danger');
-        }
+        showConfirm('Удалить задачу?', 'Эта задача будет удалена из вашего списка.', 'Удалить', async () => {
+            try {
+                await fetch(`/api/checklist/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                showNotification('Задача удалена', 'success');
+                loadUserChecklist();
+            } catch (err) {
+                showNotification('Ошибка удаления', 'danger');
+            }
+        });
     }
 
     function updateChecklistProgress(completed, total) {

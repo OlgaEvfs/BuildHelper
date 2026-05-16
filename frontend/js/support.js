@@ -9,16 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = supportForm.querySelector('button[type="submit"]');
             
             // Собираем данные
+            const email = document.getElementById('support-email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                messageDiv.textContent = 'Пожалуйста, введите корректный адрес электронной почты';
+                messageDiv.className = 'alert alert-danger mt-3';
+                messageDiv.classList.remove('d-none');
+                return;
+            }
+
             const formData = {
                 name: document.getElementById('support-name').value.trim(),
-                email: document.getElementById('support-email').value.trim(),
+                email: email,
                 subject: document.getElementById('support-subject').value.trim(),
                 message: document.getElementById('support-message').value.trim()
             };
 
             // Блокируем кнопку
+            const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Отправка...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Отправка...';
 
             try {
                 const response = await fetch('/api/support', {
@@ -54,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageDiv.classList.add('alert-danger');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Отправить запрос';
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }

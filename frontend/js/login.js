@@ -20,6 +20,15 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
+    // Валидация формата Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        emailInput.classList.add('is-invalid');
+        errorDiv.textContent = 'Введите корректный формат Email';
+        errorDiv.classList.remove('d-none');
+        return;
+    }
+
     // Проверяем на пустоту
     if (!email || !password) {
         if (!email) emailInput.classList.add('is-invalid');

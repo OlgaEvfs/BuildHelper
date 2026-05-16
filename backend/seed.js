@@ -93,13 +93,29 @@ const newsData = [
     }
 ];
 
+const User = require('./models/User');
+
 // Функция для заполнения базы данных
 const seedDB = async () => {
     try {
         await connectDB(); // Подключаемся к базе данных
+        
+        // Ищем админа для назначения автором
+        const admin = await User.findOne({ role: 'admin' });
+        if (!admin) {
+            console.error('Ошибка: Админ не найден. Создайте хотя бы одного пользователя с ролью admin.');
+            process.exit(1);
+        }
+
+        // Добавляем автора к каждой записи
+        const seededNews = newsData.map(item => ({
+            ...item,
+            author: admin._id
+        }));
+
         await News.deleteMany({}); // Очищаем коллекцию от старых данных
-        await News.insertMany(newsData); // Вставляем новые данные
-        console.log('Данные успешно добавлены в MongoDB!');
+        await News.insertMany(seededNews); // Вставляем новые данные
+        console.log(`Данные успешно добавлены в MongoDB! (Автор: ${admin.username})`);
         process.exit(); // Завершаем процесс после выполнения
     } catch (err) {
         console.error('Ошибка при заполнении базы данных:', err);
