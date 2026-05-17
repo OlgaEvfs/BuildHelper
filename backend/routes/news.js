@@ -77,7 +77,9 @@ router.post('/', authMiddleware, async (req, res) => {
             general: 'https://images.unsplash.com/photo-1504307651254-35680f336dbd?q=80&w=800'
         };
 
-        const finalImageUrl = imageUrl || (category === 'jobs' ? (vacancyImages[jobType] || vacancyImages.general) : imageUrl);
+        const finalImageUrl = (imageUrl && imageUrl.trim() !== '') 
+            ? imageUrl 
+            : (category === 'jobs' ? (vacancyImages[jobType] || vacancyImages.general) : imageUrl);
 
         const newPost = new News({
             author: req.user.id,
