@@ -17,11 +17,13 @@ window.fetchNews = async function() {
 
         const data = await response.json();
         const news = data.news; 
+        console.log("Данные новостей:", news);
 
         contentContainer.innerHTML = ''; 
         itemsContainer.innerHTML = ''; // Очищаем список заголовков перед добавлением новых
 
         if (!news || news.length === 0) {
+            console.log("Новостей нет");
             contentContainer.innerHTML = `
                 <div class="p-5 text-center">
                     <p class="text-muted">Новостей пока нет. Мы скоро добавим что-нибудь интересное!</p>
@@ -29,6 +31,7 @@ window.fetchNews = async function() {
             return;
         }
 
+        console.log("Начинаем рендеринг новостей...");
         news.forEach((item, i) => {
             const contentBlock = document.createElement('div');
             contentBlock.className = 'tabcontent';
@@ -41,7 +44,7 @@ window.fetchNews = async function() {
                     <div class="news-date">${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                     <h2>${item.title}</h2>
                     <p>${item.content.length > 120 ? item.content.substring(0, 120) + '...' : item.content}</p>
-                    <a href="/news-detail.html?id=${item._id}" class="btn-read bh-btn-outline">${item.category === 'jobs' ? 'Откликнуться' : 'Читать далее'}</a>
+                    <a href="/news-detail.html?id=${item._id}" class="btn-read">${item.category === 'jobs' ? 'Откликнуться' : 'Читать далее'}</a>
                 </div>
             `;
             contentContainer.appendChild(contentBlock);
@@ -84,7 +87,6 @@ window.initNewsTabs = function() {
     function hideTabContent() {
         tabsContent.forEach(item => {
             item.style.display = 'none';
-            item.classList.remove('fade');
         });
         tabs.forEach(item => item.classList.remove('tabheader-item-active'));
     }
@@ -93,20 +95,11 @@ window.initNewsTabs = function() {
         if (tabs[i] && tabsContent[i]) {
             hideTabContent();
             tabsContent[i].style.display = 'block';
-
-            // хак для анимации
-            setTimeout(() => {
-                tabsContent[i].classList.add('fade');
-            }, 10);
-
             tabs[i].classList.add('tabheader-item-active');
         }
     }
 
     if (itemsParent) {
-        //очищаем старый обработчик, если он был
-        itemsParent.onclick = null;
-
         itemsParent.onclick = (e) => {
             const target = e.target;
             if (target && target.classList.contains('tabheader-item')) {
@@ -117,5 +110,8 @@ window.initNewsTabs = function() {
         };
     }
 
-    showTabContent(0);
+    // Показываем первую вкладку сразу после генерации
+    if (tabs.length > 0) {
+        showTabContent(0);
+    }
 };

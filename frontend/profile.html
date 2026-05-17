@@ -37,7 +37,7 @@
                             <span id="user-initials">U</span>
                         </div>
                         <h4 class="mt-3 fw-bold" id="user-name-side">Загрузка...</h4>
-                        <p class="text-muted small">Пользователь BuildHelper</p>
+                        
                     </div>
                     <hr>
                     <div class="list-group list-group-flush">
@@ -100,18 +100,14 @@
                 <!-- 2D Планировщик -->
                 <section id="planner-section" class="d-none">
                     <div class="card border-0 shadow-sm p-4">
-                        <div class="mb-3">
-                            <a href="#" class="text-decoration-none small text-muted back-to-profile">
-                                <i class="fas fa-arrow-left me-1"></i> К данным аккаунта
-                            </a>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 d-none d-lg-flex">
                             <h2 class="fw-bold mb-0">2D Планировщик помещения</h2>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-sm btn-success" onclick="savePlanToServer()">💾 Сохранить проект</button>
                                 <button class="btn btn-sm btn-outline-primary" onclick="clearPlanner()">Очистить</button>
                             </div>
-                        </div>   
+                        </div>
+                        <h2 class="fw-bold mb-4 d-lg-none">2D Планировщик</h2>
                             
                         <div class="row g-4">
                             <!-- Панель управления -->
@@ -131,6 +127,12 @@
                                         <input type="number" id="plan-height" class="form-control form-control-sm" value="2.5" step="0.1">
                                     </div>
                                     <button class="btn bh-btn-primary btn-sm w-100" onclick="addRoom()">+ Добавить комнату</button>
+                                    
+                                    <!-- Кнопки управления (дублируются внизу для мобильных) -->
+                                    <div class="d-lg-none mt-4 d-flex gap-2">
+                                        <button class="btn btn-sm btn-success flex-grow-1" onclick="savePlanToServer()">💾 Сохранить</button>
+                                        <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="clearPlanner()">Очистить</button>
+                                    </div>
                                     
                                     <div class="mt-4">
                                         <h6 class="fw-bold mb-2 small">🛋️ Гостиная / Спальня:</h6>
@@ -232,11 +234,7 @@
                 <!-- История расчетов -->
                 <section id="calculations-section" class="d-none">
                     <div class="card border-0 shadow-sm p-4">
-                        <div class="mb-3">
-                            <a href="#" class="text-decoration-none small text-muted back-to-profile">
-                                <i class="fas fa-arrow-left me-1"></i> К данным аккаунта
-                            </a>
-                        </div>
+
                         <h2 class="fw-bold mb-4">История ваших расчетов</h2>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
@@ -262,11 +260,7 @@
                 <!-- Мой чек-лист -->
                 <section id="checklist-section" class="d-none">
                     <div class="card border-0 shadow-sm p-4">
-                        <div class="mb-3">
-                            <a href="#" class="text-decoration-none small text-muted back-to-profile">
-                                <i class="fas fa-arrow-left me-1"></i> К данным аккаунта
-                            </a>
-                        </div>
+
                         <h2 class="fw-bold mb-4">Мой план ремонта</h2>
 
                         <!-- Форма добавления -->
@@ -458,11 +452,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Модальное окно вакансий -->
-    <div class="modal fade" id="addJobModal" tabindex="-1" aria-hidden="true">
-        ... (existing content) ...
     </div>
 
     <!-- Модальное окно редактирования вакансии -->

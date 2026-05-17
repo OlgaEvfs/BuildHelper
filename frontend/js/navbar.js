@@ -8,27 +8,33 @@ window.updateNavbar = function() {
         try {
             const user = JSON.parse(userData);
 
-            // Если пользователь авторизован, показываем его имя и кнопку выхода
+            // Если пользователь авторизован, показываем выпадающее меню
+            // Используем dropdown-menu-end для корректного выравнивания
+            const isAdmin = user.role === 'admin';
             let navHtml = `
-                <span class="navbar-text me-3 d-none d-lg-inline">Привет, <strong>${user.username}</strong>!</span>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Привет, <strong>${user.username}</strong>!
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                        ${isAdmin ? 
+                            '<li><a class="dropdown-item" href="/admin.html">Админ-панель</a></li>' : 
+                            '<li><a class="dropdown-item" href="/profile.html">Кабинет</a></li>'
+                        }
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button id="logout-btn" class="dropdown-item text-danger logout-item">Выйти</button></li>
+                    </ul>
+                </div>
             `;
-
-            // Если роль пользователя - администратор, показываем ссылку на админ панель
-            if (user.role === 'admin') {
-                navHtml += `<a href="/admin.html" class="btn btn-sm btn-dark me-2">Админ-панель</a>`;
-            } else {
-                navHtml += `<a href="/profile.html" class="btn btn-sm bh-btn-accent me-2">Кабинет</a>`;
-            }
-
-            navHtml += `<button id="logout-btn" class="btn btn-sm btn-outline-danger">Выйти</button>`;
 
             authLinks.innerHTML = navHtml;
 
             // Добавляем обработчик для кнопки выхода
             document.getElementById('logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('userInfo'); // Удаляем данные пользователя из localStorage
-                window.location.href = '/'; // Перенаправляем на главную страницу
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('token');
+                window.location.href = '/';
             });
 
         } catch (error) {

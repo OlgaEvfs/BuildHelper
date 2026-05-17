@@ -14,6 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Проверка занятости email при потере фокуса
+    emailInput.addEventListener('blur', async () => {
+        const email = emailInput.value.trim();
+        if (!email) return;
+
+        try {
+            const response = await fetch('/api/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (data.exists) {
+                emailInput.classList.add('is-invalid');
+                errorDisplay.textContent = 'Этот email уже зарегистрирован.';
+                errorDisplay.classList.remove('d-none');
+            }
+        } catch (err) {
+            console.error('Ошибка проверки email:', err);
+        }
+    });
+
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -41,8 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 isInvalid = false;
             }
 
-            if (password.length < 6) {
+            const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
+            if (!passwordRegex.test(password)) {
                 passwordInput.classList.add('is-invalid');
+                errorDisplay.textContent = 'Пароль должен содержать минимум 8 символов, одну заглавную букву и одну цифру.';
                 isInvalid = false;
             }
 

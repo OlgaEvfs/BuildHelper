@@ -12,9 +12,12 @@ const registerUser = async (req, res) => {
         return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
     }
 
-    // Проверка длины пароля
-    if (password.length < 6) {
-        return res.status(400).json({ message: 'Пароль должен быть не менее 6 символов' });
+    // Проверка сложности пароля: минимум 8 символов, хотя бы одна цифра и одна заглавная буква
+    const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ 
+            message: 'Пароль слишком слабый. Он должен содержать минимум 8 символов, одну заглавную букву и одну цифру.' 
+        });
     }
 
     try {

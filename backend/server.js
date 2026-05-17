@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
+const checkEmailRoutes = require('./routes/checkEmail');
 const newsRoutes = require('./routes/news');
 const commentRoutes = require('./routes/comments');
 const calculationRoutes = require('./routes/calculations');
@@ -27,6 +28,7 @@ app.use(express.json()); // Позволяет серверу понимать J
 
 // Подключаем маршруты
 app.use('/api/auth', authRoutes); // Все маршруты к авторизации будут начинаться с /api/auth
+app.use('/api/check-email', checkEmailRoutes);
 
 // Роуты для новостей
 app.use('/api/news', newsRoutes); // Все маршруты к новостям будут начинаться с /api/news

@@ -30,8 +30,16 @@ let scale = 40;
 async function initCanvas() {
     const container = canvas.parentElement;
     if (!container) return;
-    canvas.width = container.offsetWidth;
-    canvas.height = container.offsetHeight;
+    
+    // Задаем минимальные размеры холста (например 800x600) чтобы было место для комнат на мобильном
+    const minWidth = window.innerWidth <= 768 ? 800 : container.offsetWidth;
+    const minHeight = window.innerWidth <= 768 ? 600 : container.offsetHeight;
+    
+    canvas.width = Math.max(container.offsetWidth, minWidth);
+    canvas.height = Math.max(container.offsetHeight, minHeight);
+    
+    // Возвращаем единый масштаб (например 40 px = 1 метр)
+    scale = 40; 
     
     // Загружаем план с сервера при первой инициализации
     if (rooms.length === 0) {
@@ -257,14 +265,28 @@ function render() {
 }
 
 function drawGlobalGrid() {
-    ctx.strokeStyle = '#f1f1f1';
+    // Промежуточная сетка (0.5 метра)
+    ctx.beginPath();
+    ctx.strokeStyle = '#f5f5f5';
     ctx.lineWidth = 1;
+    for (let i = 0; i < canvas.width; i += scale / 2) {
+        ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
+    }
+    for (let j = 0; j < canvas.height; j += scale / 2) {
+        ctx.moveTo(0, j); ctx.lineTo(canvas.width, j);
+    }
+    ctx.stroke();
+
+    // Основная сетка (1 метр)
+    ctx.beginPath();
+    ctx.strokeStyle = '#d0d0d0';
     for (let i = 0; i < canvas.width; i += scale) {
-        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+        ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
     }
     for (let j = 0; j < canvas.height; j += scale) {
-        ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
+        ctx.moveTo(0, j); ctx.lineTo(canvas.width, j);
     }
+    ctx.stroke();
 }
 
 function drawRoomObject(room) {
@@ -304,10 +326,19 @@ function drawFurnitureObject(item) {
     ctx.fillText(item.icon || '📦', ix + iw/2, iy + ih/2);
 }
 
-canvas.onmousedown = (e) => {
+// --- Поддержка мыши и Touch-событий (мобильные) ---
+function getPointerPos(e) {
     const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) / scale;
-    const my = (e.clientY - rect.top) / scale;
+    const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+    return {
+        mx: (clientX - rect.left) / scale,
+        my: (clientY - rect.top) / scale
+    };
+}
+
+function handlePointerDown(e) {
+    const { mx, my } = getPointerPos(e);
     let found = furniture.slice().reverse().find(f => mx > f.x && mx < f.x + f.w && my > f.y && my < f.y + f.h) ||
                 rooms.slice().reverse().find(r => mx > r.x && mx < r.x + r.l && my > r.y && my < r.y + r.w);
     if (found) {
@@ -316,18 +347,20 @@ canvas.onmousedown = (e) => {
         dragOffsetX = mx - found.x;
         dragOffsetY = my - found.y;
         canvas.style.cursor = 'grabbing';
+        // Если объект захвачен на мобильном, предотвращаем скролл страницы
+        if(e.type === 'touchstart') e.preventDefault();
     } else {
         selectObject(null);
     }
     render();
-};
+}
 
-canvas.onmousemove = (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX - rect.left) / scale;
-    const my = (e.clientY - rect.top) / scale;
+function handlePointerMove(e) {
+    const { mx, my } = getPointerPos(e);
 
     if (isDragging && selectedObject) {
+        if (e.cancelable) e.preventDefault(); // Предотвращаем скролл страницы только когда тащим объект
+
         let newX = mx - dragOffsetX;
         let newY = my - dragOffsetY;
         const objW = selectedObject.type === 'room' ? selectedObject.l : selectedObject.w;
@@ -343,7 +376,6 @@ canvas.onmousemove = (e) => {
 
         if (selectedObject.type === 'room') {
             // ЛОГИКА ПРИЛИПАНИЯ КОМНАТ
-            const SNAP_THRESHOLD = 0.2;
             rooms.forEach(other => {
                 if (other === selectedObject) return;
                 if (Math.abs(newX - (other.x + other.l)) < SNAP_THRESHOLD) newX = other.x + other.l;
@@ -372,15 +404,11 @@ canvas.onmousemove = (e) => {
 
             // Прилипание мебели к внутренним стенам комнаты
             rooms.forEach(room => {
-                // Левая внутренняя стена (если мебель внутри комнаты)
                 if (Math.abs(newX - room.x) < SNAP_THRESHOLD && newX >= room.x) newX = room.x;
-                // Правая внутренняя стена
                 if (Math.abs((newX + objW) - (room.x + room.l)) < SNAP_THRESHOLD && (newX + objW) <= (room.x + room.l)) {
                     newX = room.x + room.l - objW;
                 }
-                // Верхняя внутренняя стена
                 if (Math.abs(newY - room.y) < SNAP_THRESHOLD && newY >= room.y) newY = room.y;
-                // Нижняя внутренняя стена
                 if (Math.abs((newY + objH) - (room.y + room.w)) < SNAP_THRESHOLD && (newY + objH) <= (room.y + room.w)) {
                     newY = room.y + room.w - objH;
                 }
@@ -394,9 +422,28 @@ canvas.onmousemove = (e) => {
                         rooms.find(r => mx > r.x && mx < r.x + r.l && my > r.y && my < r.y + r.w);
         canvas.style.cursor = hovered ? 'move' : 'crosshair';
     }
-};
+}
 
-canvas.onmouseup = () => { isDragging = false; canvas.style.cursor = 'crosshair'; };
+function handlePointerUp() { 
+    isDragging = false; 
+    canvas.style.cursor = 'crosshair'; 
+}
+
+// Удаляем старые обработчики и ставим новые универсальные
+canvas.onmousedown = null;
+canvas.onmousemove = null;
+canvas.onmouseup = null;
+
+canvas.addEventListener('mousedown', handlePointerDown);
+canvas.addEventListener('mousemove', handlePointerMove);
+canvas.addEventListener('mouseup', handlePointerUp);
+canvas.addEventListener('mouseleave', handlePointerUp);
+
+// Touch-события
+canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
+canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+canvas.addEventListener('touchend', handlePointerUp);
+canvas.addEventListener('touchcancel', handlePointerUp);
 
 function applyToCalculators() {
     if (rooms.length === 0) return;

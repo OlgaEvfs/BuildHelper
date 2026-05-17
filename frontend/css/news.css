@@ -58,31 +58,44 @@
 }
 
 /* Фильтры новостей */
-.bh-btn-accent-outline {
-    border: 1px solid var(--border-dark) !important;
-    background-color: var(--white) !important;
-    color: var(--text-muted) !important;
-    transition: all 0.3s ease !important;
+#news-filters, #job-filters {
+    padding-bottom: 5px;
 }
 
-.bh-btn-accent-outline:hover, 
-.bh-btn-accent-outline.active {
-    background-color: var(--accent-blue) !important;
-    border-color: var(--accent-blue) !important;
-    color: var(--white) !important;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+@media (max-width: 768px) {
+    #news-filters, #job-filters {
+        flex-direction: column !important; /* В колонку */
+        flex-wrap: wrap !important;
+        overflow-x: visible !important; /* Убираем прокрутку */
+        padding: 10px 0;
+        gap: 8px !important;
+    }
+
+    #news-filters .btn, #job-filters .btn {
+        width: 100%; /* Растягиваем на всю ширину */
+        text-align: center;
+        padding: 10px !important;
+    }
+
+    .news-card img {
+        height: 180px;
+    }
+
+    .news-card-content {
+        padding: 15px;
+    }
+
+    .news-card-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .news-card-content p {
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
 }
 
-#job-filters .btn {
-    font-size: 0.85rem;
-    padding: 5px 15px;
-    border-color: var(--border-dark);
-}
-
-#job-filters .btn.active {
-    background-color: var(--accent-orange) !important;
-    border-color: var(--accent-orange) !important;
-}
 /* Пагинация */
 .page-link {
     padding: 10px 18px;
@@ -111,4 +124,8 @@
     background-color: var(--bg-light);
     color: var(--text-light);
     border-color: var(--border-color);
+}
+
+#news-grid {
+    margin-top: 30px;
 }

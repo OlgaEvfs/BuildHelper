@@ -88,7 +88,62 @@ main {
     transition: color 0.2s ease;
 }
 
-.clickable-message:hover {
-    color: #007bff;
-    text-decoration: underline;
+
+/* Адаптивность для админ-панели */
+@media (max-width: 991px) {
+    .admin-stat-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .admin-stat-card .fs-1 {
+        font-size: 1.5rem !important;
+    }
+
+    .admin-stat-card .card-body {
+        padding: 1rem !important;
+    }
+    
+    #adminTabs .nav-link {
+        padding: 8px 12px !important;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-card {
+        min-height: auto !important;
+        margin-bottom: 1rem;
+    }
+    
+    .table-responsive {
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--white);
+    }
+    
+    .table {
+        min-width: 700px; /* Немного увеличим для комфорта */
+        font-size: 0.8rem; 
+    }
+    
+    .table td, .table th {
+        padding: 0.75rem 0.5rem !important; 
+    }
+
+    .admin-stat-card {
+        margin-bottom: 0.5rem;
+    }
+}
+
+
+/* Исправление отступов для мобильных */
+@media (max-width: 576px) {
+    .container-fluid, .container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .dropdown-menu {
+        max-width: 90vw !important;
+    }
 }

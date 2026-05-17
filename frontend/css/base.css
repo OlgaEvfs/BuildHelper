@@ -28,12 +28,21 @@
 
 html {
     scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-light);
     color: var(--text-main); 
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Принудительный перенос слишком длинных слов/ссылок */
+* {
+    word-wrap: break-word;
 }
 
 /* Глобальное выравнивание футера */
@@ -77,7 +86,6 @@ main {
 
 /* logo */
 .navbar-brand img, footer img[alt="Logo"] {
-    border-radius: 12px;
     box-shadow: 0 2px 8px var(--shadow-medium);
     transition: transform 0.3s ease;
     object-fit: cover;
@@ -377,4 +385,126 @@ body.modal-open {
 
 .img-wrapper img.loaded {
     opacity: 1;
+}
+
+/* Стили для Dropdown меню */
+.dropdown-menu .dropdown-item {
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-menu li:hover .dropdown-item {
+    background-color: var(--bg-accent-light) !important;
+    color: var(--accent-blue) !important;
+}
+
+/* Специфичный стиль для кнопки выхода при наведении */
+.dropdown-menu li:hover .logout-item {
+    background-color: rgba(255, 77, 77, 0.1) !important; /* Светло-красный фон */
+    color: var(--error-red) !important; /* Красный текст */
+}
+
+/* Фикс для навигации и выпадающего меню пользователя на мобильных */
+@media (max-width: 576px) {
+    /* Позволяем элементам в навигации переноситься на новую строку, если не хватает места */
+    .navbar .container-fluid {
+        flex-wrap: wrap;
+    }
+    
+    .navbar .ms-auto {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    /* Отвязываем меню от кнопки и привязываем к ширине экрана */
+    .navbar .dropdown {
+        position: static !important;
+    }
+
+    .navbar .dropdown-menu {
+        position: absolute !important;
+        right: 1rem !important;
+        left: auto !important;
+        transform: none !important;
+        top: 100% !important;
+        margin-top: 0.5rem !important;
+        min-width: 200px;
+        z-index: 1060;
+    }
+}
+
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    :root {
+        --container-padding: 1rem;
+    }
+    
+    h1.display-4 {
+        font-size: 2.2rem !important;
+    }
+
+    h2.display-5 {
+        font-size: 1.8rem !important;
+    }
+    
+    .navbar {
+        padding: 6px 0 !important;
+    }
+
+    .navbar-brand img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .container-fluid.px-4 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .btn-lg {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+
+    /* Утилиты для отступов на мобильных */
+    .py-mobile-3 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+    .mb-mobile-3 {
+        margin-bottom: 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .bh-brand-name {
+        display: inline-block;
+        font-size: 1.1rem;
+    }
+    
+    .navbar-brand {
+        margin-right: 0;
+    }
+
+    /* Центрирование кнопок в футере */
+    footer .col-lg-4 {
+        text-align: center;
+    }
+
+    footer .d-flex {
+        justify-content: center;
+    }
+}
+
+@media (min-width: 769px) {
+    :root {
+        --container-padding: 2rem;
+    }
 }
