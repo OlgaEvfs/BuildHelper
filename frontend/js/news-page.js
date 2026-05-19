@@ -111,35 +111,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('token');
         const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
         const isAdmin = userInfo.role === 'admin';
+        const addBtn = addJobContainer.querySelector('button');
 
+        // Кнопка видна админу всегда (если авторизован), пользователю - только в вакансиях
         if (token && (isAdmin || currentCategory === 'jobs')) {
             addJobContainer.classList.remove('d-none');
             
-            // Показываем поле URL картинки всем (так как теперь картинка только через URL)
+            // Меняем текст кнопки
+            addBtn.textContent = isAdmin ? '+ Создать публикацию' : '+ Опубликовать вакансию';
+            
             const imageWrapper = document.getElementById('post-image-wrapper');
-            if (imageWrapper) {
-                imageWrapper.classList.remove('d-none');
-            }
-
-            // Настройка селекта категорий
             const categorySelect = document.getElementById('post-category');
-            if (categorySelect) {
-                const options = categorySelect.querySelectorAll('option');
-                options.forEach(opt => {
-                    if (opt.value !== 'jobs') {
-                        opt.style.display = isAdmin ? 'block' : 'none';
-                    }
-                });
-                
-                // Устанавливаем категорию по умолчанию
-                if (currentCategory !== 'all') {
-                    categorySelect.value = currentCategory;
-                } else {
-                    categorySelect.value = isAdmin ? 'tech' : 'jobs';
+            
+            if (isAdmin) {
+                // Админ видит всё
+                if (imageWrapper) imageWrapper.classList.remove('d-none');
+                if (categorySelect) {
+                    categorySelect.parentElement.classList.remove('d-none');
+                    categorySelect.querySelectorAll('option').forEach(opt => opt.style.display = 'block');
                 }
-                
-                toggleJobFields();
+            } else {
+                // Обычный пользователь видит только вакансии
+                if (imageWrapper) imageWrapper.classList.add('d-none');
+                if (categorySelect) {
+                    categorySelect.parentElement.classList.add('d-none');
+                    categorySelect.innerHTML = '<option value="jobs" selected>Вакансия</option>';
+                }
             }
+                
+            toggleJobFields();
         } else {
             addJobContainer.classList.add('d-none');
         }
