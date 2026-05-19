@@ -5,6 +5,7 @@ const News = require('../models/News');
 const Comment = require('../models/Comment');
 const Calculation = require('../models/Calculation');
 const Planner = require('../models/Planner');
+const Checklist = require('../models/Checklist');
 const SupportRequest = require('../models/SupportRequest');
 const protect = require('../middleware/authMiddleware');
 const admin = require('../middleware/adminMiddleware');
@@ -101,6 +102,7 @@ router.delete('/users/:id', async (req, res) => {
             Comment.deleteMany({ author: userId }),
             Calculation.deleteMany({ user: userId }),
             Planner.deleteMany({ user: userId }),
+            Checklist.deleteMany({ user: userId }),
             User.findByIdAndDelete(userId)
         ]);
 
@@ -135,6 +137,31 @@ router.put('/content/:id/status', async (req, res) => {
         res.json({ message: `Запись ${status === 'published' ? 'опубликована' : 'отправлена на модерацию'}` });
     } catch (err) {
         res.status(500).json({ message: 'Ошибка при обновлении статуса' });
+    }
+});
+
+// @desc Удалить запись (новость или вакансию)
+router.delete('/content/:id', async (req, res) => {
+    console.log(`--- Запрос на удаление контента: ${req.params.id} ---`);
+    try {
+        const item = await News.findById(req.params.id);
+        if (!item) {
+            console.log('Ошибка: Запись не найдена в БД');
+            return res.status(404).json({ message: 'Запись не найдена' });
+        }
+
+        console.log(`Удаление записи "${item.title}" и комментариев к ней...`);
+        // Удаляем саму запись и все комментарии к ней
+        const result = await Promise.all([
+            News.findByIdAndDelete(req.params.id),
+            Comment.deleteMany({ news: req.params.id })
+        ]);
+        
+        console.log('Запись успешно удалена:', result);
+        res.json({ message: 'Запись успешно удалена' });
+    } catch (err) {
+        console.error('КРИТИЧЕСКАЯ ОШИБКА ПРИ УДАЛЕНИИ КОНТЕНТА:', err);
+        res.status(500).json({ message: 'Ошибка сервера при удалении записи: ' + err.message });
     }
 });
 

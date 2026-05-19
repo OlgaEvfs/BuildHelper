@@ -459,10 +459,11 @@ window.deletePost = async (btn, id) => {
                     window.fetchContent();
                     fetchStats();
                 } else {
-                    throw new Error('Ошибка при удалении');
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Ошибка при удалении');
                 }
             } catch (err) {
-                showNotification('Ошибка при удалении', 'danger');
+                showNotification(err.message, 'danger');
                 btn.disabled = false;
                 btn.innerHTML = originalHtml;
             }
