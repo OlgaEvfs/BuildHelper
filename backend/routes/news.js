@@ -208,9 +208,22 @@ router.delete('/:id', authMiddleware, async (req,res) => {
             return res.status(403).json({ message: 'Нет прав на удаление' });
         }
 
+        // Если есть картинка и она локальная (начинается с /uploads/)
+        if (post.imageUrl && post.imageUrl.startsWith('/uploads/')) {
+            // Преобразуем url в путь к файлу: /uploads/filename.jpg -> ../uploads/filename.jpg
+            const fileName = post.imageUrl.split('/').pop();
+            const filePath = path.join(__dirname, '../uploads', fileName);
+            
+            // Удаляем файл, если он существует
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
         await News.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Запись удалена' });
+        res.json({ message: 'Запись и картинка удалены' });
     } catch (err) {
+        console.error('Ошибка при удалении:', err);
         res.status(500).json({ message: 'Ошибка при удалении' });
     }
 });
