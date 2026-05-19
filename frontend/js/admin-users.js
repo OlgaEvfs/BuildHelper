@@ -295,6 +295,9 @@ function renderContent(items) {
                     <button class="btn btn-sm btn-outline-primary" onclick="viewPostDetail('${item._id}')" title="Просмотр">
                         <i class="fas fa-eye"></i>
                     </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="editPost('${item._id}')" title="Редактировать">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="deletePost(this, '${item._id}')" title="Удалить">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -303,6 +306,33 @@ function renderContent(items) {
         </tr>
     `).join('');
 }
+
+window.editPost = (id) => {
+    const item = allContentItems.find(i => i._id === id);
+    if (!item) return;
+
+    document.getElementById('edit-post-id').value = item._id;
+    document.getElementById('edit-post-title').value = item.title;
+    document.getElementById('edit-post-content').value = item.content;
+    document.getElementById('edit-post-category').value = item.category;
+    document.getElementById('edit-post-image').value = item.imageUrl || '';
+
+    const jobFields = document.getElementById('edit-job-fields-wrapper');
+    if (item.category === 'jobs') {
+        jobFields.classList.remove('d-none');
+        document.getElementById('edit-job-type').value = item.jobType || 'general';
+        document.getElementById('edit-job-employment').value = item.employment || 'Полная занятость';
+        document.getElementById('edit-job-location').value = item.location || '';
+        document.getElementById('edit-job-salary').value = item.salary || '';
+        document.getElementById('edit-job-contact-name').value = item.contactName || '';
+        document.getElementById('edit-job-contact-phone').value = item.contactPhone || '';
+        document.getElementById('edit-job-contact-email').value = item.contactEmail || '';
+    } else {
+        jobFields.classList.add('d-none');
+    }
+
+    new bootstrap.Modal(document.getElementById('editPostModal')).show();
+};
 
 window.viewPostDetail = (id) => {
     const item = allContentItems.find(i => i._id === id);
@@ -470,6 +500,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     document.getElementById('post-category').addEventListener('change', toggleJobFields);
+
+    // ЛОГИКА РЕДАКТИРОВАНИЯ ПОСТА
+    function toggleEditJobFields() {
+        const categorySelect = document.getElementById('edit-post-category');
+        const jobFields = document.getElementById('edit-job-fields-wrapper');
+        if (categorySelect && jobFields) {
+            if (categorySelect.value === 'jobs') {
+                jobFields.classList.remove('d-none');
+                document.getElementById('edit-job-contact-phone').required = true;
+            } else {
+                jobFields.classList.add('d-none');
+                document.getElementById('edit-job-contact-phone').required = false;
+            }
+        }
+    }
+    document.getElementById('edit-post-category').addEventListener('change', toggleEditJobFields);
+
+    document.getElementById('edit-post-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-post-id').value;
+        const msg = document.getElementById('edit-post-form-message');
+        const submitBtn = document.getElementById('edit-post-form').querySelector('button[type="submit"]');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Сохранение...';
+        
+        const category = document.getElementById('edit-post-category').value;
+        const postData = {
+            title: document.getElementById('edit-post-title').value,
+            content: document.getElementById('edit-post-content').value,
+            category: category,
+            imageUrl: document.getElementById('edit-post-image').value.trim()
+        };
+
+        if (category === 'jobs') {
+            postData.jobType = document.getElementById('edit-job-type').value;
+            postData.employment = document.getElementById('edit-job-employment').value;
+            postData.location = document.getElementById('edit-job-location').value;
+            postData.salary = document.getElementById('edit-job-salary').value;
+            postData.contactName = document.getElementById('edit-job-contact-name').value;
+            postData.contactPhone = document.getElementById('edit-job-contact-phone').value;
+            postData.contactEmail = document.getElementById('edit-job-contact-email').value;
+        }
+
+        try {
+            const res = await fetch(`/api/news/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            });
+
+            if (res.ok) {
+                msg.textContent = 'Запись успешно обновлена!';
+                msg.className = 'alert alert-success mt-3';
+                msg.classList.remove('d-none');
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('editPostModal')).hide();
+                    msg.classList.add('d-none');
+                    window.fetchContent();
+                }, 1500);
+            } else {
+                const err = await res.json();
+                msg.textContent = err.message || 'Ошибка при обновлении';
+                msg.className = 'alert alert-danger mt-3';
+                msg.classList.remove('d-none');
+            }
+        } catch (error) {
+            msg.textContent = 'Ошибка сети';
+            msg.className = 'alert alert-danger mt-3';
+            msg.classList.remove('d-none');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Сохранить';
+        }
+    });
 
     document.getElementById('add-post-form').addEventListener('submit', async (e) => {
         e.preventDefault();

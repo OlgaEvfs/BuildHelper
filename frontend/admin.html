@@ -232,6 +232,97 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Модальное окно редактирования записи -->
+                            <div class="modal fade" id="editPostModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content border-0 shadow">
+                                        <div class="modal-header bh-bg-dark text-white">
+                                            <h5 class="modal-title fw-bold">Редактирование</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <form id="edit-post-form">
+                                                <input type="hidden" id="edit-post-id">
+                                                <div class="row g-3">
+                                                    <div class="col-md-8">
+                                                        <label class="form-label small fw-bold">Заголовок *</label>
+                                                        <input type="text" id="edit-post-title" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label small fw-bold">Категория *</label>
+                                                        <select id="edit-post-category" class="form-select" required>
+                                                            <option value="jobs">Вакансия</option>
+                                                            <option value="tech">Технологии</option>
+                                                            <option value="market">Рынок</option>
+                                                            <option value="experts">Эксперты</option>
+                                                            <option value="calendar">Календарь</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label small fw-bold">URL Изображения</label>
+                                                        <input type="url" id="edit-post-image" class="form-control" placeholder="https://example.com/image.jpg">
+                                                    </div>
+                                                    <!-- Специфичные поля вакансии -->
+                                                    <div id="edit-job-fields-wrapper" class="row g-3 m-0 p-0 d-none">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small fw-bold">Тип работ *</label>
+                                                            <select id="edit-job-type" class="form-select">
+                                                                <option value="finishing">Отделочные работы</option>
+                                                                <option value="plumbing">Сантехника</option>
+                                                                <option value="electrical">Электрика</option>
+                                                                <option value="masonry">Каменные работы</option>
+                                                                <option value="roofing">Кровля</option>
+                                                                <option value="hvac">Вентиляция/Отопление</option>
+                                                                <option value="general">Общие работы</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small fw-bold">Занятость</label>
+                                                            <select id="edit-job-employment" class="form-select">
+                                                                <option value="Полная занятость">Полная занятость</option>
+                                                                <option value="Частичная занятость">Частичная занятость</option>
+                                                                <option value="Подряд">Подряд</option>
+                                                                <option value="Временная работа">Временная работа</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small fw-bold">Локация</label>
+                                                            <input type="text" id="edit-job-location" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small fw-bold">Оплата</label>
+                                                            <input type="text" id="edit-job-salary" class="form-control">
+                                                        </div>
+                                                        <hr class="my-3">
+                                                        <div class="col-md-4">
+                                                            <label class="form-label small fw-bold">Имя контакта</label>
+                                                            <input type="text" id="edit-job-contact-name" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="form-label small fw-bold">Телефон *</label>
+                                                            <input type="tel" id="edit-job-contact-phone" class="form-control">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="form-label small fw-bold">Email контакта</label>
+                                                            <input type="email" id="edit-job-contact-email" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label class="form-label small fw-bold">Содержимое *</label>
+                                                        <textarea id="edit-post-content" class="form-control" rows="6" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div id="edit-post-form-message" class="alert d-none mt-3"></div>
+                                                <div class="mt-4 text-end">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                    <button type="submit" class="btn bh-btn-primary px-4">Сохранить</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
                                     <thead>
