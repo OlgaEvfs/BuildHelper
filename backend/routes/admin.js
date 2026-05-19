@@ -142,26 +142,22 @@ router.put('/content/:id/status', async (req, res) => {
 
 // @desc Удалить запись (новость или вакансию)
 router.delete('/content/:id', async (req, res) => {
-    console.log(`--- Запрос на удаление контента: ${req.params.id} ---`);
     try {
         const item = await News.findById(req.params.id);
         if (!item) {
-            console.log('Ошибка: Запись не найдена в БД');
             return res.status(404).json({ message: 'Запись не найдена' });
         }
 
-        console.log(`Удаление записи "${item.title}" и комментариев к ней...`);
         // Удаляем саму запись и все комментарии к ней
-        const result = await Promise.all([
+        await Promise.all([
             News.findByIdAndDelete(req.params.id),
             Comment.deleteMany({ news: req.params.id })
         ]);
         
-        console.log('Запись успешно удалена:', result);
         res.json({ message: 'Запись успешно удалена' });
     } catch (err) {
-        console.error('КРИТИЧЕСКАЯ ОШИБКА ПРИ УДАЛЕНИИ КОНТЕНТА:', err);
-        res.status(500).json({ message: 'Ошибка сервера при удалении записи: ' + err.message });
+        console.error('Ошибка при удалении контента:', err);
+        res.status(500).json({ message: 'Ошибка сервера при удалении записи' });
     }
 });
 

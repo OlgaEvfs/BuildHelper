@@ -408,8 +408,8 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Занятость</label>
-                                <select id="job-employment" class="form-select">
+                                <label class="form-label small fw-bold">Занятость *</label>
+                                <select id="job-employment" class="form-select" required>
                                     <option value="Полная занятость">Полная занятость</option>
                                     <option value="Частичная занятость">Частичная занятость</option>
                                     <option value="Подряд">Подряд</option>
@@ -417,12 +417,12 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Город / Локация</label>
-                                <input type="text" id="job-location" class="form-control"> 
+                                <label class="form-label small fw-bold">Город / Локация *</label>
+                                <input type="text" id="job-location" class="form-control" required> 
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Оплата (евро/текст)</label>
-                                <input type="text" id="job-salary" class="form-control" placeholder="Например: 15€/час или Договорная"> 
+                                <label class="form-label small fw-bold">Оплата (евро/текст) *</label>
+                                <input type="text" id="job-salary" class="form-control" placeholder="Например: 15€/час или Договорная" required> 
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold">Описание вакансии *</label>
@@ -431,16 +431,16 @@
                             <hr class="my-3">
                             <h6 class="fw-bold">Контактные данные</h6>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold">Имя</label>
-                                <input type="text" id="job-contact-name" class="form-control">
+                                <label class="form-label small fw-bold">Имя *</label>
+                                <input type="text" id="job-contact-name" class="form-control" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold">Телефон *</label>
                                 <input type="tel" id="job-contact-phone" class="form-control" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold">Email</label>
-                                <input type="email" id="job-contact-email" class="form-control">
+                                <label class="form-label small fw-bold">Email *</label>
+                                <input type="email" id="job-contact-email" class="form-control" required>
                             </div>
                         </div>
                         <div id="job-form-message" class="alert d-none mt-3"></div>

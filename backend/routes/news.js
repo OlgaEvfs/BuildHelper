@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const News = require('../models/News');
 const authMiddleware = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
 // Получить вакансии текущего пользователя
 router.get('/my-jobs', authMiddleware, async (req, res) => {
@@ -51,29 +52,48 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Создать новую запись (Новость или Вакансия)
-router.post('/', authMiddleware, async (req, res) => {
-    console.log('--- Получен запрос на создание новости ---');
-    console.log('Тело запроса (req.body):', req.body);
-
+router.post('/', authMiddleware, (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err.message);
+            return res.status(400).json({ message: 'Ошибка загрузки файла: ' + err.message });
+        }
+        next();
+    });
+}, async (req, res) => {
     try {
-        // Очистка данных: берем только непустые строки и обрезаем пробелы
-        const data = {};
-        for (let key in req.body) {
-            if (req.body[key] && typeof req.body[key] === 'string' && req.body[key].trim() !== '') {
-                data[key] = req.body[key].trim();
+        const isAdmin = req.user.role === 'admin';
+        
+        // Извлекаем все возможные поля из req.body
+        const { 
+            title, content, category, imageUrl, 
+            jobType, location, employment, salary, 
+            contactName, contactEmail, contactPhone 
+        } = req.body;
+
+        // Валидация обязательных полей
+        if (!title || !content || !category) {
+            return res.status(400).json({ 
+                message: 'Заполните обязательные поля (Заголовок, Содержимое, Категория)',
+                received: { title: !!title, content: !!content, category: !!category } 
+            });
+        }
+
+        // Валидация вакансий
+        if (category === 'jobs') {
+            if (!jobType || !location || !salary || !contactName || !contactEmail || !contactPhone) {
+                return res.status(400).json({ message: 'Для вакансии должны быть заполнены все поля: Тип, Локация, Оплата, Контактное имя, Email и Телефон.' });
+            }
+            
+            // Эстонский телефон: от 7 до 15 цифр, может начинаться с +
+            const phoneRegex = /^\+?\d{7,15}$/;
+            if (!phoneRegex.test(contactPhone.replace(/\s/g, ''))) {
+                return res.status(400).json({ message: 'Укажите корректный эстонский номер телефона (минимум 7 цифр).' });
             }
         }
 
-        const { title, content, category, imageUrl, jobType, location, employment, salary, contactName, contactEmail, contactPhone } = data;
-        const isAdmin = req.user.role === 'admin';
-
         if (category !== 'jobs' && !isAdmin) {
             return res.status(403).json({ message: 'Обычные пользователи могут создавать только вакансии' });
-        }
-
-        if (!title || !content || !category) {
-            return res.status(400).json({ message: 'Заполните обязательные поля (Заголовок, Содержимое, Категория)' });
         }
 
         const vacancyImages = {
@@ -88,7 +108,12 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const defaultNewsImage = 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=800';
 
-        let finalImageUrl = (imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '') ? imageUrl : null;
+        let finalImageUrl = (imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '') ? imageUrl.trim() : null;
+
+        // Если загружен файл, он имеет приоритет
+        if (req.file) {
+            finalImageUrl = `/uploads/${req.file.filename}`;
+        }
 
         if (!finalImageUrl) {
             if (category === 'jobs') {
@@ -101,35 +126,40 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const newPost = new News({
             author: req.user._id || req.user.id,
-            title, 
-            content, 
-            category, 
+            title: title.trim(), 
+            content: content.trim(), 
+            category: category.trim(), 
             imageUrl: finalImageUrl,
             jobType: category === 'jobs' ? (jobType || 'general') : null, 
-            location, 
-            employment, 
-            salary,
-            contactName, 
-            contactEmail, 
-            contactPhone,
+            location: location ? location.trim() : '', 
+            employment: employment || null, 
+            salary: salary ? salary.trim() : '',
+            contactName: contactName ? contactName.trim() : '', 
+            contactEmail: contactEmail ? contactEmail.trim() : '', 
+            contactPhone: contactPhone ? contactPhone.trim() : '',
             status: isAdmin ? 'published' : 'pending'
         });
 
-        console.log('Подготовленный объект для сохранения:', newPost);
-
         await newPost.save();
-        console.log('Запись успешно сохранена в БД');
         res.status(201).json(newPost);
     } catch (dbErr) {
-        console.error('ПОДРОБНАЯ ОШИБКА БД:', dbErr);
-        // Возвращаем более подробную ошибку валидации, если она есть
+        console.error('ОШИБКА ПРИ СОЗДАНИИ ЗАПИСИ:', dbErr);
         const errorMsg = dbErr.errors ? Object.values(dbErr.errors).map(e => e.message).join(', ') : dbErr.message;
-        res.status(500).json({ message: 'Ошибка: ' + errorMsg });
+        res.status(500).json({ message: 'Ошибка сохранения: ' + errorMsg });
     }
 });
 
 // Редактировать (Автор или Админ)
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', authMiddleware, (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+        if (err) {
+            console.error('Multer error:', err.message);
+            return res.status(400).json({ message: 'Ошибка загрузки файла: ' + err.message });
+        }
+        next();
+    });
+}, async (req, res) => {
+    console.log(`--- [BACKEND] PUT /api/news/${req.params.id} ---`);
     try {
         const post = await News.findById(req.params.id);
         if (!post) return res.status(404).json({ message: 'Запись не найдена' });
@@ -141,19 +171,27 @@ router.put('/:id', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Нет прав на редактирование' });
         }
 
-        if (req.body.category && req.body.category !== 'jobs' && !isAdmin) {
+        const updateData = { ...req.body };
+        
+        // Если загружен новый файл, обновляем путь
+        if (req.file) {
+            updateData.imageUrl = `/uploads/${req.file.filename}`;
+        }
+
+        if (updateData.category && updateData.category !== 'jobs' && !isAdmin) {
             return res.status(403).json({ message: 'Только администратор может использовать эту категорию' });
         }
 
-        const updateData = { ...req.body };
         if (!isAdmin) {
             updateData.status = 'pending';
         }
 
-        const updatePost = await News.findByIdAndUpdate(req.params.id, { $set: updateData }, { returnDocument: 'after' });
+        const updatePost = await News.findByIdAndUpdate(req.params.id, { $set: updateData }, { returnDocument: 'after', runValidators: true });
         res.json(updatePost);
     } catch (err) {
-        res.status(500).json({ message: 'Ошибка при обновлении' });
+        console.error('ОШИБКА ПРИ ОБНОВЛЕНИИ ЗАПИСИ:', err);
+        const errorMsg = err.errors ? Object.values(err.errors).map(e => e.message).join(', ') : err.message;
+        res.status(500).json({ message: 'Ошибка при обновлении: ' + errorMsg });
     }
 });
 

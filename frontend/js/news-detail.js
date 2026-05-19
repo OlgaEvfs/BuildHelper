@@ -81,15 +81,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
         }
 
-        // Логика перевода категории
-        const categoryMap = {
-            'tech': 'Технологии',
-            'market': 'Рынок',
-            'experts': 'Эксперты',
-            'calendar': 'События',
-            'jobs': 'Вакансия'
+        // Вспомогательные функции для перевода
+        const getCategoryName = (cat) => {
+            const categories = { 'tech': 'Технологии', 'market': 'Рынок', 'experts': 'Эксперты', 'calendar': 'Календарь', 'jobs': 'Вакансии' };
+            return categories[cat] || 'Новости';
         };
-        const categoryLabel = categoryMap[news.category] || news.category;
+
+        const getJobTypeName = (type) => {
+            const types = { 'finishing': 'Отделка', 'plumbing': 'Сантехника', 'electrical': 'Электрика', 'masonry': 'Камень', 'roofing': 'Кровля', 'hvac': 'Вентиляция', 'general': 'Общие работы' };
+            return types[type] || 'Общие работы';
+        };
+
+        const categoryLabel = news.category === 'jobs' 
+            ? `Вакансия: ${getJobTypeName(news.jobType)}` 
+            : `Новость: ${getCategoryName(news.category)}`;
 
         contentContainer.innerHTML = `
             <div class="row justify-content-center">

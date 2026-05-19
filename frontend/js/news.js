@@ -31,6 +31,17 @@ window.fetchNews = async function() {
             return;
         }
 
+        // Вспомогательные функции для перевода
+        const getCategoryName = (cat) => {
+            const categories = { 'tech': 'Технологии', 'market': 'Рынок', 'experts': 'Эксперты', 'calendar': 'Календарь', 'jobs': 'Вакансии' };
+            return categories[cat] || 'Новости';
+        };
+
+        const getJobTypeName = (type) => {
+            const types = { 'finishing': 'Отделка', 'plumbing': 'Сантехника', 'electrical': 'Электрика', 'masonry': 'Камень', 'roofing': 'Кровля', 'hvac': 'Вентиляция', 'general': 'Общие работы' };
+            return types[type] || 'Общие работы';
+        };
+
         console.log("Начинаем рендеринг новостей...");
         news.forEach((item, i) => {
             const contentBlock = document.createElement('div');
@@ -38,10 +49,15 @@ window.fetchNews = async function() {
             contentBlock.setAttribute('data-category', item.category);
             if (item.jobType) contentBlock.setAttribute('data-job-type', item.jobType);
 
+            const label = item.category === 'jobs' ? `Вакансия: ${getJobTypeName(item.jobType)}` : `Новость: ${getCategoryName(item.category)}`;
+
             contentBlock.innerHTML = `
                 <img src="${item.imageUrl}" alt="${item.title}">
                 <div class="tabcontent-desc">
-                    <div class="news-date">${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                    <div class="news-date">
+                        <span class="bh-text-orange fw-bold">${label}</span> • 
+                        ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
                     <h2>${item.title}</h2>
                     <p>${item.content.length > 120 ? item.content.substring(0, 120) + '...' : item.content}</p>
                     <a href="/news-detail.html?id=${item._id}" class="btn-read">${item.category === 'jobs' ? 'Откликнуться' : 'Читать далее'}</a>

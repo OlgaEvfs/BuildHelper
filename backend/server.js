@@ -25,6 +25,7 @@ connectDB();
 // Middleware
 app.use(cors()); // Настраиваем cors, чтобы фронтенд обращался к бэкенду
 app.use(express.json()); // Позволяет серверу понимать JSON в запросах(для POST/PUT)
+app.use(express.urlencoded({ extended: true })); // Поддержка стандартных форм
 
 // Подключаем маршруты
 app.use('/api/auth', authRoutes); // Все маршруты к авторизации будут начинаться с /api/auth
@@ -59,6 +60,9 @@ app.get('/api/test', (req, res) => {
 
 // Раздача статических файлов фронтенда
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Раздача загруженных файлов
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Все остальные GET запросы перенапрявляем на index.html (для SPA в будущем)
 app.get('*path', (req, res) => {

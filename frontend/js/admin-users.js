@@ -259,6 +259,31 @@ window.fetchContent = async () => {
     } catch (err) { console.error('Ошибка контента:', err); }
 };
 
+// Вспомогательные функции для перевода
+function getCategoryName(cat) {
+    const categories = {
+        'tech': 'Технологии',
+        'market': 'Рынок',
+        'experts': 'Эксперты',
+        'calendar': 'Календарь',
+        'jobs': 'Вакансии'
+    };
+    return categories[cat] || 'Новости';
+}
+
+function getJobTypeName(type) {
+    const types = {
+        'finishing': 'Отделка',
+        'plumbing': 'Сантехника',
+        'electrical': 'Электрика',
+        'masonry': 'Камень',
+        'roofing': 'Кровля',
+        'hvac': 'Вентиляция',
+        'general': 'Общие работы'
+    };
+    return types[type] || 'Общие работы';
+}
+
 function renderContent(items) {
     const container = document.getElementById('contentTableBody');
     if (items.length === 0) {
@@ -270,7 +295,9 @@ function renderContent(items) {
             <td class="ps-4">
                 <div class="fw-bold text-truncate" style="max-width: 250px;">${item.title}</div>
                 <div class="d-flex gap-2 align-items-center">
-                    <span class="badge ${item.category === 'jobs' ? 'bg-warning text-dark' : 'bg-info'}">${item.category === 'jobs' ? 'Вакансия' : 'Новость'}</span>
+                    <span class="badge ${item.category === 'jobs' ? 'bg-warning text-dark' : 'bg-info'}">
+                        ${item.category === 'jobs' ? `Вакансия: ${getJobTypeName(item.jobType)}` : `Новость: ${getCategoryName(item.category)}`}
+                    </span>
                     <span class="badge ${item.status === 'published' ? 'bg-success' : 'bg-secondary'} small" style="font-size: 0.65rem;">
                         ${item.status === 'published' ? 'Опубликовано' : 'Ожидает'}
                     </span>
@@ -528,31 +555,34 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Сохранение...';
         
         const category = document.getElementById('edit-post-category').value;
-        const postData = {
-            title: document.getElementById('edit-post-title').value,
-            content: document.getElementById('edit-post-content').value,
-            category: category,
-            imageUrl: document.getElementById('edit-post-image').value.trim()
-        };
+        const formData = new FormData();
+        formData.append('title', document.getElementById('edit-post-title').value);
+        formData.append('content', document.getElementById('edit-post-content').value);
+        formData.append('category', category);
+        formData.append('imageUrl', document.getElementById('edit-post-image').value.trim());
+
+        const imageFile = document.getElementById('edit-post-image-file').files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
 
         if (category === 'jobs') {
-            postData.jobType = document.getElementById('edit-job-type').value;
-            postData.employment = document.getElementById('edit-job-employment').value;
-            postData.location = document.getElementById('edit-job-location').value;
-            postData.salary = document.getElementById('edit-job-salary').value;
-            postData.contactName = document.getElementById('edit-job-contact-name').value;
-            postData.contactPhone = document.getElementById('edit-job-contact-phone').value;
-            postData.contactEmail = document.getElementById('edit-job-contact-email').value;
+            formData.append('jobType', document.getElementById('edit-job-type').value);
+            formData.append('employment', document.getElementById('edit-job-employment').value);
+            formData.append('location', document.getElementById('edit-job-location').value);
+            formData.append('salary', document.getElementById('edit-job-salary').value);
+            formData.append('contactName', document.getElementById('edit-job-contact-name').value);
+            formData.append('contactPhone', document.getElementById('edit-job-contact-phone').value);
+            formData.append('contactEmail', document.getElementById('edit-job-contact-email').value);
         }
 
         try {
             const res = await fetch(`/api/news/${id}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(postData)
+                body: formData
             });
 
             if (res.ok) {
@@ -562,6 +592,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     bootstrap.Modal.getInstance(document.getElementById('editPostModal')).hide();
                     msg.classList.add('d-none');
+                    // Очищаем поле файла после успешной отправки
+                    document.getElementById('edit-post-image-file').value = '';
                     window.fetchContent();
                 }, 1500);
             } else {
@@ -590,31 +622,48 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Публикация...';
         
         const category = document.getElementById('post-category').value;
-        const postData = {
-            title: document.getElementById('post-title').value,
-            content: document.getElementById('post-content').value,
-            category: category,
-            imageUrl: document.getElementById('post-image').value.trim()
-        };
+        const formData = new FormData();
+        
+        // Сначала добавляем текстовые поля
+        formData.append('title', document.getElementById('post-title').value);
+        formData.append('content', document.getElementById('post-content').value);
+        formData.append('category', category);
+        formData.append('imageUrl', document.getElementById('post-image').value.trim());
 
         if (category === 'jobs') {
-            postData.jobType = document.getElementById('job-type').value;
-            postData.employment = document.getElementById('job-employment').value;
-            postData.location = document.getElementById('job-location').value;
-            postData.salary = document.getElementById('job-salary').value;
-            postData.contactName = document.getElementById('job-contact-name').value;
-            postData.contactPhone = document.getElementById('job-contact-phone').value;
-            postData.contactEmail = document.getElementById('job-contact-email').value;
+            const phone = document.getElementById('add-post-form').querySelector('#job-contact-phone').value;
+            const phoneRegex = /^\+?\d{7,15}$/;
+            if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                msg.textContent = 'Заполните все поля';
+                msg.className = 'alert alert-danger mt-3';
+                msg.classList.remove('d-none');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                return;
+            }
+            formData.append('jobType', document.getElementById('job-type').value);
+            formData.append('employment', document.getElementById('job-employment').value);
+            formData.append('location', document.getElementById('job-location').value);
+            formData.append('salary', document.getElementById('job-salary').value);
+            formData.append('contactName', document.getElementById('job-contact-name').value);
+            formData.append('contactPhone', phone);
+            formData.append('contactEmail', document.getElementById('job-contact-email').value);
+        }
+
+        // Файл добавляем в САМЫЙ КОНЕЦ
+        const imageFile = document.getElementById('post-image-file').files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
         }
 
         try {
             const res = await fetch('/api/news', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${token}`
+                    // FormData сам ставит нужный Content-Type с boundary
                 },
-                body: JSON.stringify(postData)
+                body: formData
             });
 
             if (res.ok) {

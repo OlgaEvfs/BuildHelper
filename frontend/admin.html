@@ -169,14 +169,22 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <label class="form-label small fw-bold">URL Изображения</label>
-                                                        <input type="url" id="post-image" class="form-control" placeholder="https://example.com/image.jpg">
-                                                        <div class="form-text small">Если не указано, будет использовано стандартное изображение.</div>
+                                                        <label class="form-label small fw-bold">Изображение (URL или файл)</label>
+                                                        <div class="input-group mb-2">
+                                                            <span class="input-group-text small">URL</span>
+                                                            <input type="url" id="post-image" class="form-control" placeholder="https://example.com/image.jpg">
+                                                        </div>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text small">Файл</span>
+                                                            <input type="file" id="post-image-file" class="form-control" accept="image/*">
+                                                        </div>
+                                                        <div class="form-text small">Если файл выбран, он будет иметь приоритет над ссылкой.</div>
                                                     </div>
-                                                    <!-- Специфичные поля вакансии -->                                                    <div id="job-fields-wrapper" class="row g-3 m-0 p-0 d-none">
+                                                    <!-- Специфичные поля вакансии -->                                                    
+                                                    <div id="job-fields-wrapper" class="row g-3 m-0 p-0 d-none">
                                                         <div class="col-md-6">
                                                             <label class="form-label small fw-bold">Тип работ *</label>
-                                                            <select id="job-type" class="form-select">
+                                                            <select id="job-type" class="form-select" required>
                                                                 <option value="finishing">Отделочные работы</option>
                                                                 <option value="plumbing">Сантехника</option>
                                                                 <option value="electrical">Электрика</option>
@@ -187,8 +195,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Занятость</label>
-                                                            <select id="job-employment" class="form-select">
+                                                            <label class="form-label small fw-bold">Занятость *</label>
+                                                            <select id="job-employment" class="form-select" required>
                                                                 <option value="Полная занятость" selected>Полная занятость</option>
                                                                 <option value="Частичная занятость">Частичная занятость</option>
                                                                 <option value="Подряд">Подряд</option>
@@ -196,25 +204,25 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Локация</label>
-                                                            <input type="text" id="job-location" class="form-control">
+                                                            <label class="form-label small fw-bold">Локация *</label>
+                                                            <input type="text" id="job-location" class="form-control" required>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="form-label small fw-bold">Оплата</label>
-                                                            <input type="text" id="job-salary" class="form-control">
+                                                            <label class="form-label small fw-bold">Оплата *</label>
+                                                            <input type="text" id="job-salary" class="form-control" required>
                                                         </div>
                                                         <hr class="my-3">
                                                         <div class="col-md-4">
-                                                            <label class="form-label small fw-bold">Имя контакта</label>
-                                                            <input type="text" id="job-contact-name" class="form-control">
+                                                            <label class="form-label small fw-bold">Имя контакта *</label>
+                                                            <input type="text" id="job-contact-name" class="form-control" required>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <label class="form-label small fw-bold">Телефон *</label>
-                                                            <input type="tel" id="job-contact-phone" class="form-control">
+                                                            <input type="tel" id="job-contact-phone" class="form-control" required>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <label class="form-label small fw-bold">Email контакта</label>
-                                                            <input type="email" id="job-contact-email" class="form-control">
+                                                            <label class="form-label small fw-bold">Email контакта *</label>
+                                                            <input type="email" id="job-contact-email" class="form-control" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
@@ -260,8 +268,15 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <label class="form-label small fw-bold">URL Изображения</label>
-                                                        <input type="url" id="edit-post-image" class="form-control" placeholder="https://example.com/image.jpg">
+                                                        <label class="form-label small fw-bold">Изображение (URL или файл)</label>
+                                                        <div class="input-group mb-2">
+                                                            <span class="input-group-text small">URL</span>
+                                                            <input type="url" id="edit-post-image" class="form-control" placeholder="https://example.com/image.jpg">
+                                                        </div>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text small">Файл</span>
+                                                            <input type="file" id="edit-post-image-file" class="form-control" accept="image/*">
+                                                        </div>
                                                     </div>
                                                     <!-- Специфичные поля вакансии -->
                                                     <div id="edit-job-fields-wrapper" class="row g-3 m-0 p-0 d-none">

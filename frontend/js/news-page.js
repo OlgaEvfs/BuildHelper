@@ -75,6 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getJobTypeName(type) {
+        const types = {
+            'finishing': 'Отделка',
+            'plumbing': 'Сантехника',
+            'electrical': 'Электрика',
+            'masonry': 'Камень',
+            'roofing': 'Кровля',
+            'hvac': 'Вентиляция',
+            'general': 'Общие работы'
+        };
+        return types[type] || 'Общие работы';
+    }
+
     // Функция для рендера новостей на страницу
     function renderNews(news) {
         if (!news || news.length === 0) {
@@ -94,7 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="news-card">
                     <img src="${item.imageUrl || 'images/logo.png'}" alt="${item.title}">
                     <div class="news-card-content">
-                        <small>${getCategoryName(item.category)} • ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</small>
+                        <small>
+                            ${item.category === 'jobs' ? `Вакансия: ${getJobTypeName(item.jobType)}` : `Новость: ${getCategoryName(item.category)}`}
+                            • ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
                         <div class="text-center mt-auto">
@@ -105,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
     }
-
     // Логика показа кнопки "Добавить"
     function checkAddPostButton() {
         const token = localStorage.getItem('token');
@@ -181,31 +196,48 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Публикация...';
             
             const category = document.getElementById('post-category').value;
-            const postData = {
-                title: document.getElementById('post-title').value,
-                content: document.getElementById('post-content').value,
-                category: category,
-                imageUrl: document.getElementById('post-image').value.trim()
-            };
+            const formData = new FormData();
+            
+            // Сначала добавляем текстовые поля
+            formData.append('title', document.getElementById('post-title').value);
+            formData.append('content', document.getElementById('post-content').value);
+            formData.append('category', category);
+            formData.append('imageUrl', document.getElementById('post-image').value.trim());
 
             if (category === 'jobs') {
-                postData.jobType = document.getElementById('job-type').value;
-                postData.employment = document.getElementById('job-employment').value;
-                postData.location = document.getElementById('job-location').value;
-                postData.salary = document.getElementById('job-salary').value;
-                postData.contactName = document.getElementById('job-contact-name').value;
-                postData.contactPhone = document.getElementById('job-contact-phone').value;
-                postData.contactEmail = document.getElementById('job-contact-email').value;
+                const phone = document.getElementById('add-post-form').querySelector('#job-contact-phone').value;
+                const phoneRegex = /^\+?\d{7,15}$/;
+                if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                    msg.textContent = 'Заполните все поля';
+                    msg.className = 'alert alert-danger mt-3';
+                    msg.classList.remove('d-none');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    return;
+                }
+                formData.append('jobType', document.getElementById('job-type').value);
+                formData.append('employment', document.getElementById('job-employment').value);
+                formData.append('location', document.getElementById('job-location').value);
+                formData.append('salary', document.getElementById('job-salary').value);
+                formData.append('contactName', document.getElementById('job-contact-name').value);
+                formData.append('contactPhone', phone);
+                formData.append('contactEmail', document.getElementById('job-contact-email').value);
+            }
+
+            // Файл добавляем в САМЫЙ КОНЕЦ
+            const imageFile = document.getElementById('post-image-file').files[0];
+            if (imageFile) {
+                formData.append('image', imageFile);
             }
 
             try {
                 const res = await fetch('/api/news', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${token}`
+                        // При использовании FormData заголовок Content-Type ставить НЕ НУЖНО
                     },
-                    body: JSON.stringify(postData)
+                    body: formData
                 });
 
                 if (res.ok) {
@@ -218,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const err = await res.json();
-                    msg.textContent = err.message || 'Ошибка при создании';
+                    msg.textContent = 'Заполните все поля';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
                     submitBtn.disabled = false;
