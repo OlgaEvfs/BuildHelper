@@ -1,0 +1,86 @@
+@startuml BuildHelper_ClassDiagram
+ skinparam class {
+     BackgroundColor White
+     ArrowColor #268bd2
+       BorderColor #268bd2
+   }
+  
+   package "Models" {
+       class User {
+            +ObjectId _id
+            +String username
+            +String email
+            +String password
+            +Enum role ["user", "admin"]
+            +Enum status ["active", "banned"]
+            +Boolean resetPasswordRequired
+            +Date createdAt
+            --
+            +matchPassword(enteredPassword)
+        }
+   
+        class News {
+            +ObjectId _id
+            +ObjectId author
+            +String title
+            +String content
+            +String imageUrl
+            +Enum category ["tech", "market", "experts", "calendar", "jobs"]
+            +Enum jobType
+            +String location
+            +String salary
+            +Enum status ["pending", "published"]
+            +Date createdAt
+        }
+   
+        class Comment {
+            +ObjectId _id
+            +String content
+            +ObjectId author
+            +ObjectId news
+            +Date createdAt
+        }
+   
+        class Calculation {
+            +ObjectId _id
+            +ObjectId user
+            +String type
+            +String result
+            +Date createdAt
+        }
+   
+        class Checklist {
+            +ObjectId _id
+            +ObjectId user
+            +String text
+            +Boolean completed
+            +Date createdAt
+        }
+   
+        class Planner {
+            +ObjectId _id
+            +ObjectId user
+            +Array rooms
+            +Array furniture
+           +Date updatedAt
+        }
+   
+        class SupportRequest {
+            +ObjectId _id
+            +String name
+            +String email
+            +String subject
+            +String message
+            +Enum status ["open", "resolved"]
+        }
+    }
+   
+    ' Relationships
+    User "1" *-- "many" News : creates
+    User "1" *-- "many" Comment : writes
+    User "1" *-- "many" Calculation : saves
+    User "1" *-- "many" Checklist : manages
+    User "1" -- "1" Planner : owns
+    News "1" *-- "many" Comment : contains
+   
+    @enduml

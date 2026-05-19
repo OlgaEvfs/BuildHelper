@@ -3,8 +3,7 @@ const router = express.Router();
 const News = require('../models/News');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Получить вакансии текущего пользователя (САМЫЙ ВАЖНЫЙ РОУТ)
-// Он должен идти ПЕРЕД /:id, чтобы Express не спутал "my-jobs" с ID вакансии
+// Получить вакансии текущего пользователя
 router.get('/my-jobs', authMiddleware, async (req, res) => {
     try {
         const jobs = await News.find({ author: req.user.id, category: 'jobs' }).sort({ createdAt: -1 });
@@ -22,7 +21,7 @@ router.get('/', async (req, res) => {
         const category = req.query.category;
         const jobType = req.query.jobType;
 
-        let query = { status: 'published' }; // По умолчанию показываем только опубликованное
+        let query = { status: 'published' };
         if (category && category !== 'all') query.category = category;
         if (jobType && jobType !== 'all') query.jobType = jobType;
 
@@ -52,19 +51,29 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Создать новую вакансию
+// Создать новую запись (Новость или Вакансия)
 router.post('/', authMiddleware, async (req, res) => {
+    console.log('--- Получен запрос на создание новости ---');
+    console.log('Тело запроса (req.body):', req.body);
+
     try {
-        const { title, content, category, imageUrl, jobType, location, employment, salary, contactName, contactEmail, contactPhone } = req.body;
+        // Очистка данных: берем только непустые строки и обрезаем пробелы
+        const data = {};
+        for (let key in req.body) {
+            if (req.body[key] && typeof req.body[key] === 'string' && req.body[key].trim() !== '') {
+                data[key] = req.body[key].trim();
+            }
+        }
+
+        const { title, content, category, imageUrl, jobType, location, employment, salary, contactName, contactEmail, contactPhone } = data;
         const isAdmin = req.user.role === 'admin';
 
-        // ПРОВЕРКА: Обычный пользователь может создавать ТОЛЬКО 'jobs'
         if (category !== 'jobs' && !isAdmin) {
             return res.status(403).json({ message: 'Обычные пользователи могут создавать только вакансии' });
         }
 
         if (!title || !content || !category) {
-            return res.status(400).json({ message: 'Заполните обязательные поля' });
+            return res.status(400).json({ message: 'Заполните обязательные поля (Заголовок, Содержимое, Категория)' });
         }
 
         const vacancyImages = {
@@ -77,22 +86,45 @@ router.post('/', authMiddleware, async (req, res) => {
             general: 'https://images.unsplash.com/photo-1504307651254-35680f336dbd?q=80&w=800'
         };
 
-        const finalImageUrl = (imageUrl && imageUrl.trim() !== '') 
-            ? imageUrl 
-            : (category === 'jobs' ? (vacancyImages[jobType] || vacancyImages.general) : imageUrl);
+        const defaultNewsImage = 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=800';
+
+        let finalImageUrl = (imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '') ? imageUrl : null;
+
+        if (!finalImageUrl) {
+            if (category === 'jobs') {
+                const type = (jobType || 'general').toLowerCase();
+                finalImageUrl = vacancyImages[type] || vacancyImages.general;
+            } else {
+                finalImageUrl = defaultNewsImage;
+            }
+        }
 
         const newPost = new News({
-            author: req.user.id,
-            title, content, category, imageUrl: finalImageUrl,
-            jobType, location, employment, salary,
-            contactName, contactEmail, contactPhone,
-            status: isAdmin ? 'published' : 'pending' // Админ публикует сразу, юзер - на модерацию
+            author: req.user._id || req.user.id,
+            title, 
+            content, 
+            category, 
+            imageUrl: finalImageUrl,
+            jobType: category === 'jobs' ? (jobType || 'general') : null, 
+            location, 
+            employment, 
+            salary,
+            contactName, 
+            contactEmail, 
+            contactPhone,
+            status: isAdmin ? 'published' : 'pending'
         });
 
+        console.log('Подготовленный объект для сохранения:', newPost);
+
         await newPost.save();
+        console.log('Запись успешно сохранена в БД');
         res.status(201).json(newPost);
-    } catch (err) {
-        res.status(500).json({ message: 'Ошибка при сохранении данных' });
+    } catch (dbErr) {
+        console.error('ПОДРОБНАЯ ОШИБКА БД:', dbErr);
+        // Возвращаем более подробную ошибку валидации, если она есть
+        const errorMsg = dbErr.errors ? Object.values(dbErr.errors).map(e => e.message).join(', ') : dbErr.message;
+        res.status(500).json({ message: 'Ошибка: ' + errorMsg });
     }
 });
 
@@ -109,12 +141,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Нет прав на редактирование' });
         }
 
-        // Защита: нельзя сменить категорию на новостную, если ты не админ
         if (req.body.category && req.body.category !== 'jobs' && !isAdmin) {
             return res.status(403).json({ message: 'Только администратор может использовать эту категорию' });
         }
 
-        // Если автор не админ, сбрасываем статус на модерацию
         const updateData = { ...req.body };
         if (!isAdmin) {
             updateData.status = 'pending';

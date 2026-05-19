@@ -58,24 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // --- УНИВЕРСАЛЬНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ---
-    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    const confirmModalBtn = document.getElementById('confirmModalBtn');
-    let confirmCallback = null;
-
-    window.showConfirm = (title, body, btnText, callback) => {
-        document.getElementById('confirmModalTitle').textContent = title || 'Вы уверены?';
-        document.getElementById('confirmModalBody').textContent = body || 'Это действие нельзя будет отменить.';
-        confirmModalBtn.textContent = btnText || 'Удалить';
-        confirmCallback = callback;
-        confirmModal.show();
-    };
-
-    confirmModalBtn.addEventListener('click', () => {
-        if (confirmCallback) confirmCallback();
-        confirmModal.hide();
-    });
-
     // Загружаем данные профиля
     try {
         const response = await fetch('/api/auth/profile', {
@@ -267,10 +249,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     showNotification('Вакансия обновлена и отправлена на модерацию!', 'success');
                 } else {
                     const err = await res.json();
-                    alert(err.message || 'Ошибка обновления');
+                    showNotification(err.message || 'Ошибка обновления', 'danger');
                 }
             } catch (err) {
-                alert('Ошибка сети');
+                showNotification('Ошибка сети', 'danger');
             }
         });
     }
@@ -361,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteJob(id) {
-        showConfirm('Удалить вакансию?', 'Эта вакансия будет удалена навсегда.', 'Удалить', async () => {
+        window.showConfirmation('Удалить вакансию?', 'Эта вакансия будет удалена навсегда.', async () => {
             try {
                 const res = await fetch(`/api/news/${id}`, {
                     method: 'DELETE',
@@ -371,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 showNotification('Не удалось удалить.', 'danger');
             }
-        });
+        }, 'Удалить');
     }
 
     // --- ФУНКЦИИ ДЛЯ РАБОТЫ С РАСЧЕТАМИ ---
@@ -409,7 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteCalculation(btn, id) {
-        showConfirm('Удалить расчет?', 'Этот расчет будет удален из вашей истории.', 'Удалить', async () => {
+        window.showConfirmation('Удалить расчет?', 'Этот расчет будет удален из вашей истории.', async () => {
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
@@ -431,7 +413,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.disabled = false;
                 btn.innerHTML = originalHtml;
             }
-        });
+        }, 'Удалить');
     }
 
     // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С ЧЕК-ЛИСТОМ ------------
@@ -523,7 +505,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteTask(id) {
-        showConfirm('Удалить задачу?', 'Эта задача будет удалена из вашего списка.', 'Удалить', async () => {
+        window.showConfirmation('Удалить задачу?', 'Эта задача будет удалена из вашего списка.', async () => {
             try {
                 await fetch(`/api/checklist/${id}`, {
                     method: 'DELETE',
@@ -534,7 +516,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 showNotification('Ошибка удаления', 'danger');
             }
-        });
+        }, 'Удалить');
     }
 
     function updateChecklistProgress(completed, total) {

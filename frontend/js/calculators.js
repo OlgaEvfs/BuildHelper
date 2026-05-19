@@ -21,7 +21,11 @@ window.openCalculatorModal = function(type) {
     const savedWallArea = sessionStorage.getItem('lastNetWallArea') || "";
     const savedFloorArea = sessionStorage.getItem('lastFloorArea') || "";
     const savedPerimeter = sessionStorage.getItem('lastPerimeter') || "";
+    const savedHeight = sessionStorage.getItem('lastHeight') || "2.5";
 
+    const masterCalc = `<div class="alert alert-info small py-2 mb-3"><strong>Мастер-расчет:</strong> Рекомендуем использовать <a href="#" onclick="openCalculatorModal('geometry'); return false;">Геометрию</a> для автоматического учета проемов.</div>`;
+    const quickCalc = `<div class="alert alert-warning small py-2 mb-3"><strong>Быстрый расчет:</strong> Вводите <strong>чистую площадь</strong> (за вычетом окон и дверей).</div>`;
+    
     let title = "";
     let content = "";
 
@@ -57,6 +61,8 @@ window.openCalculatorModal = function(type) {
         case 'paint':
             title = "Расход грунтовки или краски";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь (м²):</label>
                     <div class="d-flex gap-2 mb-2">
@@ -66,7 +72,6 @@ window.openCalculatorModal = function(type) {
                             <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('paint-area').value='${savedFloorArea}'">Пол</button>
                         </div>
                     </div>
-                    ${savedWallArea || savedFloorArea ? '<small class="text-success">Подставлено из Геометрии / 2D Планировщика</small>' : '<small class="text-muted">(Возьмите из расчета Геометрии)</small>'}
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Расход (м²/л):</label>
@@ -75,6 +80,10 @@ window.openCalculatorModal = function(type) {
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Количество слоев:</label>
                     <input type="text" id="paint-layers" class="form-control" value="2">
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label small fw-bold">Запас (%):</label>
+                    <input type="text" id="paint-stock" class="form-control" value="5">
                 </div>
 
                 <div id="paint-result" class="result-box mb-3" style="display:none;"></div>
@@ -86,6 +95,8 @@ window.openCalculatorModal = function(type) {
         case 'wallpaper':
             title = "Расчет обоев";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь стен (м²):</label>
                     <input type="text" id="wallpaper-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
@@ -107,7 +118,12 @@ window.openCalculatorModal = function(type) {
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Высота стены (м):</label>
-                    <input type="text" id="wall-height" class="form-control" value="2.5">
+                    <input type="text" id="wall-height" class="form-control" value="${savedHeight}">
+                    <small class="text-muted small">Необходимо для расчета количества полос из рулона.</small>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label small fw-bold">Запас (%):</label>
+                    <input type="text" id="wallpaper-stock" class="form-control" value="5">
                 </div>
 
                 <div id="wallpaper-result" class="result-box mb-3" style="display:none;"></div>
@@ -119,6 +135,8 @@ window.openCalculatorModal = function(type) {
         case 'tiles':
             title = "Расчет плитки";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь поверхности (м²):</label>
                     <div class="d-flex gap-2 mb-2">
@@ -128,7 +146,6 @@ window.openCalculatorModal = function(type) {
                             <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('tile-area').value='${savedFloorArea}'">Пол</button>
                         </div>
                     </div>
-                    ${savedWallArea || savedFloorArea ? '<small class="text-success">Подставлено из Геометрии / 2D Планировщика</small>' : ''}
                 </div>
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Размер плитки (мм):</label>
@@ -160,6 +177,8 @@ window.openCalculatorModal = function(type) {
         case 'waterproofing':
             title = "Расчет гидроизоляции";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь обработки (м²):</label>
                     <input type="text" id="wp-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
@@ -182,6 +201,8 @@ window.openCalculatorModal = function(type) {
         case 'floor':
             title = "Расчет стяжки пола";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь пола (м²):</label>
                     <input type="text" id="floor-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
@@ -204,6 +225,8 @@ window.openCalculatorModal = function(type) {
         case 'drywall':
             title = "Расчет гипрока (ГКЛ)";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь поверхности (м²):</label>
                     <input type="text" id="drywall-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
@@ -227,6 +250,8 @@ window.openCalculatorModal = function(type) {
         case 'profiles':
             title = "Расчет профилей для ГКЛ";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь (м²):</label>
                     <input type="text" id="profile-area" class="form-control" value="${savedWallArea || ''}" placeholder="0.0">
@@ -250,6 +275,8 @@ window.openCalculatorModal = function(type) {
         case 'laminate':
             title = "Расчет ламината";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь пола (м²):</label>
                     <input type="text" id="laminate-area" class="form-control" value="${savedFloorArea || ''}" placeholder="0.0">
@@ -273,6 +300,8 @@ window.openCalculatorModal = function(type) {
         case 'bricks':
             title = "Расчет кирпича / блоков";
             content = `
+                ${masterCalc}
+                ${quickCalc}
                 <div class="form-group mb-3">
                     <label class="form-label small fw-bold">Площадь стен (м²):</label>
                     <input type="text" id="brick-area" class="form-control" value="${savedWallArea || ''}">
@@ -313,8 +342,8 @@ window.calculateGeometry = function() {
     const height = parseNumber(document.getElementById('room-height').value);
     const resultBox = document.getElementById('calc-result');
 
-    if (isNaN(length) || isNaN(width) || isNaN(height) || length <= 0 || width <= 0 || height <= 0) {
-        showCalcError('calc-result', "Введите корректные размеры.");
+    if (!length || !width || !height || length <= 0 || width <= 0 || height <= 0) {
+        showCalcError('calc-result', "Ошибка: Все размеры должны быть больше нуля.");
         return;
     }
 
@@ -346,33 +375,26 @@ window.calculateGeometry = function() {
     sessionStorage.setItem('lastNetWallArea', netWallArea);
     sessionStorage.setItem('lastFloorArea', floorArea);
     sessionStorage.setItem('lastPerimeter', perimeter.toFixed(2));
-};
-
-window.addOpeningRow = function() {
-    const openingsList = document.getElementById('openings-list');
-    const row = document.createElement('div');
-    row.className = 'opening-row input-group input-group-sm mb-2';
-    row.innerHTML = `
-        <input type="text" class="form-control op-width" placeholder="Ш (м)">
-        <input type="text" class="form-control op-height" placeholder="В (м)">
-        <input type="text" class="form-control op-qty" placeholder="Кол" value="1">
-        <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">&times;</button>
-    `;
-    openingsList.appendChild(row);
+    sessionStorage.setItem('lastHeight', height.toFixed(2));
 };
 
 window.calculatePaint = function() {
     const area = parseNumber(document.getElementById('paint-area').value);
     const cons = parseNumber(document.getElementById('paint-consumption').value);
     const layers = parseNumber(document.getElementById('paint-layers').value) || 1;
+    const stock = parseNumber(document.getElementById('paint-stock').value) || 0;
     const resultBox = document.getElementById('paint-result');
 
-    if (isNaN(area) || isNaN(cons) || area <= 0 || cons <= 0) {
-        showCalcError('paint-result', "Заполните площадь и расход.");
+    if (!area || area <= 0) {
+        showCalcError('paint-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!cons || cons <= 0) {
+        showCalcError('paint-result', "Ошибка: Расход должен быть больше нуля.");
         return;
     }
 
-    const totalLiters = ((area / cons) * layers).toFixed(2);
+    const totalLiters = (((area * (1 + stock / 100)) / cons) * layers).toFixed(2);
     resultBox.style.display = 'block';
     resultBox.className = 'result-box alert alert-primary p-3 mb-3';
     resultBox.innerHTML = `
@@ -386,24 +408,32 @@ window.calculateWallpaper = function() {
     const rollWidth = parseNumber(document.getElementById('roll-width').value);
     const rollLength = parseNumber(document.getElementById('roll-length').value);
     const wallHeight = parseNumber(document.getElementById('wall-height').value);
+    const stock = parseNumber(document.getElementById('wallpaper-stock').value) || 0;
     const resultBox = document.getElementById('wallpaper-result');
 
-    if (isNaN(area) || isNaN(wallHeight) || area <= 0 || wallHeight <= 0) {
-        showCalcError('wallpaper-result', "Введите площадь и высоту.");
+    if (!area || area <= 0) {
+        showCalcError('wallpaper-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!wallHeight || wallHeight <= 0) {
+        showCalcError('wallpaper-result', "Ошибка: Высота стены должна быть больше нуля.");
         return;
     }
 
     const stripsPerRoll = Math.floor(rollLength / wallHeight);
     if (stripsPerRoll <= 0) {
-        return showCalcError('wallpaper-result', 'Высота стены больше длины рулона.');
+        return showCalcError('wallpaper-result', 'Ошибка: Высота стены больше длины рулона.');
     }
 
-    const rollsNeeded = Math.ceil((area / wallHeight / rollWidth) / stripsPerRoll);
+    // Расчет с учетом запаса
+    const totalAreaWithStock = area * (1 + stock / 100);
+    const rollsNeeded = Math.ceil((totalAreaWithStock / wallHeight / rollWidth) / stripsPerRoll);
     
     resultBox.style.display = 'block';
     resultBox.className = 'result-box alert alert-primary p-3 mb-3';
     resultBox.innerHTML = `
         <p class="mb-0">Необходимо рулонов: <strong>${rollsNeeded} шт.</strong></p>
+        <p class="small mb-0">Полос из рулона: <strong>${stripsPerRoll} шт.</strong></p>
         ${getSaveButtonHtml('Обои', `${rollsNeeded} шт.`)}
     `;
 };
@@ -412,16 +442,15 @@ window.calculateTiles = function() {
     const area = parseNumber(document.getElementById('tile-area').value);
     const w = parseNumber(document.getElementById('tile-w').value);
     const h = parseNumber(document.getElementById('tile-h').value);
-    const grout = parseNumber(document.getElementById('tile-grout').value) || 0;
     const stock = parseNumber(document.getElementById('tile-stock').value) || 0;
     const resultBox = document.getElementById('tiles-result');
 
-    if (
-        isNaN(area) || area <= 0 ||
-        isNaN(w) || w <= 0 ||
-        isNaN(h) || h <= 0
-    ) {
-        showCalcError('tiles-result', "Заполните все данные корректными положительными числами.");
+    if (!area || area <= 0) {
+        showCalcError('tiles-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!w || w <= 0 || !h || h <= 0) {
+        showCalcError('tiles-result', "Ошибка: Размеры плитки должны быть больше нуля.");
         return;
     }
 
@@ -446,11 +475,12 @@ window.calculateWP = function() {
     const cons = parseNumber(document.getElementById('wp-consumption').value);
     const resultBox = document.getElementById('wp-result');
 
-    if (
-        isNaN(area) || area <= 0 ||
-        isNaN(cons) || cons <= 0
-    ) {
-        showCalcError('wp-result', "Заполните данные корректными положительными числами.");
+    if (!area || area <= 0) {
+        showCalcError('wp-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!cons || cons <= 0) {
+        showCalcError('wp-result', "Ошибка: Расход должен быть больше нуля.");
         return;
     }
 
@@ -469,8 +499,8 @@ window.calculateDrywall = function() {
     const stock = parseNumber(document.getElementById('drywall-stock').value) || 0;
     const resultBox = document.getElementById('drywall-result');
 
-    if (isNaN(area) || isNaN(sheetArea) || area <= 0) {
-        showCalcError('drywall-result', "Введите корректную площадь.");
+    if (!area || area <= 0) {
+        showCalcError('drywall-result', "Ошибка: Площадь должна быть больше нуля.");
         return;
     }
 
@@ -491,8 +521,17 @@ window.calculateProfiles = function() {
     const length = lengthEl ? parseNumber(lengthEl.value) : 2.5;
     const resultBox = document.getElementById('profiles-result');
 
-    if (isNaN(area) || area <= 0 || isNaN(perimeter) || perimeter <= 0 || isNaN(length) || length <= 0) {
-        return showCalcError('profiles-result', "Заполните все данные корректными положительными числами.");
+    if (!area || area <= 0) {
+        showCalcError('profiles-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!perimeter || perimeter <= 0) {
+        showCalcError('profiles-result', "Ошибка: Периметр должен быть больше нуля.");
+        return;
+    }
+    if (!length || length <= 0) {
+        showCalcError('profiles-result', "Ошибка: Длина профиля должна быть больше нуля.");
+        return;
     }
 
     const wallHeight = 2.7;
@@ -519,8 +558,12 @@ window.calculateLaminate = function() {
     const stock = parseNumber(document.getElementById('laminate-type').value);
     const resultBox = document.getElementById('laminate-result');
 
-    if (isNaN(area) || isNaN(pack) || area <= 0 || pack <= 0) {
-        showCalcError('laminate-result', "Введите корректные данные.");
+    if (!area || area <= 0) {
+        showCalcError('laminate-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!pack || pack <= 0) {
+        showCalcError('laminate-result', "Ошибка: Упаковка должна быть больше нуля.");
         return;
     }
 
@@ -540,8 +583,12 @@ window.calculateBricks = function() {
     const wallThickness = parseNumber(document.getElementById('brick-wall-th').value);
     const resultBox = document.getElementById('bricks-result');
 
-    if (isNaN(area) || isNaN(wallThickness) || area <= 0 || wallThickness <= 0) {
-        showCalcError('bricks-result', "Введите корректные данные.");
+    if (!area || area <= 0) {
+        showCalcError('bricks-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!wallThickness || wallThickness <= 0) {
+        showCalcError('bricks-result', "Ошибка: Толщина должна быть больше нуля.");
         return;
     }
 
@@ -564,8 +611,12 @@ window.calculateFloor = function() {
     const weight = parseNumber(document.getElementById('bag-weight').value) || 25;
     const resultBox = document.getElementById('floor-result');
 
-    if (isNaN(area) || isNaN(thickness)) {
-        showCalcError('floor-result', "Заполните данные.");
+    if (!area || area <= 0) {
+        showCalcError('floor-result', "Ошибка: Площадь должна быть больше нуля.");
+        return;
+    }
+    if (!thickness || thickness <= 0) {
+        showCalcError('floor-result', "Ошибка: Толщина должна быть больше нуля.");
         return;
     }
 
@@ -617,4 +668,4 @@ window.saveCalculation = async function(btn, calcName, resultValue) {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
     }
-};
+}

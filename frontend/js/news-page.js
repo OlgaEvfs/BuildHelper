@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             loadNews();
-            checkAddJobButton();
+            checkAddPostButton();
         }
     });
 
@@ -107,72 +107,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Логика показа кнопки "Добавить"
-    // Проверяем: залогинен ли пользователь и выбрана ли категория 'jobs'
-    function checkAddJobButton() {
+    function checkAddPostButton() {
         const token = localStorage.getItem('token');
-        if (token && currentCategory === 'jobs') {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+        const isAdmin = userInfo.role === 'admin';
+
+        if (token && (isAdmin || currentCategory === 'jobs')) {
             addJobContainer.classList.remove('d-none');
+            
+            // Показываем поле URL картинки всем (так как теперь картинка только через URL)
+            const imageWrapper = document.getElementById('post-image-wrapper');
+            if (imageWrapper) {
+                imageWrapper.classList.remove('d-none');
+            }
+
+            // Настройка селекта категорий
+            const categorySelect = document.getElementById('post-category');
+            if (categorySelect) {
+                const options = categorySelect.querySelectorAll('option');
+                options.forEach(opt => {
+                    if (opt.value !== 'jobs') {
+                        opt.style.display = isAdmin ? 'block' : 'none';
+                    }
+                });
+                
+                // Устанавливаем категорию по умолчанию
+                if (currentCategory !== 'all') {
+                    categorySelect.value = currentCategory;
+                } else {
+                    categorySelect.value = isAdmin ? 'tech' : 'jobs';
+                }
+                
+                toggleJobFields();
+            }
         } else {
             addJobContainer.classList.add('d-none');
         }
     }
 
-    checkAddJobButton();
-   
-    // Обработка отправки формы вакансии
-    const addJobForm = document.getElementById('add-job-form');
-    if (addJobForm) {
-        addJobForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById('job-form-message');
-            const submitBtn = addJobForm.querySelector('button[type="submit"]');
-            
-            // Блокируем кнопку
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Публикация...';
-            
-            const email = document.getElementById('job-contact-email').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && !emailRegex.test(email)) {
-                msg.textContent = 'Пожалуйста, введите корректный email адрес';
-                msg.className = 'alert alert-danger mt-3';
-                msg.classList.remove('d-none');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                return;
+    function toggleJobFields() {
+        const categorySelect = document.getElementById('post-category');
+        const jobFields = document.getElementById('job-fields-wrapper');
+        const phoneInput = document.getElementById('job-contact-phone');
+
+        if (categorySelect && jobFields) {
+            if (categorySelect.value === 'jobs') {
+                jobFields.classList.remove('d-none');
+                if (phoneInput) phoneInput.required = true;
+            } else {
+                jobFields.classList.add('d-none');
+                if (phoneInput) phoneInput.required = false;
             }
-            
-            const jobData = {
-                title: document.getElementById('job-title').value,
-                category: 'jobs',
-                jobType: document.getElementById('job-type').value,
-                employment: document.getElementById('job-employment').value,
-                location: document.getElementById('job-location').value,
-                salary: document.getElementById('job-salary').value,
-                content: document.getElementById('job-content').value,
-                contactName: document.getElementById('job-contact-name').value,
-                contactPhone: document.getElementById('job-contact-phone').value,
-                contactEmail: document.getElementById('job-contact-email').value,
-            };
+        }
+    }
+
+    const categorySelect = document.getElementById('post-category');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', toggleJobFields);
+    }
+
+    checkAddPostButton();
    
+    // Обработка отправки формы записи
+    const addPostForm = document.getElementById('add-post-form');
+    if (addPostForm) {
+        addPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('post-form-message');
+            const submitBtn = addPostForm.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Публикация...';
+            
+            const category = document.getElementById('post-category').value;
+            const postData = {
+                title: document.getElementById('post-title').value,
+                content: document.getElementById('post-content').value,
+                category: category,
+                imageUrl: document.getElementById('post-image').value.trim()
+            };
+
+            if (category === 'jobs') {
+                postData.jobType = document.getElementById('job-type').value;
+                postData.employment = document.getElementById('job-employment').value;
+                postData.location = document.getElementById('job-location').value;
+                postData.salary = document.getElementById('job-salary').value;
+                postData.contactName = document.getElementById('job-contact-name').value;
+                postData.contactPhone = document.getElementById('job-contact-phone').value;
+                postData.contactEmail = document.getElementById('job-contact-email').value;
+            }
+
             try {
                 const res = await fetch('/api/news', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(jobData)
+                    body: JSON.stringify(postData)
                 });
 
                 if (res.ok) {
-                    msg.textContent = 'Вакансия успешно отправлена на модерацию!';
+                    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                    msg.textContent = userInfo.role === 'admin' 
+                        ? 'Запись успешно опубликована!' 
+                        : 'Запись успешно отправлена на модерацию!';
                     msg.className = 'alert alert-success mt-3';
                     msg.classList.remove('d-none');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
+                    setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const err = await res.json();
                     msg.textContent = err.message || 'Ошибка при создании';

@@ -62,6 +62,7 @@ const newsSchema = new mongoose.Schema({
         lowercase: true,
         validate: {
             validator: function(v) {
+                if (!v) return true; // Если значение не введено, валидация проходит (проверка на обязательность в required)
                 return /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v);
             }
         }
@@ -74,6 +75,7 @@ const newsSchema = new mongoose.Schema({
         },
         validate: {
             validator: function(v) {
+                if (!v) return true; // Если значение не введено, валидация проходит (проверка на обязательность в required)
                 return /^[\d\s+-]{5,20}$/.test(v);
             },
             message: 'Укажите корректный номер телефона (минимум 5 цифр)'

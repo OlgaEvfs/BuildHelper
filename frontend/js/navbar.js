@@ -32,8 +32,8 @@ window.updateNavbar = function() {
             // Добавляем обработчик для кнопки выхода
             document.getElementById('logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('userInfo');
-                localStorage.removeItem('token');
+                localStorage.clear();    // Удаляет всё из localStorage
+                sessionStorage.clear(); // Удаляет всё из sessionStorage (данные калькуляторов)
                 window.location.href = '/';
             });
 

@@ -61,7 +61,7 @@
         </div>
 
         <div id="add-job-container" class="mb-4 text-center d-none">
-            <button class="btn bh-btn-accent" data-bs-toggle="modal" data-bs-target="#addJobModal">+ Опубликовать вакансию</button>
+            <button class="btn bh-btn-accent" data-bs-toggle="modal" data-bs-target="#addPostModal">+ Опубликовать запись</button>
         </div>
 
         <!-- Контейнер для карточек (Bootstrap Grid) -->
@@ -177,75 +177,115 @@
         </div>
     </div>
 
-    <!-- Модальное окно вакансий -->
-    <div class="modal fade" id="addJobModal" tabindex="-1" aria-hidden="true">
+    <!-- Модальное окно создания записи (Новости/Вакансии) -->
+    <div class="modal fade" id="addPostModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bh-bg-dark text-white">
-                    <h5 class="modal-title fw-bold">Новая вакансия</h5>
+                    <h5 class="modal-title fw-bold" id="postModalTitle">Новая запись</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <form id="add-job-form">
+                    <form id="add-post-form">
                         <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold">Заголовок объявления *</label>
-                                <input type="text" id="job-title" class="form-control" required>
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold">Заголовок *</label>
+                                <input type="text" id="post-title" class="form-control" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Тип работ *</label>
-                                <select id="job-type" class="form-select" required>
-                                    <option value="finishing">Отделочные работы</option>
-                                    <option value="plumbing">Сантехника</option>
-                                    <option value="electrical">Электрика</option>
-                                    <option value="masonry">Каменные работы</option>
-                                    <option value="roofing">Кровельные работы</option>
-                                    <option value="hvac">Вентиляция/Отопление</option>
-                                    <option value="general">Общие работы</option>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Категория *</label>
+                                <select id="post-category" class="form-select" required>
+                                    <option value="jobs">Вакансия</option>
+                                    <option value="tech">Технологии</option>
+                                    <option value="market">Рынок</option>
+                                    <option value="experts">Эксперты</option>
+                                    <option value="calendar">Календарь</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Занятость</label>
-                                <select id="job-employment" class="form-select">
-                                    <option value="Полная занятость">Полная занятость</option>
-                                    <option value="Частичная занятость">Частичная занятость</option>
-                                    <option value="Подряд">Подряд</option>
-                                    <option value="Временная работа">Временная работа</option>
-                                </select>
+
+                            <div class="col-md-12 d-none" id="post-image-wrapper">
+                                <label class="form-label small fw-bold">URL Изображения</label>
+                                <input type="url" id="post-image" class="form-control" placeholder="https://example.com/image.jpg">
+                                <div class="form-text small">Если не указано, применится стандартное изображение.</div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Город / Локация</label>
-                                <input type="text" id="job-location" class="form-control">
+
+                            <!-- Специфичные поля вакансии -->
+                            <div id="job-fields-wrapper" class="row g-3 m-0 p-0">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Тип работ *</label>
+                                    <select id="job-type" class="form-select">
+                                        <option value="finishing">Отделочные работы</option>
+                                        <option value="plumbing">Сантехника</option>
+                                        <option value="electrical">Электрика</option>
+                                        <option value="masonry">Каменные работы</option>
+                                        <option value="roofing">Кровля</option>
+                                        <option value="hvac">Вентиляция/Отопление</option>
+                                        <option value="general" selected>Общие работы</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Занятость</label>
+                                    <select id="job-employment" class="form-select">
+                                        <option value="Полная занятость" selected>Полная занятость</option>
+                                        <option value="Частичная занятость">Частичная занятость</option>
+                                        <option value="Подряд">Подряд</option>
+                                        <option value="Временная работа">Временная работа</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Локация</label>
+                                    <input type="text" id="job-location" class="form-control" placeholder="Напр: Таллинн">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Оплата (евро/текст)</label>
+                                    <input type="text" id="job-salary" class="form-control" placeholder="Напр: 15€/час">
+                                </div>
+
+                                <hr class="my-3">
+                                <h6 class="fw-bold mb-2">Контактные данные</h6>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Имя</label>
+                                    <input type="text" id="job-contact-name" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Телефон *</label>
+                                    <input type="tel" id="job-contact-phone" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Email</label>
+                                    <input type="email" id="job-contact-email" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Оплата (евро/текст)</label>
-                                <input type="text" id="job-salary" class="form-control" placeholder="Например: 15€/час или Договорная">
-                            </div>
+
                             <div class="col-md-12">
-                                <label class="form-label small fw-bold">Описание вакансии *</label>
-                                <textarea id="job-content" class="form-control" rows="4" required></textarea>
-                            </div>
-                            <hr class="my-3">
-                            <h6 class="fw-bold">Контактные данные</h6>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold">Имя</label>
-                                <input type="text" id="job-contact-name" class="form-control">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold">Телефон *</label>
-                                <input type="tel" id="job-contact-phone" class="form-control" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold">Email</label>
-                                <input type="email" id="job-contact-email" class="form-control">
+                                <label class="form-label small fw-bold">Содержимое / Описание *</label>
+                                <textarea id="post-content" class="form-control" rows="6" required></textarea>
                             </div>
                         </div>
-                        <div id="job-form-message" class="alert d-none mt-3"></div>
+
+                        <div id="post-form-message" class="alert d-none mt-3"></div>
                         <div class="mt-4 text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                             <button type="submit" class="btn bh-btn-primary px-4">Опубликовать</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Универсальное окно подтверждения -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <i class="fas fa-exclamation-circle text-warning fa-3x mb-3"></i>
+                    <h5 class="fw-bold mb-2" id="confirmModalTitle">Вы уверены?</h5>
+                    <p class="text-muted mb-4" id="confirmModalBody">Это действие нельзя будет отменить.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-danger px-4" id="confirmModalBtn">Подтвердить</button>
+                    </div>
                 </div>
             </div>
         </div>

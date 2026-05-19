@@ -108,7 +108,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <time datetime="${news.createdAt}">${date}</time>
                         </div>
                         <div class="img-wrapper mb-5 shadow-sm rounded-4 overflow-hidden">
-                            <img src="${news.imageUrl}" class="img-fluid" alt="${news.title}" style="opacity: 1 !important;">
+                            <img src="${news.imageUrl || 'images/logo.png'}" 
+                                 class="img-fluid w-100" 
+                                 alt="${news.title}" 
+                                 style="opacity: 1 !important; object-fit: cover; max-height: 500px;"
+                                 onerror="this.onerror=null; this.src='images/logo.png';">
                         </div>
                         
                         ${jobDetailsHtml}
@@ -184,26 +188,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target.classList.contains('delete-comment-btn')) {
             const commentId = e.target.getAttribute('data-id');
 
-            if (confirm('Удалить этот комментарий?')) {
-                try {
-                    const res = await fetch(`/api/comments/${commentId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+            window.showConfirmation(
+                'Удаление',
+                'Удалить этот комментарий?',
+                async () => {
+                    try {
+                        const res = await fetch(`/api/comments/${commentId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
 
-                    if (res.ok) {
-                        loadComments(newsId);
-                    } else {
-                        const data = await res.json();
-                        showNotification(data.message || 'Ошибка при удалении', 'danger');
+                        if (res.ok) {
+                            showNotification('Комментарий удален');
+                            loadComments(newsId);
+                        } else {
+                            const data = await res.json();
+                            showNotification(data.message || 'Ошибка при удалении', 'danger');
+                        }
+                    } catch (err) {
+                        console.error("Error deleting comment:", err);
+                        showNotification('Ошибка сервера', 'danger');
                     }
-                } catch (err) {
-                    console.error("Delete error:", err);
-                    showNotification('Сервер недоступен', 'danger');
-                }
-            }
+                },
+                'Удалить'
+            );
         }
     });
 

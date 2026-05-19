@@ -1,0 +1,39 @@
+@startuml BuildHelper_SequenceDiagram
+    
+     actor User as "Пользователь (Browser)"
+     participant Frontend as "JS (login.js / news.js)"
+     participant API as "Express Router"
+     participant Auth as "Auth Middleware"
+     database DB as "MongoDB (Mongoose)"
+    
+     == Аутентификация ==
+    User -> Frontend: Ввод email и пароля
+    Frontend -> API: POST /api/auth/login {email, password}
+    API -> DB: User.findOne({ email })
+    DB --> API: user data (hashed password)
+    API -> API: bcrypt.compare(password, hash)
+    API --> Frontend: JSON {token, role, status}
+    Frontend -> Frontend: Сохранение токена в LocalStorage
+   
+    == Получение новостей ==
+    User -> Frontend: Переход на главную страницу
+    Frontend -> Frontend: fetchNews()
+    Frontend -> API: GET /api/news?limit=5
+    note right: Запрос без токена (публичный)
+    API -> DB: News.find({ status: 'published' })
+    DB --> API: [News Items]
+    API --> Frontend: JSON {news, pagination}
+    Frontend -> User: Отображение новостей на странице
+   
+    == Создание вакансии (защищенный роут) ==
+    User -> Frontend: Нажать "Опубликовать вакансию"
+    Frontend -> API: POST /api/news {data, token}
+    API -> Auth: protect(req)
+    Auth -> Auth: Проверка JWT токена
+    Auth --> API: req.user = user
+    API -> DB: new News(...).save()
+    DB --> API: saved vacancy
+    API --> Frontend: 201 Created
+    Frontend -> User: "Вакансия отправлена на модерацию"
+   
+    @enduml

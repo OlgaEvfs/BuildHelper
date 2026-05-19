@@ -15,6 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => toast.remove(), 3000);
     };
 
+    // 2.1. Глобальная функция подтверждения
+    window.showConfirmation = (title, message, onConfirm, btnText = 'Подтвердить') => {
+        const modalEl = document.getElementById('confirmModal');
+        if (!modalEl) {
+            console.error('Modal #confirmModal not found');
+            return;
+        }
+        
+        // Используем существующий экземпляр или создаем новый
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        
+        const titleEl = document.getElementById('confirmModalTitle');
+        const bodyEl = document.getElementById('confirmModalBody');
+        const confirmBtn = document.getElementById('confirmModalBtn');
+
+        titleEl.textContent = title;
+        bodyEl.textContent = message;
+        confirmBtn.textContent = btnText;
+
+        // Очищаем старые обработчики и ставим новый
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        
+        newConfirmBtn.addEventListener('click', () => {
+            onConfirm();
+            modal.hide();
+        });
+
+        modal.show();
+    };
+
     // 3. Загружаем новости
     if (typeof fetchNews === 'function') {
         fetchNews();

@@ -161,12 +161,16 @@ function selectObject(obj) {
         return;
     }
     propsBox.classList.remove('d-none');
-    document.getElementById('prop-name').value = obj.name || obj.type;
+    document.getElementById('prop-name').value = obj.name || (obj.type === 'door' ? 'Дверь' : obj.type === 'window' ? 'Окно' : obj.type);
     
     if (obj.type === 'room') {
         document.getElementById('prop-w').value = obj.l;
         document.getElementById('prop-l').value = obj.w;
         roomApplyContainer.classList.remove('d-none');
+    } else if (obj.type === 'door' || obj.type === 'window') {
+        document.getElementById('prop-w').value = obj.w;
+        document.getElementById('prop-l').value = obj.h;
+        roomApplyContainer.classList.add('d-none');
     } else {
         document.getElementById('prop-w').value = obj.w;
         document.getElementById('prop-l').value = obj.h;
@@ -182,12 +186,17 @@ function updateObjectProps() {
     if (selectedObject.type === 'room') {
         selectedObject.l = valW;
         selectedObject.w = valL;
+    } else if (selectedObject.type === 'door' || selectedObject.type === 'window') {
+        selectedObject.w = valW;
+        selectedObject.h = valL;
+        renderOpeningsList(); // Обновляем список для отображения новых размеров
     } else {
         selectedObject.w = valW;
         selectedObject.h = valL;
     }
     render();
 }
+
 
 function rotateObject() {
     if (!selectedObject || selectedObject.type !== 'furniture') return;
@@ -202,58 +211,109 @@ function rotateObject() {
 
 function deleteObject() {
     if (!selectedObject) return;
-    if (!confirm(`Удалить ${selectedObject.name}?`)) return;
-    if (selectedObject.type === 'room') {
-        rooms = rooms.filter(r => r !== selectedObject);
-    } else {
-        furniture = furniture.filter(f => f !== selectedObject);
-    }
-    selectObject(null);
-    render();
+    
+    window.showConfirmation(
+        'Удаление',
+        `Удалить ${selectedObject.name}?`,
+        () => {
+            if (selectedObject.type === 'room') {
+                rooms = rooms.filter(r => r !== selectedObject);
+            } else {
+                furniture = furniture.filter(f => f !== selectedObject);
+            }
+            selectObject(null);
+            render();
+        },
+        'Удалить'
+    );
 }
 
-function applySingleRoomToCalculators() {
-    if (!selectedObject || selectedObject.type !== 'room') return;
-    const floorArea = (selectedObject.l * selectedObject.w).toFixed(2);
-    const perimeter = (2 * (selectedObject.l + selectedObject.w)).toFixed(2);
-    const wallArea = (perimeter * selectedObject.h).toFixed(2);
-    sessionStorage.setItem('lastNetWallArea', wallArea);
-    sessionStorage.setItem('lastFloorArea', floorArea);
-    sessionStorage.setItem('lastPerimeter', perimeter);
-    showNotification(`Размеры комнаты "${selectedObject.name}" отправлены в калькуляторы!`, 'success');
+// ...
+
+function renderOpeningsList() {
+    const listContainer = document.getElementById('openings-list-planner');
+    if (!listContainer) return;
+    
+    if (openings.length === 0) {
+        listContainer.innerHTML = '<p class="small text-muted">Нет проемов</p>';
+        return;
+    }
+    
+    listContainer.innerHTML = openings.map((op, index) => {
+        const room = rooms[op.roomId];
+        const roomName = room ? room.name : 'Неизвестная комната';
+        return `
+            <div class="small p-1 border-bottom clickable-opening" onclick="selectOpening(${index})" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}м</span>
+                    <button class="btn btn-xs btn-outline-danger p-0 px-1" onclick="removeOpening(${index}); event.stopPropagation();">×</button>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">В: ${roomName}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function selectOpening(index) {
+    const op = openings[index];
+    selectObject(op);
 }
 
 function addOpening(type) {
-    const w = type === 'door' ? 0.9 : 1.2;
-    const h = type === 'door' ? 2.0 : 1.4;
-    openings.push({ type, w, h });
+    if (!selectedObject || selectedObject.type !== 'room') {
+        showNotification('Сначала выберите комнату!', 'warning');
+        return;
+    }
+    const roomId = rooms.indexOf(selectedObject);
+    const newOpening = {
+        type: type,
+        roomId: roomId,
+        w: type === 'door' ? 0.9 : 1.2,
+        h: type === 'door' ? 2.0 : 1.5
+    };
+    openings.push(newOpening);
     renderOpeningsList();
-    updateInfo();
+    render();
 }
 
 function removeOpening(index) {
     openings.splice(index, 1);
     renderOpeningsList();
-    updateInfo();
+    render();
 }
 
-function renderOpeningsList() {
-    const list = document.getElementById('openings-list-planner');
-    if (!list) return;
-    list.innerHTML = openings.map((op, index) => `
-        <div class="d-flex justify-content-between align-items-center bg-white border rounded p-1 mb-1 small">
-            <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}м</span>
-            <button class="btn btn-sm text-danger p-0 px-1" onclick="removeOpening(${index})">&times;</button>
-        </div>
-    `).join('');
+function applySingleRoomToCalculators() {
+    if (!selectedObject || selectedObject.type !== 'room') return;
+    
+    const room = selectedObject;
+    const roomId = rooms.indexOf(room);
+    
+    // Фильтруем проемы только для этой комнаты
+    const roomOpenings = openings.filter(op => op.roomId === roomId);
+    const openingsArea = roomOpenings.reduce((sum, op) => sum + (op.w * op.h), 0);
+    
+    const floorArea = room.l * room.w;
+    const perimeter = 2 * (room.l + room.w);
+    const wallArea = (perimeter * room.h) - openingsArea;
+    
+    sessionStorage.setItem('lastNetWallArea', wallArea.toFixed(2));
+    sessionStorage.setItem('lastFloorArea', floorArea.toFixed(2));
+    sessionStorage.setItem('lastPerimeter', perimeter.toFixed(2));
+    showNotification(`Данные комнаты "${room.name}" перенесены!`, 'success');
 }
 
 function clearPlanner() {
-    if (!confirm('Очистить весь план?')) return;
-    rooms = []; furniture = []; openings = [];
-    selectObject(null);
-    renderOpeningsList();
-    render();
+    window.showConfirmation(
+        'Очистка',
+        'Очистить весь план?',
+        () => {
+            rooms = []; furniture = []; openings = [];
+            selectObject(null);
+            renderOpeningsList();
+            render();
+        },
+        'Очистить'
+    );
 }
 
 function render() {
@@ -261,8 +321,10 @@ function render() {
     drawGlobalGrid();
     rooms.forEach(room => drawRoomObject(room));
     furniture.forEach(item => drawFurnitureObject(item));
+    // openings визуально не отрисовываем
     updateInfo();
 }
+
 
 function drawGlobalGrid() {
     // Промежуточная сетка (0.5 метра)
