@@ -1,0 +1,5 @@
+  it('DELETE /api/admin/users/:id should return 404 if user not found', async () => {
+    User.findById.mockResolvedValue(null);
+    const res = await request(app).delete('/api/admin/users/notfound');
+    expect(res.statusCode).toBe(404);
+  });
