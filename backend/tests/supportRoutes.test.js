@@ -3,22 +3,22 @@ const express = require('express');
 const supportRoutes = require('../routes/support');
 const SupportRequest = require('../models/SupportRequest');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 
 const app = express();
 app.use(express.json());
 app.use('/api/support', supportRoutes);
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
+});
+
+beforeEach(async () => {
+  await clearDatabase();
 });
 
 describe('Support Routes', () => {

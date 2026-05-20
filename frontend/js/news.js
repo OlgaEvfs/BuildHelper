@@ -17,13 +17,11 @@ window.fetchNews = async function() {
 
         const data = await response.json();
         const news = data.news; 
-        console.log("Данные новостей:", news);
 
         contentContainer.innerHTML = ''; 
         itemsContainer.innerHTML = ''; // Очищаем список заголовков перед добавлением новых
 
         if (!news || news.length === 0) {
-            console.log("Новостей нет");
             contentContainer.innerHTML = `
                 <div class="p-5 text-center">
                     <p class="text-muted">Новостей пока нет. Мы скоро добавим что-нибудь интересное!</p>
@@ -42,7 +40,6 @@ window.fetchNews = async function() {
             return types[type] || 'Общие работы';
         };
 
-        console.log("Начинаем рендеринг новостей...");
         news.forEach((item, i) => {
             const contentBlock = document.createElement('div');
             contentBlock.className = 'tabcontent';

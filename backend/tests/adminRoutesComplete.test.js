@@ -9,7 +9,7 @@ const Planner = require('../models/Planner');
 const Checklist = require('../models/Checklist');
 const SupportRequest = require('../models/SupportRequest');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase, seedDatabase } = require('./testUtils');
 
 jest.mock('../middleware/authMiddleware', () => (req, res, next) => {
   req.user = { id: 'adminId', role: 'admin' };
@@ -28,21 +28,19 @@ const app = express();
 app.use(express.json());
 app.use('/api/admin', adminRoutes);
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
 });
 
 describe('Admin Routes - Complete', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await clearDatabase();
+    await seedDatabase();
   });
 
   it('PUT /api/admin/users/:id/reset-password should reset password', async () => {

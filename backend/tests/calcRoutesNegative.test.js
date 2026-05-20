@@ -3,7 +3,7 @@ const express = require('express');
 const calcRoutes = require('../routes/calculations');
 const Calculation = require('../models/Calculation');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 
 jest.mock('../middleware/authMiddleware', () => (req, res, next) => {
   req.user = { id: '507f1f17bcf86cd799439011' };
@@ -15,21 +15,18 @@ const app = express();
 app.use(express.json());
 app.use('/api/calculations', calcRoutes);
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
 });
 
 describe('Calculation Routes - Negative', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await clearDatabase();
   });
 
   it('POST /api/calculations should return 400 if fields missing', async () => {

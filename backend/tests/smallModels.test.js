@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 const Comment = require('../models/Comment');
 const SupportRequest = require('../models/SupportRequest');
 const Planner = require('../models/Planner');
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
+});
+
+beforeEach(async () => {
+  await clearDatabase();
 });
 
 describe('Small Models', () => {

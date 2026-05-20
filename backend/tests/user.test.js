@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 const User = require('../models/User');
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
+});
+
+beforeEach(async () => {
+  await clearDatabase();
 });
 
 describe('User Model', () => {

@@ -3,7 +3,7 @@ const express = require('express');
 const newsRoutes = require('../routes/news');
 const News = require('../models/News');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 
 // Mock middlewares
 jest.mock('../middleware/authMiddleware', () => (req, res, next) => {
@@ -19,16 +19,16 @@ const app = express();
 app.use(express.json());
 app.use('/api/news', newsRoutes);
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
+});
+
+beforeEach(async () => {
+  await clearDatabase();
 });
 
 describe('News Routes - PUT/DELETE Auth', () => {

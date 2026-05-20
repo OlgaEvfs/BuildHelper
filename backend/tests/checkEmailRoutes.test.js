@@ -3,7 +3,7 @@ const express = require('express');
 const checkEmailRoutes = require('../routes/checkEmail');
 const User = require('../models/User');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils');
 
 jest.mock('../models/User');
 
@@ -11,16 +11,17 @@ const app = express();
 app.use(express.json());
 app.use('/api', checkEmailRoutes);
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  await mongoose.connect(mongoServer.getUri());
+  await connectToMemoryDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await closeMemoryDB();
+});
+
+beforeEach(async () => {
+  await clearDatabase();
+  jest.clearAllMocks();
 });
 
 describe('CheckEmail Route', () => {

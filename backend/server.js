@@ -1,5 +1,5 @@
-// Загружаем настройки
-require('dotenv').config();
+require('dotenv').config(); // Загружаем переменные окружения из .env файла
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');

@@ -393,12 +393,13 @@ body.modal-open {
     padding: 0.5rem 1rem;
 }
 
+/* Общий стиль при наведении для элементов меню */
 .dropdown-menu li:hover .dropdown-item {
-    background-color: var(--bg-accent-light) !important;
-    color: var(--accent-blue) !important;
+    background-color: rgba(0, 123, 255, 0.1) !important; /* Светло-синий фон */
+    color: var(--accent-blue) !important; /* Синий текст */
 }
 
-/* Специфичный стиль для кнопки выхода при наведении */
+/* Специфичный стиль для кнопки выхода при наведении (переопределяем общий стиль) */
 .dropdown-menu li:hover .logout-item {
     background-color: rgba(255, 77, 77, 0.1) !important; /* Светло-красный фон */
     color: var(--error-red) !important; /* Красный текст */

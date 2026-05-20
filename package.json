@@ -5,11 +5,18 @@
   "main": "server.js",
   "scripts": {
     "start": "node backend/server.js",
+    "seed": "node backend/seed.js",
     "dev": "nodemon backend/server.js",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "jest": {
     "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/e2e/"
+    ],
     "collectCoverageFrom": [
       "backend/**/*.js"
     ],
@@ -34,6 +41,7 @@
     "russian-bad-words": "^0.5.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "jest": "^30.4.2",
     "mongodb-memory-server": "^11.1.0",
     "nodemon": "^3.1.14",
