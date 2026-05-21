@@ -4,7 +4,7 @@ const News = require('../models/News');
 const authMiddleware = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
-// Получить вакансии текущего пользователя
+// Get current user's jobs
 router.get('/my-jobs', authMiddleware, async (req, res) => {
     try {
         const jobs = await News.find({ author: req.user.id, category: 'jobs' }).sort({ createdAt: -1 });
@@ -14,7 +14,7 @@ router.get('/my-jobs', authMiddleware, async (req, res) => {
     }
 });
 
-// Получить новости с пагинацией и фильтрацией
+// Get news with pagination and filtering
 router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Получить одну новость по ID
+// Get a single news item by ID
 router.get('/:id', async (req, res) => {
     try {
         const item = await News.findById(req.params.id);
@@ -64,14 +64,14 @@ router.post('/', authMiddleware, (req, res, next) => {
     try {
         const isAdmin = req.user.role === 'admin';
         
-        // Извлекаем все возможные поля из req.body
+        // Extract all possible fields from req.body
         const { 
             title, content, category, imageUrl, 
             jobType, location, employment, salary, 
             contactName, contactEmail, contactPhone 
         } = req.body;
 
-        // Валидация обязательных полей
+        // Validate mandatory fields
         if (!title || !content || !category) {
             return res.status(400).json({ 
                 message: 'Заполните обязательные поля (Заголовок, Содержимое, Категория)',
@@ -79,13 +79,13 @@ router.post('/', authMiddleware, (req, res, next) => {
             });
         }
 
-        // Валидация вакансий
+        // Validate jobs
         if (category === 'jobs') {
             if (!jobType || !location || !salary || !contactName || !contactEmail || !contactPhone) {
                 return res.status(400).json({ message: 'Для вакансии должны быть заполнены все поля: Тип, Локация, Оплата, Контактное имя, Email и Телефон.' });
             }
             
-            // Эстонский телефон: от 7 до 15 цифр, может начинаться с +
+            // Estonian phone number: 7 to 15 digits, may start with +
             const phoneRegex = /^\+?\d{7,15}$/;
             if (!phoneRegex.test(contactPhone.replace(/\s/g, ''))) {
                 return res.status(400).json({ message: 'Укажите корректный эстонский номер телефона (минимум 7 цифр).' });
@@ -110,7 +110,7 @@ router.post('/', authMiddleware, (req, res, next) => {
 
         let finalImageUrl = (imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '') ? imageUrl.trim() : null;
 
-        // Если загружен файл, он имеет приоритет
+        // Use uploaded file if present, takes priority
         if (req.file) {
             finalImageUrl = `/uploads/${req.file.filename}`;
         }
@@ -149,7 +149,7 @@ router.post('/', authMiddleware, (req, res, next) => {
     }
 });
 
-// Редактировать (Автор или Админ)
+// Edit (Author or Admin)
 router.put('/:id', authMiddleware, (req, res, next) => {
     upload.single('image')(req, res, (err) => {
         if (err) {
@@ -173,7 +173,7 @@ router.put('/:id', authMiddleware, (req, res, next) => {
 
         const updateData = { ...req.body };
         
-        // Если загружен новый файл, обновляем путь
+        // Update image path if new file is uploaded
         if (req.file) {
             updateData.imageUrl = `/uploads/${req.file.filename}`;
         }
@@ -195,7 +195,7 @@ router.put('/:id', authMiddleware, (req, res, next) => {
     }
 });
 
-// Удалить (Автор или Админ)
+// Delete (Author or Admin)
 router.delete('/:id', authMiddleware, async (req,res) => {
     try {
         const post = await News.findById(req.params.id);
@@ -208,13 +208,13 @@ router.delete('/:id', authMiddleware, async (req,res) => {
             return res.status(403).json({ message: 'Нет прав на удаление' });
         }
 
-        // Если есть картинка и она локальная (начинается с /uploads/)
+        // If there is an image and it's local (starts with /uploads/)
         if (post.imageUrl && post.imageUrl.startsWith('/uploads/')) {
-            // Преобразуем url в путь к файлу: /uploads/filename.jpg -> ../uploads/filename.jpg
+            // Convert url to file path: /uploads/filename.jpg -> ../uploads/filename.jpg
             const fileName = post.imageUrl.split('/').pop();
             const filePath = path.join(__dirname, '../uploads', fileName);
             
-            // Удаляем файл, если он существует
+            // Delete file if it exists
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }

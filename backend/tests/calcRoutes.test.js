@@ -7,7 +7,7 @@ const { connectToMemoryDB, closeMemoryDB, clearDatabase } = require('./testUtils
 
 // Mock auth middleware
 jest.mock('../middleware/authMiddleware', () => (req, res, next) => {
-  // Используем фиксированный валидный ObjectId строкой
+  // Use a fixed valid ObjectId string
   req.user = { id: '507f1f17bcf86cd799439011' };
   next();
 });

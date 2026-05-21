@@ -9,16 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let currentJobType = 'all';
 
-    // Обработка кликов по фильтрам
+    // Handle filter clicks
     filters.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') {
             filters.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
             currentCategory = e.target.getAttribute('data-category');
             currentPage = 1;
-            currentJobType = 'all'; // Сбрасываем подкатегорию при смене основной категории
+            currentJobType = 'all'; // Reset subcategory when main category changes
 
-            // Показываем или скрываем подкатегории для вакансий
+            // Show or hide job subcategories
             const jobFilters = document.getElementById('job-filters');
             if (currentCategory === 'jobs') {
                 jobFilters.classList.remove('d-none');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Добавляем обработчик для подкатегорий вакансий
+    // Add event listener for job subcategories
     const jobFilters = document.getElementById('job-filters');
     jobFilters.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') {
@@ -43,9 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Функция загрузки новостей с сервера
+    // Load news from server
     async function loadNews() {
-        // Если новостей еще нет — показываем спиннер, если есть — только прозрачность
         if (newsGrid.children.length === 0 || newsGrid.querySelector('.bh-loader-container')) {
             showLoader();
         } else {
@@ -69,33 +68,33 @@ document.addEventListener('DOMContentLoaded', () => {
             renderNews(data.news);
             renderPagination(data.pagination);
         } catch (error) {
-            newsGrid.innerHTML = '<div class="text-center text-danger">Ошибка загрузки</div>';
+            newsGrid.innerHTML = '<div class="text-center text-danger">Error loading</div>';
         } finally {
-            newsGrid.classList.remove('loading'); // Убираем эффект загрузки в любом случае
+            newsGrid.classList.remove('loading'); // Remove loading effect
         }
     }
 
     function getJobTypeName(type) {
         const types = {
-            'finishing': 'Отделка',
-            'plumbing': 'Сантехника',
-            'electrical': 'Электрика',
-            'masonry': 'Камень',
-            'roofing': 'Кровля',
-            'hvac': 'Вентиляция',
-            'general': 'Общие работы'
+            'finishing': 'Finishing',
+            'plumbing': 'Plumbing',
+            'electrical': 'Electrical',
+            'masonry': 'Masonry',
+            'roofing': 'Roofing',
+            'hvac': 'HVAC',
+            'general': 'General'
         };
-        return types[type] || 'Общие работы';
+        return types[type] || 'General';
     }
 
-    // Функция для рендера новостей на страницу
+    // Render news items
     function renderNews(news) {
         if (!news || news.length === 0) {
             newsGrid.innerHTML = `
                 <div class="col-12" style="width: 100% !important; display: flex !important; justify-content: center !important; padding: 80px 0;">
                     <div style="text-align: center !important;">
-                        <h3 class="fw-bold">Новостей не найдено</h3>
-                        <p class="text-muted">Попробуйте выбрать другую категорию или фильтр</p>
+                        <h3 class="fw-bold">No news found</h3>
+                        <p class="text-muted">Try selecting a different category or filter</p>
                     </div>
                 </div>
             `;
@@ -108,49 +107,49 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="${item.imageUrl || 'images/logo.png'}" alt="${item.title}">
                     <div class="news-card-content">
                         <small>
-                            ${item.category === 'jobs' ? `Вакансия: ${getJobTypeName(item.jobType)}` : `Новость: ${getCategoryName(item.category)}`}
-                            • ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            ${item.category === 'jobs' ? `Job: ${getJobTypeName(item.jobType)}` : `News: ${getCategoryName(item.category)}`}
+                            • ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
                         <div class="text-center mt-auto">
-                            <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline">Читать полностью</a>
+                            <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline">Read full</a>
                         </div>
                     </div>
                 </div>
             </div>
         `).join('');
     }
-    // Логика показа кнопки "Добавить"
+    // Logic for "Add" button display
     function checkAddPostButton() {
         const token = localStorage.getItem('token');
         const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
         const isAdmin = userInfo.role === 'admin';
         const addBtn = addJobContainer.querySelector('button');
 
-        // Кнопка видна админу всегда (если авторизован), пользователю - только в вакансиях
+        // Button visible to admin always, to users only in jobs
         if (token && (isAdmin || currentCategory === 'jobs')) {
             addJobContainer.classList.remove('d-none');
             
-            // Меняем текст кнопки
-            addBtn.textContent = isAdmin ? '+ Создать публикацию' : '+ Опубликовать вакансию';
+            // Set button text
+            addBtn.textContent = isAdmin ? '+ Create publication' : '+ Publish job';
             
             const imageWrapper = document.getElementById('post-image-wrapper');
             const categorySelect = document.getElementById('post-category');
             
             if (isAdmin) {
-                // Админ видит всё
+                // Admin access
                 if (imageWrapper) imageWrapper.classList.remove('d-none');
                 if (categorySelect) {
                     categorySelect.parentElement.classList.remove('d-none');
                     categorySelect.querySelectorAll('option').forEach(opt => opt.style.display = 'block');
                 }
             } else {
-                // Обычный пользователь видит только вакансии
+                // User access (only jobs)
                 if (imageWrapper) imageWrapper.classList.add('d-none');
                 if (categorySelect) {
                     categorySelect.parentElement.classList.add('d-none');
-                    categorySelect.innerHTML = '<option value="jobs" selected>Вакансия</option>';
+                    categorySelect.innerHTML = '<option value="jobs" selected>Job</option>';
                 }
             }
                 
@@ -183,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     checkAddPostButton();
    
-    // Обработка отправки формы записи
+    // Handle post form submission
     const addPostForm = document.getElementById('add-post-form');
     if (addPostForm) {
         addPostForm.addEventListener('submit', async (e) => {
@@ -193,12 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             submitBtn.disabled = true;
             const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Публикация...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Publishing...';
             
             const category = document.getElementById('post-category').value;
             const formData = new FormData();
             
-            // Сначала добавляем текстовые поля
+            // Append text fields
             formData.append('title', document.getElementById('post-title').value);
             formData.append('content', document.getElementById('post-content').value);
             formData.append('category', category);
@@ -208,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const phone = document.getElementById('add-post-form').querySelector('#job-contact-phone').value;
                 const phoneRegex = /^\+?\d{7,15}$/;
                 if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
-                    msg.textContent = 'Заполните все поля';
+                    msg.textContent = 'Fill in all fields';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
                     submitBtn.disabled = false;
@@ -224,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('contactEmail', document.getElementById('job-contact-email').value);
             }
 
-            // Файл добавляем в САМЫЙ КОНЕЦ
+            // Append file at the very end
             const imageFile = document.getElementById('post-image-file').files[0];
             if (imageFile) {
                 formData.append('image', imageFile);
@@ -235,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
-                        // При использовании FormData заголовок Content-Type ставить НЕ НУЖНО
                     },
                     body: formData
                 });
@@ -243,21 +241,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (res.ok) {
                     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
                     msg.textContent = userInfo.role === 'admin' 
-                        ? 'Запись успешно опубликована!' 
-                        : 'Запись успешно отправлена на модерацию!';
+                        ? 'Publication successful!' 
+                        : 'Sent for moderation!';
                     msg.className = 'alert alert-success mt-3';
                     msg.classList.remove('d-none');
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const err = await res.json();
-                    msg.textContent = 'Заполните все поля';
+                    msg.textContent = 'Fill in all fields';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
                 }
             } catch (error) {
-                msg.textContent = 'Ошибка сети';
+                msg.textContent = 'Network error';
                 msg.className = 'alert alert-danger mt-3';
                 msg.classList.remove('d-none');
                 submitBtn.disabled = false;
@@ -266,25 +264,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Функция для рендера пагинации
+    // Render pagination
     function renderPagination(pageInfo) {
         const { totalPages, currentPage: page } = pageInfo;
         let html = '';
 
-        // Теперь показываем пагинацию, даже если страница одна, чтобы убедиться в работоспособности
         if (!totalPages || totalPages === 0) {
             pagination.innerHTML = '';
             return;
         }
 
-        // Кнопка Назад
+        // Previous button
         html += `
             <li class="page-item ${page === 1 ? 'disabled' : ''}">
                 <button class="page-link" onclick="window.changePage(${page - 1})">«</button>
             </li>
         `;
 
-        // Номера страниц
+        // Page numbers
         for (let i = 1; i <= totalPages; i++) {
             html += `
                 <li class="page-item ${i === page ? 'active' : ''}">
@@ -293,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        // Кнопка Вперед
+        // Next button
         html += `
             <li class="page-item ${page === totalPages ? 'disabled' : ''}">
                 <button class="page-link" onclick="window.changePage(${page + 1})">»</button>
@@ -303,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pagination.innerHTML = html;
     }
 
-    // Делаем функцию глобальной, чтобы onclick в HTML её видел
+    // Global changePage function for HTML
     window.changePage = (page) => {
         if (page < 1) return;
         currentPage = page;
@@ -311,28 +308,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Изначальная загрузка новостей
+    // Show loader
     function showLoader() {
         newsGrid.innerHTML = `
             <div class="col-12" style="width: 100% !important;">
                 <div class="bh-loader-container">
                     <div class="bh-spinner"></div>
-                    <div class="bh-loader-text">Загружаем список новостей...</div>
+                    <div class="bh-loader-text">Loading news...</div>
                 </div>
             </div>
         `;
     }
 
-    // Функция для получения читаемого названия категории
+    // Get readable category name
     function getCategoryName(cat) {
         const categories = {
-            'tech': 'Технологии',
-            'market': 'Рынок',
-            'experts': 'Эксперты',
-            'calendar': 'Календарь',
-            'jobs': 'Вакансии'
+            'tech': 'Technology',
+            'market': 'Market',
+            'experts': 'Experts',
+            'calendar': 'Calendar',
+            'jobs': 'Jobs'
         };
-        return categories[cat] || 'Новости';
+        return categories[cat] || 'News';
     }
 
     loadNews();

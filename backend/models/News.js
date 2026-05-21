@@ -9,7 +9,7 @@ const newsSchema = new mongoose.Schema({
     title: { 
         type: String,
         required: true,
-        trim: true // trim удаляет пробелы в начале и конце
+        trim: true // Trim whitespace at beginning and end
     }, 
     content: { 
         type: String,
@@ -28,13 +28,13 @@ const newsSchema = new mongoose.Schema({
     jobType: {
         type: String,
         enum: [
-            'finishing', // Отделочные работы
-            'plumbing', // Сантехника
-            'electrical', // Электрика
-            'masonry', // Каменные работы
-            'roofing', // Кровельные работы
-            'hvac', // Вентиляция и отопление
-            'general', // Разнорабочие / Общие работы
+            'finishing', // Finishing works
+            'plumbing', // Plumbing
+            'electrical', // Electrical
+            'masonry', // Masonry
+            'roofing', // Roofing
+            'hvac', // HVAC/Heating
+            'general', // General work
             null
         ],
         default: null
@@ -62,7 +62,7 @@ const newsSchema = new mongoose.Schema({
         lowercase: true,
         validate: {
             validator: function(v) {
-                if (!v) return true; // Если значение не введено, валидация проходит (проверка на обязательность в required)
+                if (!v) return true; // Validate if value exists
                 return /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v);
             }
         }
@@ -75,7 +75,7 @@ const newsSchema = new mongoose.Schema({
         },
         validate: {
             validator: function(v) {
-                if (!v) return true; // Если значение не введено, валидация проходит (проверка на обязательность в required)
+                if (!v) return true; // Validate if value exists
                 return /^[\d\s+-]{5,20}$/.test(v);
             },
             message: 'Укажите корректный номер телефона (минимум 5 цифр)'
@@ -84,7 +84,7 @@ const newsSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'published'],
-        default: 'published' // Сейчас оставим 'published', чтобы ничего не пропало
+        default: 'published'
     },
     createdAt: { 
         type: Date,
@@ -92,7 +92,7 @@ const newsSchema = new mongoose.Schema({
     }
 });
 
-// Добавляем индексы для ускорения работы
+// Add indices for performance
 newsSchema.index({ createdAt: -1 });
 newsSchema.index({ category: 1 });
 

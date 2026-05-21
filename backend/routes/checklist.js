@@ -3,10 +3,10 @@ const router = express.Router();
 const Checklist = require('../models/Checklist');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Получить все задачи пользователя
+// Get all user tasks
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        // Используем .sort({ createdAt: 1 }), чтобы задачи шли по порядку создания
+        // Sort tasks by creation date
         const tasks = await Checklist.find({ user: req.user.id }).sort({ createdAt: 1 });
         res.json(tasks);
     } catch (err) {
@@ -15,7 +15,7 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Добавить новую задачу
+// Add new task
 router.post('/', authMiddleware, async (req, res) => {
     try {
         const { text } = req.body;
@@ -33,13 +33,13 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Обновить статус задачи (выполнено/нет)
+// Update task status (completed/not completed)
 router.patch('/:id', authMiddleware, async (req, res) => {
     try {
         const task = await Checklist.findById(req.params.id);
         if (!task) return res.status(404).json({ message: 'Задача не найдена' });
 
-        // Проверяем, что задача принадлежит именно этому пользователю
+        // Verify task belongs to this user
         if (task.user.toString() !== req.user.id) {
             return res.status(403).json({ message: 'Нет прав на изменение' });
         }
@@ -52,7 +52,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// Удалить задачу
+// Delete task
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const task = await Checklist.findById(req.params.id);

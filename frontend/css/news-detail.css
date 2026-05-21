@@ -15,15 +15,15 @@
     font-size: 1.15rem;
     line-height: 1.8;
     color: var(--bh-dark);
-    white-space: pre-line; /* Чтобы сохранялись переносы строк из базы */
+    white-space: pre-line; /* To preserve line breaks from the database */
 }
 
-/* Если будут параграфы */
+/* If there are paragraphs */
 .news-content p {
     margin-bottom: 1.5rem;
 }
 
-/* Комментарии */
+/* Comments */
 .comments-section h3 {
     color: var(--bh-dark);
 }

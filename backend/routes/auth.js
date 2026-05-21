@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-// Добавляем authUser в импорт
-const { registerUser, authUser, updatePassword } = require('../controllers/authController'); // Импортируем функцию для регистрации из контроллера
-const protect = require('../middleware/authMiddleware'); // Импортируем middleware для защиты маршрутов
+// Add authUser to imports
+const { registerUser, authUser, updatePassword } = require('../controllers/authController'); // Import registration function from controller
+const protect = require('../middleware/authMiddleware'); // Import middleware for route protection
 
-// Маршрут для регистрации
+// Define registration route
 router.post('/register', registerUser);
 
-// Маршрут для входа
+// Define login route
 router.post('/login', authUser);
 
-// Пример защищенного маршрута, который требует авторизации
+// Set up protected route requiring authorization
 router.get('/profile', protect, (req, res) => {
-    res.json(req.user); // Возвращаем данные пользователя, которого нашел "охранник"
+    res.json(req.user); // Return user data found by protector
 });
 
-// маршрут для смены пароля
-// Используем .put, так как это обновление данных
-// protect — это ваш middleware, который проверяет токен
+// Set up password change route
+// Use .put for updating data
+// Protect middleware verifies the token
 router.put('/updatepassword', protect, updatePassword);
 
-module.exports = router; // Экспортируем роутер для использования в server.js
+module.exports = router; // Export router for use in server.js

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Получаем ID из URL
+    // Get ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const newsId = urlParams.get('id');
     const contentContainer = document.getElementById('news-detail-content');
@@ -9,11 +9,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const commentForm = document.getElementById('comment-form');
 
     if (!newsId) {
-        contentContainer.innerHTML = '<div class="alert alert-danger">ID новости не указан</div>';
+        contentContainer.innerHTML = '<div class="alert alert-danger">News ID not specified</div>';
         return;
     }
 
-    // Проверяем авторизацию и получаем данные пользователя
+    // Check authorization and get user data
     const token = localStorage.getItem('token');
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
@@ -22,57 +22,56 @@ document.addEventListener('DOMContentLoaded', async () => {
         loginReminder.classList.add('d-none');
     }
 
-    // Загружаем новость
+    // Load news
     try {
-        // Запрос к API
+        // Request to API
         const response = await fetch(`/api/news/${newsId}`);
-        if (!response.ok) throw new Error('Новость не найдена');
+        if (!response.ok) throw new Error('News not found');
         const news = await response.json();
 
-        // Отрисовка данных
-        // Форматируем дату
-        const date = new Date(news.createdAt).toLocaleDateString('ru-RU', {
+        // Format date
+        const date = new Date(news.createdAt).toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
         });
 
-        // Создаем переменную для вакансии
+        // Initialize job details
         let jobDetailsHtml = '';
 
-        // Если это вакансия добавляем информацию
+        // Add info for job category
         if (news.category === 'jobs') {
             jobDetailsHtml = `
                 <div class="p-4 mb-4 rounded-4 border shadow-sm" style="background-color: #f8f9fa; border-left: 5px solid var(--accent-blue) !important;">
                     <div class="row text-center text-sm-start mb-3">
                         <div class="col-sm-4 mb-2 mb-sm-0">
-                            <div class="text-muted small text-uppercase">Место работы</div>
-                            <div class="fw-bold">${news.location || 'Не указано'}</div>
+                            <div class="text-muted small text-uppercase">Work Location</div>
+                            <div class="fw-bold">${news.location || 'Not specified'}</div>
                         </div>
                         <div class="col-sm-4 mb-2 mb-sm-0">
-                            <div class="text-muted small text-uppercase">Занятость</div>
-                            <div class="fw-bold">${news.employment || 'Не указано'}</div>
+                            <div class="text-muted small text-uppercase">Employment</div>
+                            <div class="fw-bold">${news.employment || 'Not specified'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="text-muted small text-uppercase">Оплата</div>
-                            <div class="fw-bold text-success">${news.salary || 'Договорная'}</div>
+                            <div class="text-muted small text-uppercase">Salary</div>
+                            <div class="fw-bold text-success">${news.salary || 'Negotiable'}</div>
                         </div>
-                        <!-- Контакты -->
+                        <!-- Contacts -->
                         <div class="row g-4">
                             <div class="col-md-4">
-                                <div class="text-muted small text-uppercase">Контактное лицо</div>
-                                <div class="fw-bold">${news.contactName || 'Работодатель'}</div>
+                                <div class="text-muted small text-uppercase">Contact Name</div>
+                                <div class="fw-bold">${news.contactName || 'Employer'}</div>
                             </div>
                             <div class="col-md-4">
                                 <div class="text-muted small text-uppercase">Email</div>
                                 <a href="mailto:${news.contactEmail}" class="fw-bold text-decoration-none text-dark">
-                                    ${news.contactEmail || 'Не указан'}
+                                    ${news.contactEmail || 'Not specified'}
                                 </a>
                             </div>
                             <div class="col-md-4">
-                                <div class="text-muted small text-uppercase">Телефон</div>
+                                <div class="text-muted small text-uppercase">Phone</div>
                                 <a href="tel:${news.contactPhone}" class="fw-bold text-decoration-none mb-0" style="color: var(--accent-blue);">
-                                    ${news.contactPhone || 'Не указан'}
+                                    ${news.contactPhone || 'Not specified'}
                                 </a>
                             </div>
                         </div>
@@ -81,27 +80,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
         }
 
-        // Вспомогательные функции для перевода
+        // Helper functions for translation
         const getCategoryName = (cat) => {
-            const categories = { 'tech': 'Технологии', 'market': 'Рынок', 'experts': 'Эксперты', 'calendar': 'Календарь', 'jobs': 'Вакансии' };
-            return categories[cat] || 'Новости';
+            const categories = { 'tech': 'Technology', 'market': 'Market', 'experts': 'Experts', 'calendar': 'Calendar', 'jobs': 'Jobs' };
+            return categories[cat] || 'News';
         };
 
         const getJobTypeName = (type) => {
-            const types = { 'finishing': 'Отделка', 'plumbing': 'Сантехника', 'electrical': 'Электрика', 'masonry': 'Камень', 'roofing': 'Кровля', 'hvac': 'Вентиляция', 'general': 'Общие работы' };
-            return types[type] || 'Общие работы';
+            const types = { 'finishing': 'Finishing', 'plumbing': 'Plumbing', 'electrical': 'Electrical', 'masonry': 'Masonry', 'roofing': 'Roofing', 'hvac': 'HVAC', 'general': 'General' };
+            return types[type] || 'General';
         };
 
         const categoryLabel = news.category === 'jobs' 
-            ? `Вакансия: ${getJobTypeName(news.jobType)}` 
-            : `Новость: ${getCategoryName(news.category)}`;
+            ? `Job: ${getJobTypeName(news.jobType)}` 
+            : `News: ${getCategoryName(news.category)}`;
 
         contentContainer.innerHTML = `
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <nav aria-label="breadcrumb" class="mb-4">
                         <ol class="breadcrumb bg-transparent p-0">
-                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">Все новости</a></li>
+                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">All News</a></li>
                             <li class="breadcrumb-item active" aria-current="page">${news.title}</li>
                         </ol>
                     </nav>
@@ -127,54 +126,54 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
 
-        // Обновляем заголовок вкладки
+        // Update document title
         document.title = `${news.title} - BuildHelper`;
 
-        // Загруэаем комментарии
+        // Load comments
         loadComments(newsId);
 
     } catch (error) {
         console.error('Error fetching news:', error);
         contentContainer.innerHTML = `
             <div class="text-center py-5">
-                <h2 class="text-danger">Ошибка!</h2>
+                <h2 class="text-danger">Error!</h2>
                 <p>${error.message}</p>
-                <a href="/news.html" class="btn bh-btn-primary mt-3">Вернуться к списку</a>
+                <a href="/news.html" class="btn bh-btn-primary mt-3">Back to list</a>
             </div>
         `;
     }
 
-    // Функция загрузки комментариев
+    // Function to load comments
     async function loadComments(id) {
         try {
             const res = await fetch(`/api/comments/${id}`);
             const comments = await res.json();
 
             if (comments.length === 0) {
-                commentsList.innerHTML = '<p class="text-muted">Пока нет комментариев. Будьте первым!</p>';
+                commentsList.innerHTML = '<p class="text-muted">No comments yet. Be the first!</p>';
                 return;
             }
 
             commentsList.innerHTML = comments.map(c => {
-                // Проверяем автор это или админ (для кнопки удаления)
+                // Check if user is author or admin for delete button
                 const isMyComment = c.author && c.author._id === userInfo._id;
-                const iAmAdmin = userInfo.role === 'admin';
-                const showDelete = isMyComment || iAmAdmin;
+                const isAdmin = userInfo.role === 'admin';
+                const showDelete = isMyComment || isAdmin;
                 
-                // Проверяем, является ли АВТОР комментария админом (для значка)
+                // Check if author of comment is admin for badge
                 const authorIsAdmin = c.author && c.author.role === 'admin';
 
                 return `
                     <div class="comment-item mb-4 shadow-sm border-0">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
-                                <span class="comment-author">${c.author ? c.author.username : 'Аноним'}</span>
+                                <span class="comment-author">${c.author ? c.author.username : 'Anonymous'}</span>
                                 ${authorIsAdmin ? '<span class="badge bg-dark ms-2" style="font-size: 0.6rem;">Admin</span>' : ''}
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                                 ${showDelete ? `
-                                    <button class="btn btn-sm text-danger p-0 lh-1 delete-comment-btn" data-id="${c._id}" title="Удалить">&times;</button>
+                                    <button class="btn btn-sm text-danger p-0 lh-1 delete-comment-btn" data-id="${c._id}" title="Delete">&times;</button>
                                 ` : ''}
                             </div>    
                         </div>
@@ -187,15 +186,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    //Обработка удаления комментария
+    // Handle comment deletion
     commentsList.addEventListener('click', async (e) => {
-        //Если нажали на кнопку удаления
+        // If delete button clicked
         if (e.target.classList.contains('delete-comment-btn')) {
             const commentId = e.target.getAttribute('data-id');
 
             window.showConfirmation(
-                'Удаление',
-                'Удалить этот комментарий?',
+                'Delete',
+                'Delete this comment?',
                 async () => {
                     try {
                         const res = await fetch(`/api/comments/${commentId}`, {
@@ -206,23 +205,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                         });
 
                         if (res.ok) {
-                            showNotification('Комментарий удален');
+                            showNotification('Comment deleted');
                             loadComments(newsId);
                         } else {
                             const data = await res.json();
-                            showNotification(data.message || 'Ошибка при удалении', 'danger');
+                            showNotification(data.message || 'Error deleting', 'danger');
                         }
                     } catch (err) {
                         console.error("Error deleting comment:", err);
-                        showNotification('Ошибка сервера', 'danger');
+                        showNotification('Server error', 'danger');
                     }
                 },
-                'Удалить'
+                'Delete'
             );
         }
     });
 
-    // Отправка комментария
+    // Post comment
     if (commentForm) {
         commentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -239,11 +238,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (res.ok) {
-                    document.getElementById('comment-text').value = ''; // Очищаем форму
-                    loadComments(newsId); // Перезагружаем список
+                    document.getElementById('comment-text').value = ''; // Clear form
+                    loadComments(newsId); // Reload list
                 } else {
                     const errorData = await res.json();
-                    showNotification(errorData.message || 'Ошибка при отправке комментария', 'danger');
+                    showNotification(errorData.message || 'Error posting comment', 'danger');
                 }
             } catch (err) {
                 console.error("Error posting comment:", err);

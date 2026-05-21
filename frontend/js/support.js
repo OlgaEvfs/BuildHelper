@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const messageDiv = document.getElementById('support-form-message');
             const submitBtn = supportForm.querySelector('button[type="submit"]');
             
-            // Собираем данные
+            // Gather input data
             const email = document.getElementById('support-email').value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                messageDiv.textContent = 'Пожалуйста, введите корректный адрес электронной почты';
+                messageDiv.textContent = 'Please enter a valid email address';
                 messageDiv.className = 'alert alert-danger mt-3';
                 messageDiv.classList.remove('d-none');
                 return;
@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 message: document.getElementById('support-message').value.trim()
             };
 
-            // Блокируем кнопку
+            // Disable submit button
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Отправка...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Sending...';
 
             try {
                 const response = await fetch('/api/support', {
@@ -44,23 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageDiv.classList.remove('d-none', 'alert-danger', 'alert-success');
                 
                 if (response.ok) {
-                    messageDiv.textContent = 'Ваша заявка принята! Мы скоро свяжемся с вами.';
+                    messageDiv.textContent = 'Request submitted! Admin will contact you shortly.';
                     messageDiv.classList.add('alert-success');
                     supportForm.reset();
                     
-                    // Закрываем модалку через пару секунд
+                    // Close modal after 3 seconds
                     setTimeout(() => {
                         const modal = bootstrap.Modal.getInstance(document.getElementById('supportModal'));
                         if (modal) modal.hide();
                         messageDiv.classList.add('d-none');
                     }, 3000);
                 } else {
-                    messageDiv.textContent = data.message || 'Ошибка при отправке';
+                    messageDiv.textContent = data.message || 'Submission error';
                     messageDiv.classList.add('alert-danger');
                 }
             } catch (err) {
                 console.error('Support error:', err);
-                messageDiv.textContent = 'Ошибка соединения с сервером';
+                messageDiv.textContent = 'Server connection error';
                 messageDiv.classList.add('alert-danger');
             } finally {
                 submitBtn.disabled = false;

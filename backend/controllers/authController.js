@@ -1,18 +1,18 @@
-// Регистрация и аутентификация пользователей
+// Handle user registration and authentication
 const User = require('../models/User');
 const generateToken = require('../config/utils');
 
-// @desc    Register new user
-// @route   POST /api/auth/register
+// Register a new user
+// Route: POST /api/auth/register
 const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Простая проверка на наличие данных
+    // Perform a simple check for the presence of data
     if (!username || !email || !password) {
         return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
     }
 
-    // Проверка сложности пароля: минимум 8 символов, хотя бы одна цифра и одна заглавная буква
+    // Check password complexity: minimum 8 characters, at least one digit and one uppercase letter
     const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
     if (!passwordRegex.test(password)) {
         return res.status(400).json({ 
@@ -21,14 +21,14 @@ const registerUser = async (req, res) => {
     }
 
     try {
-        // Проверяем, есть ли уже пользователь с таким email
+        // Check if a user with this email already exists
         const userExists = await User.findOne({ email });
 
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Создаем нового пользователя (пароль будет автоматически хеширован благодаря middleware в модели)
+        // Create a new user (password will be automatically hashed by model middleware)
         const user = await User.create({
             username,
             email,
@@ -36,13 +36,13 @@ const registerUser = async (req, res) => {
         });
 
         if (user) {
-            // Если пользователь успешно создан, возвращаем его данные и токен
+            // Return user data and token upon successful creation
             res.status(201).json({
                 _id: user._id,
                 username: user.username,
                 email: user.email,
                 role: user.role,
-                token: generateToken(user._id) // Генерируем JWT токен
+                token: generateToken(user._id) // Generate JWT token
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -52,22 +52,22 @@ const registerUser = async (req, res) => {
     }
 }
 
-// @desc    Authenticate user & get token
-// @route   POST /api/auth/login
+// Authenticate user and get token
+// Route: POST /api/auth/login
 const authUser = async (req, res) => {
     const { email, password } = req.body;
 
-    // Простая проверка на наличие данных
+    // Perform a simple check for the presence of data
     if (!email || !password) {
         return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
     }
 
     try {
-        // Находим пользователя по email
+        // Find user by email
         const user = await User.findOne({ email });
 
-        // Если нашли, проверяем совпадает ли пароль
-        // (мы используем метод matchPassword, который добавили в модель User.js ранее)
+        // Check if password matches
+        // (Use the matchPassword method added to the User.js model earlier)
         if (user && (await user.matchPassword(password))) {
 
             if (user.status === 'banned') {
@@ -81,10 +81,10 @@ const authUser = async (req, res) => {
                 role: user.role,
                 status: user.status,
                 resetPasswordRequired: user.resetPasswordRequired,
-                token: generateToken(user._id) // Генерируем JWT токен
+                token: generateToken(user._id) // Generate JWT token
             });
         } else {
-            // Если пользователь не найден или пароль не совпадает, возвращаем ошибку
+            // Return error if user is not found or password does not match
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
@@ -92,29 +92,29 @@ const authUser = async (req, res) => {
     }
 };
 
-// @desc Смена пароля
-// @route PUT /api/auth/updatepassword
-// @access  Private (только для авторизованных)
+// Update password
+// Route: PUT /api/auth/updatepassword
+// Access: Private (authorized only)
 const updatePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
-    // Проверяем, прислал ли пользователь данные
+    // Check if user provided data
     if (!oldPassword || !newPassword) {
         return res.status(400).json({ message: 'Пожалуйста, заполните все поля' });
     }
 
     try {
-        // Находим пользователя в базе
-        // req.user._id берется из middleware protect, который мы добавим в роуты
+        // Find user in database
+        // req.user._id is obtained from the protect middleware added to the routes
         const user = await User.findById(req.user._id);
 
-        // Проверяем, совпадает ли старый пароль с тем, что в базе
+        // Check if the old password matches the one in the database
         const isMatch = await user.matchPassword(oldPassword);
         if (!isMatch) {
             return res.status(401).json({ message: 'Неверный текущий пароль' });
         }
 
-        // Если ок, записываем новый пароль
+        // Record the new password
         user.password = newPassword;
         user.resetPasswordRequired = false;
         
@@ -126,4 +126,4 @@ const updatePassword = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, authUser, updatePassword }; // Экспортируем функции для использования в маршрутах
+module.exports = { registerUser, authUser, updatePassword }; // Export functions for use in routes

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-// Проверка занятости email
+// Check if email is already in use
 router.post('/check-email', async (req, res) => {
     try {
         const { email } = req.body;

@@ -1,4 +1,4 @@
- /* Прижимаем футер к низу */
+ /* Push footer to the bottom */
 body {
     display: flex;
     flex-direction: column;
@@ -29,7 +29,7 @@ main {
     font-weight: 600;
 }
 
-/* Стили таблицы */
+/* Table styles */
 .user-row {
     transition: background-color 0.2s ease;
 }
@@ -47,7 +47,7 @@ main {
     border-bottom: 2px solid #dee2e6;
 }
 
-/* Контейнеры действий */
+/* Action containers */
 .btn-group-sm > .btn {
     padding: 0.4rem 0.6rem;
 }
@@ -56,8 +56,8 @@ main {
     border: none;
     border-radius: 10px;
 }
-/* Анимация спиннера */
-/* Стили для отображения пароля */
+/* Spinner animation */
+/* Styles for password display */
 .password-display-container {
     transition: all 0.3s ease;
     border: 1px dashed #007bff !important;
@@ -89,7 +89,7 @@ main {
 }
 
 
-/* Адаптивность для админ-панели */
+/* Responsiveness for the admin panel */
 @media (max-width: 991px) {
     .admin-stat-card h2 {
         font-size: 1.5rem;
@@ -122,7 +122,7 @@ main {
     }
     
     .table {
-        min-width: 700px; /* Немного увеличим для комфорта */
+        min-width: 700px; /* Slightly increase for comfort */
         font-size: 0.8rem; 
     }
     
@@ -136,7 +136,7 @@ main {
 }
 
 
-/* Исправление отступов для мобильных */
+/* Fixing margins for mobile */
 @media (max-width: 576px) {
     .container-fluid, .container {
         padding-left: 10px !important;

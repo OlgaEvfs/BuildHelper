@@ -15,18 +15,18 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bh-bg-light shadow-sm">
             <div class="container-fluid px-4">
-                <!-- Логотип -->
+                <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" href="/">
                     <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-img me-2">
                     <span class="fw-bold bh-brand-name">BuildHelper</span>
                 </a>
 
-                <!-- Кнопка-бургер для мобильных -->
+                <!-- Burger button for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Ссылки навигации -->
+                <!-- Navigation links -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="ms-auto d-flex align-items-center gap-3">
                         <a href="/" class="btn btn-sm bh-btn-outline">На главную</a>
@@ -88,7 +88,7 @@
             </ul>
 
             <div class="tab-content" id="adminTabContent">
-                <!-- Раздел Пользователи -->
+                <!-- Users Section -->
                 <div class="tab-pane fade show active" id="users-section" role="tabpanel">
                     <div class="card border-0 shadow-sm admin-card">
                         <div class="card-body p-0">
@@ -112,7 +112,7 @@
                     </div>
                 </div>
 
-                <!-- Раздел Поддержка -->
+                <!-- Support Section -->
                 <div class="tab-pane fade" id="support-section" role="tabpanel">
                     <div class="card border-0 shadow-sm admin-card">
                         <div class="card-body p-0">
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <!-- Раздел Контент -->
+                <!-- Content Section -->
                 <div class="tab-pane fade" id="content-section" role="tabpanel">
                     <div class="card border-0 shadow-sm admin-card">
                         <div class="card-header bg-white border-0 p-3 d-flex justify-content-between align-items-center">
@@ -143,7 +143,7 @@
                             <button class="btn btn-sm bh-btn-accent" data-bs-toggle="modal" data-bs-target="#addPostModal">+ Создать запись</button>
                         </div>
                         <div class="card-body p-0">
-                            <!-- Модальное окно создания записи (Новости/Вакансии) -->
+                            <!-- Modal for creating a record (News/Jobs) -->
                             <div class="modal fade" id="addPostModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content border-0 shadow">
@@ -180,7 +180,7 @@
                                                         </div>
                                                         <div class="form-text small">Если файл выбран, он будет иметь приоритет над ссылкой.</div>
                                                     </div>
-                                                    <!-- Специфичные поля вакансии -->                                                    
+                                                    <!-- Specific job fields -->                                                    
                                                     <div id="job-fields-wrapper" class="row g-3 m-0 p-0 d-none">
                                                         <div class="col-md-6">
                                                             <label class="form-label small fw-bold">Тип работ *</label>
@@ -241,7 +241,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Модальное окно редактирования записи -->
+                            <!-- Modal for editing a record -->
                             <div class="modal fade" id="editPostModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content border-0 shadow">
@@ -278,7 +278,7 @@
                                                             <input type="file" id="edit-post-image-file" class="form-control" accept="image/*">
                                                         </div>
                                                     </div>
-                                                    <!-- Специфичные поля вакансии -->
+                                                    <!-- Specific job fields -->
                                                     <div id="edit-job-fields-wrapper" class="row g-3 m-0 p-0 d-none">
                                                         <div class="col-md-6">
                                                             <label class="form-label small fw-bold">Тип работ *</label>
@@ -363,7 +363,7 @@
     <footer class="bh-bg-dark text-light py-4 mt-5">
         <div class="container-fluid px-4">
             <div class="row g-4">
-                <!-- Логотип и описание -->
+                <!-- Logo and description -->
                 <div class="col-lg-4 col-md-6">
                     <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
                         <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
@@ -372,7 +372,7 @@
                     <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта. Расчитывайте материалы быстро и точно.</p>
                 </div>
 
-                <!-- Ссылки -->
+                <!-- Links -->
                 <div class="col-lg-4 col-md-6">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
                     <ul class="list-unstyled small">
@@ -383,7 +383,7 @@
                     </ul>
                 </div>
 
-                <!-- Социальные сети -->
+                <!-- Social media -->
                 <div class="col-lg-4 col-md-12">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
                     <div class="d-flex gap-3 mb-3">
@@ -411,7 +411,7 @@
         </svg>
     </button>
 
-    <!-- Модальное окно поддержки -->
+    <!-- Support modal -->
     <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -455,7 +455,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно временного пароля -->
+    <!-- Temporary password modal -->
     <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -479,7 +479,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно просмотра заявки поддержки -->
+    <!-- Modal for viewing support request -->
     <div class="modal fade" id="supportViewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg">
@@ -512,7 +512,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно просмотра контента (Новости/Вакансии) -->
+    <!-- Modal for viewing content (News/Jobs) -->
     <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content border-0 shadow-lg">
@@ -534,7 +534,7 @@
                             </div>
                         </div>
 
-                        <!-- Специфичные поля вакансии -->
+                        <!-- Specific job fields -->
                         <div id="previewModalJobInfo" class="row g-3 mb-4 d-none p-3 bg-light rounded-3">
                             <div class="col-6 col-md-4">
                                 <div class="small text-muted">Тип работ</div>
@@ -559,7 +559,7 @@
                             <div id="previewModalContent" style="white-space: pre-wrap; line-height: 1.6;">...</div>
                         </div>
 
-                        <!-- Контакты для вакансий -->
+                        <!-- Job contacts -->
                         <div id="previewModalContacts" class="d-none">
                             <h6 class="fw-bold text-uppercase small text-muted mb-2">Контакты</h6>
                             <div class="p-3 border rounded-3 bg-white">
@@ -581,7 +581,7 @@
         </div>
     </div>
 
-    <!-- Универсальное окно подтверждения -->
+    <!-- Confirmation modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">

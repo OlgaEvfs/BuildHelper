@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // для хеширования паролей
+const bcrypt = require('bcryptjs'); // Used for password hashing
 
-// Схема пользователя
+// Define user schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: [true, 'Пожалуйста, добавьте имя пользователя'],
-        trim: true, // удаляет пробелы в начале и конце
+        trim: true, // Trim whitespace at beginning and end
     },
     email: {
         type: String,
         required: [true, 'Пожалуйста, добавьте адрес электронной почты'],
-        unique: true, // почта не должна повторятся
-        lowercase: true, // сохранять в нижнем регистре
-        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Пожалуйста, добавьте действительный адрес электронной почты'], // проверка формата почты
+        unique: true, // Ensure email uniqueness
+        lowercase: true, // Save email in lowercase
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Пожалуйста, добавьте действительный адрес электронной почты'], // Validate email format
     },
     password: {
         type: String,
@@ -36,22 +36,22 @@ const userSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now // сохраняем дату создания
+        default: Date.now // Save creation date
     }
 });
 
-// Хешируем пароль перед сохранением
+// Hash password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        return next(); // если пароль не изменился, переходим к следующему middleware
+        return next(); // Proceed if password hasn't changed
     }
-    const salt = await bcrypt.genSalt(10); // генерируем соль
-    this.password = await bcrypt.hash(this.password, salt); // хешируем пароль
+    const salt = await bcrypt.genSalt(10); // Generate salt
+    this.password = await bcrypt.hash(this.password, salt); // Hash password
 });
 
-// Метод для сравнения паролей при входе
+// Define method to compare passwords during login
 userSchema.methods.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password); // сравниваем введенный пароль с хешированным
+    return await bcrypt.compare(enteredPassword, this.password); // Compare entered password with hashed one
 };
 
-module.exports = mongoose.model('User', userSchema); // Экспортируем модель для использования в других местах приложения
+module.exports = mongoose.model('User', userSchema); // Export model for application use

@@ -1,6 +1,4 @@
-// frontend/js/planner.js
-
-// Вспомогательная функция для корректного парсинга чисел с запятой
+// Parse numbers with comma decimal separator
 function parseNumber(val) {
     if (typeof val === 'string') {
         return parseFloat(val.replace(',', '.'));
@@ -14,7 +12,7 @@ const infoBox = document.getElementById('plan-info');
 const propsBox = document.getElementById('object-props');
 const roomApplyContainer = document.getElementById('room-apply-btn-container');
 
-// Глобальное состояние
+// Initialize global state
 let rooms = [];      
 let furniture = [];  
 let openings = [];   
@@ -25,23 +23,23 @@ let dragOffsetX, dragOffsetY;
 let scale = 40; 
 
 /**
- * Инициализация размеров холста под контейнер
+ * Initialize canvas dimensions to container
  */
 async function initCanvas() {
     const container = canvas.parentElement;
     if (!container) return;
     
-    // Задаем минимальные размеры холста (например 800x600) чтобы было место для комнат на мобильном
+    // Set minimum canvas dimensions
     const minWidth = window.innerWidth <= 768 ? 800 : container.offsetWidth;
     const minHeight = window.innerWidth <= 768 ? 600 : container.offsetHeight;
     
     canvas.width = Math.max(container.offsetWidth, minWidth);
     canvas.height = Math.max(container.offsetHeight, minHeight);
     
-    // Возвращаем единый масштаб (например 40 px = 1 метр)
+    // Set scale (e.g., 40 px = 1 meter)
     scale = 40; 
     
-    // Загружаем план с сервера при первой инициализации
+    // Load plan from server on first initialization
     if (rooms.length === 0) {
         await loadPlanFromServer();
     }
@@ -50,7 +48,7 @@ async function initCanvas() {
 }
 
 /**
- * Загрузка плана из базы данных
+ * Load plan from database
  */
 async function loadPlanFromServer() {
     const token = localStorage.getItem('token');
@@ -68,17 +66,17 @@ async function loadPlanFromServer() {
             renderOpeningsList();
         }
     } catch (err) {
-        console.error('Ошибка загрузки плана:', err);
+        console.error('Plan load error:', err);
     }
 }
 
 /**
- * Сохранение плана в базу данных
+ * Save plan to database
  */
 async function savePlanToServer() {
     const token = localStorage.getItem('token');
     if (!token) {
-        showNotification('Пожалуйста, войдите в систему, чтобы сохранить проект.', 'warning');
+        showNotification('Please log in to save the project.', 'warning');
         return;
     }
 
@@ -93,13 +91,13 @@ async function savePlanToServer() {
         });
 
         if (response.ok) {
-            showNotification('Проект успешно сохранен в вашем профиле!', 'success');
+            showNotification('Project successfully saved to profile!', 'success');
         } else {
-            showNotification('Ошибка при сохранении проекта.', 'danger');
+            showNotification('Error saving project.', 'danger');
         }
     } catch (err) {
-        console.error('Ошибка сохранения:', err);
-        showNotification('Ошибка связи с сервером.', 'danger');
+        console.error('Save error:', err);
+        showNotification('Server connection error.', 'danger');
     }
 }
 
@@ -112,7 +110,7 @@ function addRoom() {
         type: 'room',
         x: 1, y: 1,
         l, w, h,
-        name: rooms.length === 0 ? "Гостиная" : `Комната ${rooms.length + 1}`
+        name: rooms.length === 0 ? "Living Room" : `Room ${rooms.length + 1}`
     };
     rooms.push(newRoom);
     selectObject(newRoom);
@@ -121,20 +119,20 @@ function addRoom() {
 
 function addFurniture(type, w, h) {
     const furnitureConfig = {
-        sofa: { color: '#e67e22', name: 'Диван', icon: '🛋️' },
-        bed: { color: '#9b59b6', name: 'Кровать', icon: '🛏️' },
-        chair: { color: '#3498db', name: 'Кресло', icon: '🪑' },
-        office_chair: { color: '#2980b9', name: 'Офисный стул', icon: '💺' },
-        dining_chair: { color: '#7f8c8d', name: 'Стул', icon: '🪑' },
-        table: { color: '#f1c40f', name: 'Стол', icon: '🍽️' },
-        closet: { color: '#34495e', name: 'Шкаф', icon: '🚪' },
-        kitchen: { color: '#d35400', name: 'Гарнитур', icon: '🍳' },
-        fridge: { color: '#7f8c8d', name: 'Холодильник', icon: '❄️' },
-        stove: { color: '#2c3e50', name: 'Плита', icon: '🔥' },
-        bath: { color: '#3498db', name: 'Ванна', icon: '🛁' },
-        toilet: { color: '#ecf0f1', name: 'Унитаз', icon: '🚽' },
-        sink: { color: '#bdc3c7', name: 'Раковина', icon: '💧' },
-        wash: { color: '#95a5a6', name: 'Стиралка', icon: '🧺' }
+        sofa: { color: '#e67e22', name: 'Sofa', icon: '🛋️' },
+        bed: { color: '#9b59b6', name: 'Bed', icon: '🛏️' },
+        chair: { color: '#3498db', name: 'Armchair', icon: '🪑' },
+        office_chair: { color: '#2980b9', name: 'Office Chair', icon: '💺' },
+        dining_chair: { color: '#7f8c8d', name: 'Chair', icon: '🪑' },
+        table: { color: '#f1c40f', name: 'Table', icon: '🍽️' },
+        closet: { color: '#34495e', name: 'Closet', icon: '🚪' },
+        kitchen: { color: '#d35400', name: 'Kitchen set', icon: '🍳' },
+        fridge: { color: '#7f8c8d', name: 'Fridge', icon: '❄️' },
+        stove: { color: '#2c3e50', name: 'Stove', icon: '🔥' },
+        bath: { color: '#3498db', name: 'Bathtub', icon: '🛁' },
+        toilet: { color: '#ecf0f1', name: 'Toilet', icon: '🚽' },
+        sink: { color: '#bdc3c7', name: 'Sink', icon: '💧' },
+        wash: { color: '#95a5a6', name: 'Washer', icon: '🧺' }
     };
 
     const config = furnitureConfig[type] || { color: '#3498db', name: type, icon: '📦' };
@@ -161,7 +159,7 @@ function selectObject(obj) {
         return;
     }
     propsBox.classList.remove('d-none');
-    document.getElementById('prop-name').value = obj.name || (obj.type === 'door' ? 'Дверь' : obj.type === 'window' ? 'Окно' : obj.type);
+    document.getElementById('prop-name').value = obj.name || (obj.type === 'door' ? 'Door' : obj.type === 'window' ? 'Window' : obj.type);
     
     if (obj.type === 'room') {
         document.getElementById('prop-w').value = obj.l;
@@ -189,7 +187,7 @@ function updateObjectProps() {
     } else if (selectedObject.type === 'door' || selectedObject.type === 'window') {
         selectedObject.w = valW;
         selectedObject.h = valL;
-        renderOpeningsList(); // Обновляем список для отображения новых размеров
+        renderOpeningsList(); // Update list to display new dimensions
     } else {
         selectedObject.w = valW;
         selectedObject.h = valL;
@@ -213,8 +211,8 @@ function deleteObject() {
     if (!selectedObject) return;
     
     window.showConfirmation(
-        'Удаление',
-        `Удалить ${selectedObject.name}?`,
+        'Delete',
+        `Delete ${selectedObject.name}?`,
         () => {
             if (selectedObject.type === 'room') {
                 rooms = rooms.filter(r => r !== selectedObject);
@@ -224,7 +222,7 @@ function deleteObject() {
             selectObject(null);
             render();
         },
-        'Удалить'
+        'Delete'
     );
 }
 
@@ -235,20 +233,20 @@ function renderOpeningsList() {
     if (!listContainer) return;
     
     if (openings.length === 0) {
-        listContainer.innerHTML = '<p class="small text-muted">Нет проемов</p>';
+        listContainer.innerHTML = '<p class="small text-muted">No openings</p>';
         return;
     }
     
     listContainer.innerHTML = openings.map((op, index) => {
         const room = rooms[op.roomId];
-        const roomName = room ? room.name : 'Неизвестная комната';
+        const roomName = room ? room.name : 'Unknown room';
         return `
             <div class="small p-1 border-bottom clickable-opening" onclick="selectOpening(${index})" style="cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}м</span>
+                    <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}m</span>
                     <button class="btn btn-xs btn-outline-danger p-0 px-1" onclick="removeOpening(${index}); event.stopPropagation();">×</button>
                 </div>
-                <div class="text-muted" style="font-size: 0.7rem;">В: ${roomName}</div>
+                <div class="text-muted" style="font-size: 0.7rem;">In: ${roomName}</div>
             </div>
         `;
     }).join('');
@@ -261,7 +259,7 @@ function selectOpening(index) {
 
 function addOpening(type) {
     if (!selectedObject || selectedObject.type !== 'room') {
-        showNotification('Сначала выберите комнату!', 'warning');
+        showNotification('Select room first!', 'warning');
         return;
     }
     const roomId = rooms.indexOf(selectedObject);
@@ -288,7 +286,7 @@ function applySingleRoomToCalculators() {
     const room = selectedObject;
     const roomId = rooms.indexOf(room);
     
-    // Фильтруем проемы только для этой комнаты
+    // Filter openings for this room only
     const roomOpenings = openings.filter(op => op.roomId === roomId);
     const openingsArea = roomOpenings.reduce((sum, op) => sum + (op.w * op.h), 0);
     
@@ -299,20 +297,20 @@ function applySingleRoomToCalculators() {
     sessionStorage.setItem('lastNetWallArea', wallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', floorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', perimeter.toFixed(2));
-    showNotification(`Данные комнаты "${room.name}" перенесены!`, 'success');
+    showNotification(`Data for room "${room.name}" transferred!`, 'success');
 }
 
 function clearPlanner() {
     window.showConfirmation(
-        'Очистка',
-        'Очистить весь план?',
+        'Clear',
+        'Clear the entire plan?',
         () => {
             rooms = []; furniture = []; openings = [];
             selectObject(null);
             renderOpeningsList();
             render();
         },
-        'Очистить'
+        'Clear'
     );
 }
 
@@ -321,13 +319,13 @@ function render() {
     drawGlobalGrid();
     rooms.forEach(room => drawRoomObject(room));
     furniture.forEach(item => drawFurnitureObject(item));
-    // openings визуально не отрисовываем
+    // Openings not rendered visually
     updateInfo();
 }
 
 
 function drawGlobalGrid() {
-    // Промежуточная сетка (0.5 метра)
+    // Intermediate grid (0.5 meter)
     ctx.beginPath();
     ctx.strokeStyle = '#f5f5f5';
     ctx.lineWidth = 1;
@@ -339,7 +337,7 @@ function drawGlobalGrid() {
     }
     ctx.stroke();
 
-    // Основная сетка (1 метр)
+    // Main grid (1 meter)
     ctx.beginPath();
     ctx.strokeStyle = '#d0d0d0';
     for (let i = 0; i < canvas.width; i += scale) {
@@ -367,7 +365,7 @@ function drawRoomObject(room) {
     ctx.fillText(room.name, rx + 10, ry + 20);
     ctx.font = '10px Arial';
     ctx.fillStyle = '#7f8c8d';
-    ctx.fillText(`${room.l}м x ${room.w}м`, rx + 10, ry + 35);
+    ctx.fillText(`${room.l}m x ${room.w}m`, rx + 10, ry + 35);
 }
 
 function drawFurnitureObject(item) {
@@ -388,7 +386,7 @@ function drawFurnitureObject(item) {
     ctx.fillText(item.icon || '📦', ix + iw/2, iy + ih/2);
 }
 
-// --- Поддержка мыши и Touch-событий (мобильные) ---
+// Mouse and Touch event support
 function getPointerPos(e) {
     const rect = canvas.getBoundingClientRect();
     const clientX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
@@ -409,7 +407,7 @@ function handlePointerDown(e) {
         dragOffsetX = mx - found.x;
         dragOffsetY = my - found.y;
         canvas.style.cursor = 'grabbing';
-        // Если объект захвачен на мобильном, предотвращаем скролл страницы
+        // Prevent page scroll on touch
         if(e.type === 'touchstart') e.preventDefault();
     } else {
         selectObject(null);
@@ -421,14 +419,14 @@ function handlePointerMove(e) {
     const { mx, my } = getPointerPos(e);
 
     if (isDragging && selectedObject) {
-        if (e.cancelable) e.preventDefault(); // Предотвращаем скролл страницы только когда тащим объект
+        if (e.cancelable) e.preventDefault(); // Prevent page scroll while dragging
 
         let newX = mx - dragOffsetX;
         let newY = my - dragOffsetY;
         const objW = selectedObject.type === 'room' ? selectedObject.l : selectedObject.w;
         const objH = selectedObject.type === 'room' ? selectedObject.w : selectedObject.h;
 
-        // базовые границы холста
+        // Basic canvas bounds
         if (newX < 0) newX = 0;
         if (newX + objW > canvas.width / scale) newX = (canvas.width / scale) - objW;
         if (newY < 0) newY = 0;
@@ -437,7 +435,7 @@ function handlePointerMove(e) {
         const SNAP_THRESHOLD = 0.2;
 
         if (selectedObject.type === 'room') {
-            // ЛОГИКА ПРИЛИПАНИЯ КОМНАТ
+            // Room snapping logic
             rooms.forEach(other => {
                 if (other === selectedObject) return;
                 if (Math.abs(newX - (other.x + other.l)) < SNAP_THRESHOLD) newX = other.x + other.l;
@@ -448,23 +446,23 @@ function handlePointerMove(e) {
                 if (Math.abs(newY - other.y) < SNAP_THRESHOLD) newY = other.y;
             });
         } else if (selectedObject.type === 'furniture') {
-            // ЛОГИКА ПРИЛИПАНИЯ К МЕБЕЛИ
+            // Furniture snapping logic
             furniture.forEach(other => {
                 if (other === selectedObject) return;
 
-                // вплотную по Х
+                // Snap X
                 if (Math.abs(newX - (other.x + other.w)) < SNAP_THRESHOLD) newX = other.x + other.w;
                 if (Math.abs((newX + objW) - other.x) < SNAP_THRESHOLD) newX = other.x - objW;
-                // вплотную по Y
+                // Snap Y
                 if (Math.abs(newY - (other.y + other.h)) < SNAP_THRESHOLD) newY = other.y + other.h;
                 if (Math.abs((newY + objH) - other.y) < SNAP_THRESHOLD) newY = other.y - objH;
 
-                // выравнивание по краям
+                // Edge alignment
                 if (Math.abs(newX - other.x) < SNAP_THRESHOLD) newX = other.x;
                 if (Math.abs(newY - other.y) < SNAP_THRESHOLD) newY = other.y;
             })
 
-            // Прилипание мебели к внутренним стенам комнаты
+            // Snap furniture to internal room walls
             rooms.forEach(room => {
                 if (Math.abs(newX - room.x) < SNAP_THRESHOLD && newX >= room.x) newX = room.x;
                 if (Math.abs((newX + objW) - (room.x + room.l)) < SNAP_THRESHOLD && (newX + objW) <= (room.x + room.l)) {
@@ -491,7 +489,7 @@ function handlePointerUp() {
     canvas.style.cursor = 'crosshair'; 
 }
 
-// Удаляем старые обработчики и ставим новые универсальные
+// Remove old and set new universal handlers
 canvas.onmousedown = null;
 canvas.onmousemove = null;
 canvas.onmouseup = null;
@@ -501,7 +499,7 @@ canvas.addEventListener('mousemove', handlePointerMove);
 canvas.addEventListener('mouseup', handlePointerUp);
 canvas.addEventListener('mouseleave', handlePointerUp);
 
-// Touch-события
+// Touch events
 canvas.addEventListener('touchstart', handlePointerDown, { passive: false });
 canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
 canvas.addEventListener('touchend', handlePointerUp);
@@ -520,7 +518,7 @@ function applyToCalculators() {
     sessionStorage.setItem('lastNetWallArea', totalNetWallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', totalFloorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', totalPerimeter.toFixed(2));
-    showNotification('Данные перенесены в калькуляторы!', 'success');
+    showNotification('Data transferred to calculators!', 'success');
 }
 
 function updateInfo() {
@@ -531,10 +529,10 @@ function updateInfo() {
     infoBox.innerHTML = `
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="small">
-                <div class="fw-bold">Расчет пола: ${totalArea} м²</div>
-                <div class="fw-bold">Расчет стен: ${totalWallArea} м²</div>
+                <div class="fw-bold">Floor calc: ${totalArea} m²</div>
+                <div class="fw-bold">Wall calc: ${totalWallArea} m²</div>
             </div>
-            <button class="btn btn-sm btn-success" onclick="applyToCalculators()">Применить всё</button>
+            <button class="btn btn-sm btn-success" onclick="applyToCalculators()">Apply all</button>
         </div>`;
 }
 

@@ -1,23 +1,23 @@
 :root {
-    /* Основные цвета */
+    /* Main colors */
     --primary-dark: #0d1b2a;
     --accent-blue: #007bff;
     --accent-hover: #0056b3;
     
-    /* Текст */
+    /* Text */
     --text-main: #1b263b;
     --text-muted: #555555;    
     --text-light: #888888;
     --bh-dark: #333;
     
-    /* Фоны и границы */
+    /* Backgrounds and borders */
     --bg-light: #f8f9fa;
     --white: #ffffff;
     --bg-accent-light: #f0f7ff;
     --border-color: #eeeeee;    
     --border-dark: #dddddd;
     
-    /* Спец-цвета */
+    /* Special colors */
     --error-red: #ff4d4d;
     --overlay-bg: rgba(13, 27, 42, 0.85);
     --shadow-light: rgba(13, 27, 42, 0.05);
@@ -40,12 +40,12 @@ body {
     overflow-x: hidden;
 }
 
-/* Принудительный перенос слишком длинных слов/ссылок */
+/* Force break for very long words/links */
 * {
     word-wrap: break-word;
 }
 
-/* Глобальное выравнивание футера */
+/* Global footer alignment */
 body {
     display: flex;
     flex-direction: column;
@@ -56,7 +56,7 @@ main {
     flex: 1;
 }
 
-/* Исправление прыжка при открытии модалок */
+/* Fix jump when opening modals */
 .modal-open {
     padding-right: 0 !important;
     overflow: auto;
@@ -84,7 +84,7 @@ main {
     color: var(--text-main) !important;
 }
 
-/* logo */
+/* Logo */
 .navbar-brand img, footer img[alt="Logo"] {
     box-shadow: 0 2px 8px var(--shadow-medium);
     transition: transform 0.3s ease;
@@ -96,7 +96,7 @@ main {
     box-shadow: 0 4px 12px var(--shadow-light);
 }
 
-/* Перекрытие стандартных кнопок Bootstrap под наш стиль */
+/* Override standard Bootstrap buttons to match our style */
 .btn-primary {
     background-color: var(--accent-blue) !important;
     border-color: var(--accent-blue) !important;
@@ -120,18 +120,18 @@ main {
     margin-bottom: 4px;
 }
 
-/* Модальные окна (Кастомные дополнения к Bootstrap) */
+/* Modals (Custom additions to Bootstrap) */
 .modal-content {
     border-radius: 12px !important;
     overflow: hidden !important;
 }
 
-/* Настройка прозрачности фона под модальным окном */
+/* Background transparency under modal */
 .modal-backdrop.show {
     opacity: 0.7 !important;
 }
 
-/* Модальные окна (Кастомные дополнения к Bootstrap) */
+/* Modals (Custom additions to Bootstrap) */
 .modal-content {
     border-radius: 12px !important;
     overflow: hidden !important;
@@ -145,7 +145,7 @@ main {
     background-clip: padding-box !important;
 }
 
-/* Удалено принудительное переопределение для input, чтобы не ломать стили Bootstrap */
+/* Do not override input to avoid breaking Bootstrap styles */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -158,7 +158,7 @@ main {
     color: var(--text-main);
 }
 
-/* Универсальный индикатор загрузки */
+/* Universal loading indicator */
 .bh-loader-container {
     display: flex;
     flex-direction: column;
@@ -189,7 +189,7 @@ main {
     font-weight: 500;
 }
 
-/* Плавность для сетки новостей */
+/* Smoothness for news grid */
 #news-grid {
     transition: opacity 0.3s ease;
 }
@@ -199,25 +199,25 @@ main {
     pointer-events: none;
 }
 
-/* Полное отключение подложки для предотвращения мигания */
+/* Disable backdrop completely to prevent flickering */
 .modal-backdrop {
     display: none !important;
     opacity: 0 !important;
 }
 
 .modal {
-    background-color: rgba(0, 0, 0, 0.6) !important; /* Увеличили затемнение до 0.6 */
+    background-color: rgba(0, 0, 0, 0.6) !important; /* Increased darkness to 0.6 */
 }
 
-/* Исправление "прыжка" и мигания контента при закрытии */
+/* Fix jump and content flickering on close */
 body.modal-open {
     overflow: auto !important;
     padding-right: 0 !important;
 }
 
-/* --- ФИРМЕННЫЕ СТИЛИ (BuildHelper) --- */
+/* --- BRAND STYLES (BuildHelper) --- */
 
-/* Название бренда в логотипе */
+/* Brand name in logo */
 .bh-brand-name {
     color: var(--accent-blue) !important;
     transition: color 0.3s ease;
@@ -227,12 +227,12 @@ body.modal-open {
     color: var(--accent-hover) !important;
 }
 
-/* Акцентный текст (например, в заголовках) */
+/* Accent text (e.g., in headings) */
 .bh-text-accent {
     color: var(--accent-blue) !important;
 }
 
-/* Стили для кнопок */
+/* Button styles */
 .bh-btn-primary {
     background-color: var(--accent-blue) !important;
     border-color: var(--accent-blue) !important;
@@ -283,7 +283,7 @@ body.modal-open {
     border-color: var(--accent-orange) !important;
 }
 
-/* Заголовки разделов и футера */
+/* Section and footer headings */
 .bh-section-title {
     color: var(--primary-dark) !important;
 }
@@ -308,7 +308,7 @@ body.modal-open {
     background-color: var(--primary-dark) !important;
 }
 
-/* Изображение логотипа со скруглением */
+/* Logo image with rounding */
 .logo-img {
     border-radius: 10px;
     box-shadow: 0 2px 5px var(--shadow-medium);
@@ -335,7 +335,7 @@ body.modal-open {
     line-height: 1;
 }
 
-/* Кнопка "Вверх" */
+/* Up button */
 .btn-up {
     position: fixed;
     bottom: 20px;
@@ -387,27 +387,27 @@ body.modal-open {
     opacity: 1;
 }
 
-/* Стили для Dropdown меню */
+/* Styles for Dropdown menu */
 .dropdown-menu .dropdown-item {
     transition: all 0.2s ease;
     padding: 0.5rem 1rem;
 }
 
-/* Общий стиль при наведении для элементов меню */
+/* General hover style for menu items */
 .dropdown-menu li:hover .dropdown-item {
-    background-color: rgba(0, 123, 255, 0.1) !important; /* Светло-синий фон */
-    color: var(--accent-blue) !important; /* Синий текст */
+    background-color: rgba(0, 123, 255, 0.1) !important; /* Light blue background */
+    color: var(--accent-blue) !important; /* Blue text */
 }
 
-/* Специфичный стиль для кнопки выхода при наведении (переопределяем общий стиль) */
+/* Specific hover style for logout button (overriding general style) */
 .dropdown-menu li:hover .logout-item {
-    background-color: rgba(255, 77, 77, 0.1) !important; /* Светло-красный фон */
-    color: var(--error-red) !important; /* Красный текст */
+    background-color: rgba(255, 77, 77, 0.1) !important; /* Light red background */
+    color: var(--error-red) !important; /* Red text */
 }
 
-/* Фикс для навигации и выпадающего меню пользователя на мобильных */
+/* Fix for navigation and user dropdown on mobile */
 @media (max-width: 576px) {
-    /* Позволяем элементам в навигации переноситься на новую строку, если не хватает места */
+    /* Allow navigation items to wrap if there is not enough space */
     .navbar .container-fluid {
         flex-wrap: wrap;
     }
@@ -418,7 +418,7 @@ body.modal-open {
         justify-content: flex-end;
     }
 
-    /* Отвязываем меню от кнопки и привязываем к ширине экрана */
+    /* Unbind menu from button and bind to screen width */
     .navbar .dropdown {
         position: static !important;
     }
@@ -436,7 +436,7 @@ body.modal-open {
 }
 
 
-/* Адаптивность */
+/* Adaptivity */
 @media (max-width: 768px) {
     :root {
         --container-padding: 1rem;
@@ -473,7 +473,7 @@ body.modal-open {
         font-size: 1rem;
     }
 
-    /* Утилиты для отступов на мобильных */
+    /* Utility for spacing on mobile */
     .py-mobile-3 {
         padding-top: 1.5rem !important;
         padding-bottom: 1.5rem !important;
@@ -494,7 +494,7 @@ body.modal-open {
         margin-right: 0;
     }
 
-    /* Центрирование кнопок в футере */
+    /* Center buttons in footer */
     footer .col-lg-4 {
         text-align: center;
     }

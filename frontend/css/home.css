@@ -1,4 +1,4 @@
-/* Стили только для главной страницы (index.html) */
+/* Styles only for the home page (index.html) */
 /* Hero Section Placeholder (Custom) */
 .tech-placeholder {
     width: 400px;
@@ -19,7 +19,7 @@
     background-size: 20px 20px;
 }
 
-/* Hero image композиция */
+/* Hero image composition */
 .tools-composition {
     position: absolute;
     top: 0;
@@ -28,7 +28,7 @@
     height: 100%;
 }
 
-/* Общие стили для инструментов */
+/* General styles for tools */
 .pixel-art-tool {
     position: absolute;
     filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5));
@@ -42,7 +42,7 @@
     shape-rendering: crispEdges;
 }
 
-/* Молоток (верхний левый угол) */
+/* Hammer (top-left corner) */
 .hammer {
     top: 10%;
     left: 10%;
@@ -50,7 +50,7 @@
     animation: floating-hammer 4.5s ease-in-out infinite;
 }
 
-/* Дрель (верхний правый угол) */
+/* Drill (top-right corner) */
 .drill {
     top: 15%;
     right: 15%;
@@ -58,7 +58,7 @@
     animation: floating-drill 3.8s ease-in-out infinite;
 }
 
-/* Рулетка (нижняя правая часть) */
+/* Tape measure (bottom-right part) */
 .tape {
     bottom: 5%;
     right: 20%;
@@ -66,7 +66,7 @@
     animation: floating-tape 5.5s ease-in-out infinite;
 }
 
-/* Шпатель (нижний левый угол) */
+/* Spatula (bottom-left corner) */
 .spatula {
     bottom: 5%;
     left: 15%;
@@ -74,7 +74,7 @@
     animation: floating-spatula 5s ease-in-out infinite;
 }
 
-/* Анимации парения */
+/* Floating animations */
 @keyframes floating-hammer {
     0%, 100% { transform: translateY(0) rotate(-25deg); }
     50% { transform: translateY(-20px) rotate(-15deg); }
@@ -95,7 +95,7 @@
     50% { transform: translateY(-25px) rotate(5deg); }
 }
 
-/* Если мы навели на любой инструмент внутри контейнера */
+/* If we hover over any tool inside the container */
 .hammer:hover {
     top: 5%;
     left: 5%;
@@ -116,7 +116,7 @@
     left: 10%;
 }
 
-/* Calculators (Эксклюзивные стили поверх Bootstrap) */
+/* Calculators (Exclusive styles on top of Bootstrap) */
 .calc-card {
     cursor: pointer;
     transition: all 0.3s ease !important;
@@ -127,7 +127,7 @@
     box-shadow: 0 1rem 3rem var(--shadow-medium) !important;
 }
 
-/* для кнопки в Геометрии (идет после #openings-list) */
+/* For button in Geometry (goes after #openings-list) */
 #openings-list + .btn-helper {
     margin-top: 5px !important;
     margin-bottom: 30px !important;
@@ -135,7 +135,7 @@
     width: fit-content;
 }
 
-/* Блок с результатами*/
+/* Results block */
 .result-box {
     margin-top: 0px;
     margin-bottom: 20px;
@@ -146,7 +146,7 @@
     display: none;
 }
 
-/* Уплотняем строки внутри результата */
+/* Compact lines inside result */
 .result-box p {
     margin-bottom: 6px;
     line-height: 1.4;
@@ -185,7 +185,7 @@
     transition: 0.2s;
 }
 
-/* News Tabs (Эксклюзивный дизайн табов) */
+/* News Tabs (Exclusive design) */
 .tabcontainer {
     display: flex;
     min-height: 550px;
@@ -202,7 +202,7 @@
     height: 100%;
 }
 
-/* Картинка новостей */
+/* News image */
 .tabcontent img {
     width: 100%;
     height: 380px;
@@ -250,7 +250,7 @@
     border-bottom: 2px solid var(--accent-blue);
 }
 
-/* Отступ и стиль для ссылки "Все новости" */
+/* Margin and style for "All news" link */
 .tabheader-all-news {
     display: block;
     margin-top: 20px;
@@ -265,7 +265,7 @@
     text-decoration: underline;
 }
 
-/* Checklist (Кастомные чекбоксы) */
+/* Checklist (Custom checkboxes) */
 .check-item {
     display: flex;
     align-items: center;
@@ -327,7 +327,7 @@
     opacity: 0.6;
 }
 
-/* Адаптивность для главной страницы */
+/* Adaptivity for home page */
 @media (max-width: 991px) {
     .tech-placeholder {
         display: none !important;
@@ -356,7 +356,7 @@
     }
 }
 
-/* Адаптивность для главной страницы */
+/* Adaptivity for home page */
 @media (max-width: 991px) {
     .tech-placeholder {
         display: none !important;
@@ -394,7 +394,7 @@
         padding: 20px 0;
     }
 
-    /* Вертикальный список заголовков без прокрутки */
+    /* Vertical list of headers without scrolling */
     .tabheader-items {
         display: flex;
         flex-direction: column !important;
@@ -420,7 +420,7 @@
     }
 }
 
-/* Мобильный фикс для строк калькулятора */
+/* Mobile fix for calculator rows */
 @media (max-width: 576px) {
     .opening-row {
         flex-wrap: wrap;

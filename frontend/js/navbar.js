@@ -1,6 +1,6 @@
 window.updateNavbar = function() {
     const authLinks = document.getElementById('auth-links');
-    if (!authLinks) return; // Если элемент не найден, выходим
+    if (!authLinks) return; // Exit if element is not found
 
     const userData = localStorage.getItem('userInfo');
 
@@ -8,8 +8,8 @@ window.updateNavbar = function() {
         try {
             const user = JSON.parse(userData);
 
-            // Если пользователь авторизован, показываем выпадающее меню
-            // Используем dropdown-menu-end для корректного выравнивания
+            // Show dropdown menu for authorized users
+            // Use dropdown-menu-end for correct alignment
             const isAdmin = user.role === 'admin';
             let navHtml = `
                 <div class="dropdown">
@@ -29,17 +29,17 @@ window.updateNavbar = function() {
 
             authLinks.innerHTML = navHtml;
 
-            // Добавляем обработчик для кнопки выхода
+            // Add event listener for logout button
             document.getElementById('logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.clear();    // Удаляет всё из localStorage
-                sessionStorage.clear(); // Удаляет всё из sessionStorage (данные калькуляторов)
+                localStorage.clear();    // Remove all from localStorage
+                sessionStorage.clear(); // Remove all from sessionStorage (calculator data)
                 window.location.href = '/';
             });
 
         } catch (error) {
-            console.error("Ошибка при парсинге данных пользователя:", error);
-            localStorage.removeItem('userInfo'); // Если данные повреждены, удаляем их
+            console.error("Error parsing user data:", error);
+            localStorage.removeItem('userInfo'); // Remove if data is corrupted
         }
     }
 

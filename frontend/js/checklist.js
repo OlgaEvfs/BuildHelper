@@ -1,4 +1,4 @@
-// функция для инициализации чек-листа
+// Checklist initialization function
 window.initChecklist = function() {
     const checkboxes = document.querySelectorAll('.check-item input');
     const progressBar = document.getElementById('progress-bar');
@@ -6,10 +6,10 @@ window.initChecklist = function() {
 
     if (!checkboxes.length || !progressBar) return;
 
-    // 1. Загружаем состояние из localStorage
+    // 1. Load state from localStorage
     const savedState = JSON.parse(localStorage.getItem('repairChecklist')) || {};
 
-    // Скрываем напоминание о регистрации, если пользователь вошел
+    // Hide registration reminder if user is logged in
     const regReminder = document.getElementById('reg-reminder');
     if (regReminder && localStorage.getItem('userInfo')) {
         regReminder.classList.add('d-none');
@@ -22,14 +22,14 @@ window.initChecklist = function() {
             cb.checked = true;
         }
 
-        // 2. Вешаем событие на изменение
+        // 2. Add change event listener
         cb.addEventListener('change', () => {
             updateProgress();
             saveStateToLocal();
         });
     });
 
-    // 3. Функция обновления прогресса
+    // 3. Progress update function
     function updateProgress() {
         const total = checkboxes.length;
         const checked = document.querySelectorAll('.check-item input:checked').length;
@@ -39,7 +39,7 @@ window.initChecklist = function() {
         progressPercent.textContent = percentage + '%';
     }
 
-    // 4. Сохраняем состояние в localStorage
+    // 4. Save state to localStorage
     function saveStateToLocal() {
         const state = {};
         checkboxes.forEach(cb => {
@@ -48,6 +48,6 @@ window.initChecklist = function() {
         localStorage.setItem('repairChecklist', JSON.stringify(state));
     }
 
-    // Инициализируем прогресс при загрузке
+    // Initialize progress on load
     updateProgress();
 }

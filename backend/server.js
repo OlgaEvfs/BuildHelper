@@ -1,4 +1,4 @@
-require('dotenv').config(); // Загружаем переменные окружения из .env файла
+require('dotenv').config(); // Load environment variables from .env file
 
 const express = require('express');
 const path = require('path');
@@ -13,63 +13,63 @@ const plannerRoutes = require('./routes/planner');
 const adminRoutes = require('./routes/admin');
 const supportRoutes = require('./routes/support');
 
-// Подключаем функцию из db.js
+// Import connection function from db.js
 const connectDB = require('./config/db');
 
-// Создаем приложение
+// Initialize Express application
 const app = express();
 
-// Подключаемся к БД
+// Connect to database
 connectDB();
 
-// Middleware
-app.use(cors()); // Настраиваем cors, чтобы фронтенд обращался к бэкенду
-app.use(express.json()); // Позволяет серверу понимать JSON в запросах(для POST/PUT)
-app.use(express.urlencoded({ extended: true })); // Поддержка стандартных форм
+// Middleware configuration
+app.use(cors()); // Configure CORS to allow frontend to access backend
+app.use(express.json()); // Allow server to parse JSON in requests (for POST/PUT)
+app.use(express.urlencoded({ extended: true })); // Add support for standard URL-encoded forms
 
-// Подключаем маршруты
-app.use('/api/auth', authRoutes); // Все маршруты к авторизации будут начинаться с /api/auth
+// Register API routes
+app.use('/api/auth', authRoutes); // All authentication routes start with /api/auth
 app.use('/api/check-email', checkEmailRoutes);
 
-// Роуты для новостей
-app.use('/api/news', newsRoutes); // Все маршруты к новостям будут начинаться с /api/news
+// News routes
+app.use('/api/news', newsRoutes); // All news routes start with /api/news
 
-// Роуты для комментариев
+// Comment routes
 app.use('/api/comments', commentRoutes);
 
-// Роуты для сохранения расчетов
+// Calculation storage routes
 app.use('/api/calculations', calculationRoutes);
 
-// Роуты для чек-листа
+// Checklist routes
 app.use('/api/checklist', checklistRoutes);
 
-// Роуты для планировщика
+// Planner routes
 app.use('/api/planner', plannerRoutes);
 
-// Роуты для поддержки
+// Support request routes
 app.use('/api/support', supportRoutes);
 
-// Роуты для админки
+// Admin panel routes
 app.use('/api/admin', adminRoutes);
 
-// test route
+// Test route
 app.get('/api/test', (req, res) => {
-    // Обязательно res.json, чтобы фронтенд понял ответ
+    // Use res.json to ensure the frontend receives a JSON response
     res.json({ message: 'This is a test endpoint' });
 });
 
-// Раздача статических файлов фронтенда
+// Serve static files for the frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Раздача загруженных файлов
+// Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Все остальные GET запросы перенапрявляем на index.html (для SPA в будущем)
+// Redirect all other GET requests to index.html (preparing for SPA)
 app.get('*path', (req, res) => {
     res.status(404).sendFile(path.join(__dirname, '../frontend/404.html'));
 });
 
-// Берем порт из env
+// Get port from environment variables
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

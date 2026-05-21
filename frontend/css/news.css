@@ -1,4 +1,4 @@
-/* Стили для страницы всех новостей (news.html) */
+/* Styles for the all news page (news.html) */
 
 .news-card {
     background: var(--white);
@@ -57,22 +57,22 @@
     flex-grow: 1;
 }
 
-/* Фильтры новостей */
+/* News filters */
 #news-filters, #job-filters {
     padding-bottom: 5px;
 }
 
 @media (max-width: 768px) {
     #news-filters, #job-filters {
-        flex-direction: column !important; /* В колонку */
+        flex-direction: column !important; /* In a column */
         flex-wrap: wrap !important;
-        overflow-x: visible !important; /* Убираем прокрутку */
+        overflow-x: visible !important; /* Remove scrolling */
         padding: 10px 0;
         gap: 8px !important;
     }
 
     #news-filters .btn, #job-filters .btn {
-        width: 100%; /* Растягиваем на всю ширину */
+        width: 100%; /* Stretch to full width */
         text-align: center;
         padding: 10px !important;
     }
@@ -96,7 +96,7 @@
     }
 }
 
-/* Пагинация */
+/* Pagination */
 .page-link {
     padding: 10px 18px;
     border: 1px solid var(--border-color);

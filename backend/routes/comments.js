@@ -2,47 +2,47 @@ const filter = require('leo-profanity');
 const { words: russianBadWords } = require('russian-bad-words');
 
 filter.loadDictionary('en');
-// Извлекаем все формы слов из russian-bad-words и добавляем в фильтр
+// Extract all word forms from russian-bad-words and add to filter
 const russianList = russianBadWords.flatMap(obj => {
     const { type, ...rest } = obj;
     return Object.values(rest);
 });
 filter.add(russianList);
-// filter.add(['слово1', 'слово2']); Если отдельные слова
+// filter.add(['word1', 'word2']); for individual words
 
 const express = require('express');
 const router = express.Router();
 const Comment = require('../models/Comment');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Создаем комментарии (только для авторизированных)
+// Create comments (authorized only)
 router.post('/', authMiddleware, async (req, res) => {
     
     try {
-        const { content, newsId } = req.body; //достаем из тела запроса контент комментария и ID новости, к которой он относится
+        const { content, newsId } = req.body; // Extract comment content and news ID from request body
 
-        // проверяем, что контент не пустой
+        // Check if content is empty
         if (!content || content.trim().length === 0) {
                 return res.status(400).json({ message: 'Комментарий не может быть пустым' });
         }
 
-        // Фильтруем нецензурные слова
+        // Filter profanity
         if (filter.check(content)) {
             return res.status(400).json({
                 message: 'Ваш комментарий содержит недопустимые слова и не может быть опубликован.'
             });
         }
 
-        // Если проверк прошла
+        // Pass validation
         const newComment = new Comment({
             content: content,
             news: newsId,
-            author: req.user.id // Берем ID пользователя из токена (middleware его туда записывает)
+            author: req.user.id // Get user ID from token (middleware attaches it)
         });
 
         const savedComment = await newComment.save();
 
-        // Сразу загружаем данные автора, чтобы вернуть фронтенду красивый ответ
+        // Populate author data for response
         const populatedComment = await Comment.findById(savedComment._id).populate('author', 'username role');
 
         res.status(201).json(populatedComment);
@@ -52,12 +52,12 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Получить комментарии для конкретной новости
+// Get comments for specific news item
 router.get('/:newsId', async (req, res) => {
     try {
         const comments = await Comment.find({ news: req.params.newsId })
-            .populate('author', 'username role') // Подтягиваем имя и роль автора из модели User
-            .sort({ createdAt: -1 }); // Сначала новые
+            .populate('author', 'username role') // Populate author name and role from User model
+            .sort({ createdAt: -1 }); // Sort by newest first
         res.json(comments);
     } catch (err) {
         console.error("Error fetching comments:", err);
@@ -65,7 +65,7 @@ router.get('/:newsId', async (req, res) => {
     }
 });
 
-// Удалить комментарий (только автор или админ)
+// Delete comment (author or admin only)
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const comment = await Comment.findById(req.params.id);
@@ -74,7 +74,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Комментарий не найден' });
         }
 
-        // Проверка прав: автор комментария или админ
+        // Check permissions: comment author or admin
         const isAuthor = comment.author.toString() === req.user.id;
         const isAdmin = req.user.role === 'admin';
 

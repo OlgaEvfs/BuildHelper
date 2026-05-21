@@ -1,9 +1,9 @@
-require('dotenv').config(); // Загружаем переменные окружения из .env файла
+require('dotenv').config(); // Load environment variables from .env file
 const mongoose = require('mongoose');
 const News = require('./models/News');
 const connectDB = require('./config/db');
 
-// Данные для заполнения
+// Data for seeding
 const newsData = [
     {
         title: "3D-печать домов: Экономия 40%",
@@ -95,32 +95,38 @@ const newsData = [
 
 const User = require('./models/User');
 
-// Функция для заполнения базы данных
+// Seed database function
 const seedDB = async () => {
     try {
-        await connectDB(); // Подключаемся к базе данных
+        await connectDB(); // Connect to database
         
-        // Ищем админа для назначения автором
-        const admin = await User.findOne({ role: 'admin' });
+        // Find or create admin
+        let admin = await User.findOne({ role: 'admin' });
         if (!admin) {
-            console.error('Ошибка: Админ не найден. Создайте хотя бы одного пользователя с ролью admin.');
-            process.exit(1);
+            console.log('Администратор не найден, создаем дефолтного админа...');
+            admin = await User.create({
+                username: 'admin',
+                email: 'admin@buildhelper.ee',
+                password: 'Password123', // !!! Смените этот пароль сразу после запуска
+                role: 'admin'
+            });
+            console.log('Администратор успешно создан.');
         }
 
-        // Добавляем автора к каждой записи
+        // Add author to each record
         const seededNews = newsData.map(item => ({
             ...item,
             author: admin._id
         }));
 
-        await News.deleteMany({}); // Очищаем коллекцию от старых данных
-        await News.insertMany(seededNews); // Вставляем новые данные
+        await News.deleteMany({}); // Clear collection
+        await News.insertMany(seededNews); // Insert data
         console.log(`Данные успешно добавлены в MongoDB! (Автор: ${admin.username})`);
-        process.exit(); // Завершаем процесс после выполнения
+        process.exit(); // Exit process
     } catch (err) {
         console.error('Ошибка при заполнении базы данных:', err);
-        process.exit(1); // Завершаем процесс с ошибкой
+        process.exit(1); // Exit process with error
     }
 };
 
-seedDB(); // Запускаем функцию заполнения базы данных
+seedDB(); // Execute seed function

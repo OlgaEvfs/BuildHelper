@@ -1,5 +1,5 @@
 document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Предотвращаем стандартное поведение формы
+    e.preventDefault(); // Prevent default form submission behavior
 
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -11,16 +11,16 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         });
     });
 
-    // Очищаем старые ошибки
+    // Clear old errors
     errorDiv.classList.add('d-none');
     emailInput.classList.remove('is-invalid');
     passwordInput.classList.remove('is-invalid');
 
-    // берем значения
+    // Get input values
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // Валидация формата Email
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email)) {
         emailInput.classList.add('is-invalid');
@@ -29,7 +29,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         return;
     }
 
-    // Проверяем на пустоту
+    // Check for empty fields
     if (!email || !password) {
         if (!email) emailInput.classList.add('is-invalid');
         if (!password) passwordInput.classList.add('is-invalid');
@@ -51,12 +51,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok) {
-            // Если ок - сохраняем данные и переходим на главную
+            // Save data and redirect on success
             localStorage.setItem('token', data.token);
             localStorage.setItem('userInfo', JSON.stringify(data));
             window.location.href = '/';
         } else {
-            // Если ошибка - показываем сообщение
+            // Show error message
             errorDiv.textContent = data.message || 'Ошибка входа';
             errorDiv.classList.remove('d-none');
         }

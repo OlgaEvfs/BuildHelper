@@ -16,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bh-bg-light shadow-sm">
             <div class="container-fluid px-4">
-                <!-- Логотип -->
+                <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" href="/">
                     <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-img me-2">
                     <span class="fw-bold bh-brand-name">BuildHelper</span>
@@ -28,7 +28,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div id="auth-links" class="ms-auto d-flex gap-2">
-                        <!-- Заполнится из app.js -->
+                        <!-- Will be filled from app.js -->
                         <a href="/login.html" class="btn bh-btn-outline btn-sm">Вход</a>
                         <a href="/register.html" class="btn bh-btn-primary btn-sm">Регистрация</a>
                     </div>
@@ -40,7 +40,7 @@
     <main class="container py-5">
         <h1 class="text-center mb-5 display-5 fw-bold bh-section-title">Все новости</h1>
 
-        <!-- Фильтры новостей (Bootstrap Button Group) -->
+        <!-- News filters (Bootstrap Button Group) -->
         <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" id="news-filters">
             <button class="btn bh-btn-accent-outline rounded-pill active px-4" data-category="all">Все</button>
             <button class="btn bh-btn-accent-outline rounded-pill px-4" data-category="tech">Технологии</button>
@@ -50,7 +50,7 @@
             <button class="btn bh-btn-accent-outline rounded-pill px-4" data-category="jobs">Вакансии</button>
         </div>
 
-        <!-- Подкатегории -->
+        <!-- Subcategories -->
         <div id="job-filters" class="d-flex flex-wrap justify-content-center gap-2 mb-3 d-none">
             <button class="btn btn-sm bh-btn-outline rounded-pill active" data-jobtype="all">Все</button>
             <button class="btn btn-sm bh-btn-outline rounded-pill" data-jobtype="finishing">Отделка</button>
@@ -64,7 +64,7 @@
             <button class="btn bh-btn-accent" data-bs-toggle="modal" data-bs-target="#addPostModal">+ Опубликовать вакансию</button>
         </div>
 
-        <!-- Контейнер для карточек (Bootstrap Grid) -->
+        <!-- Card container (Bootstrap Grid) -->
         <div id="news-grid" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col-12 text-center p-5" style="width: 100% !important;">
                 <div class="spinner-border bh-text-accent" role="status">
@@ -74,10 +74,10 @@
             </div>
         </div>
 
-        <!-- Пагинация Bootstrap -->
+        <!-- Bootstrap Pagination -->
         <nav aria-label="Навигация по новостям" class="mt-5">
             <ul id="pagination" class="pagination justify-content-center">
-                <!-- Кнопки появятся здесь -->
+                <!-- Buttons will appear here -->
             </ul>
         </nav>
     </main>
@@ -85,7 +85,7 @@
     <footer class="bh-bg-dark text-light py-4 mt-5">
         <div class="container-fluid px-4">
             <div class="row g-4">
-                <!-- Логотип и описание -->
+                <!-- Logo and description -->
                 <div class="col-lg-4 col-md-6">
                     <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
                         <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
@@ -94,7 +94,7 @@
                     <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта. Расчитывайте материалы быстро и точно.</p>
                 </div>
 
-                <!-- Ссылки -->
+                <!-- Links -->
                 <div class="col-lg-4 col-md-6">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
                     <ul class="list-unstyled small">
@@ -105,7 +105,7 @@
                     </ul>
                 </div>
 
-                <!-- Социальные сети -->
+                <!-- Social media -->
                 <div class="col-lg-4 col-md-12">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
                     <div class="d-flex gap-3 mb-3">
@@ -133,7 +133,7 @@
         </svg>
     </button>
 
-    <!-- Модальное окно поддержки -->
+    <!-- Support modal -->
     <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -177,7 +177,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно создания записи (Новости/Вакансии) -->
+    <!-- Modal for creating a record (News/Jobs) -->
     <div class="modal fade" id="addPostModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow">
@@ -216,7 +216,7 @@
                                 <div class="form-text small">Если файл выбран, он будет иметь приоритет над ссылкой.</div>
                             </div>
 
-                            <!-- Специфичные поля вакансии -->
+                            <!-- Specific job fields -->
                             <div id="job-fields-wrapper" class="row g-3 m-0 p-0">
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold">Тип работ *</label>
@@ -281,7 +281,7 @@
         </div>
     </div>
 
-    <!-- Универсальное окно подтверждения -->
+    <!-- Confirmation modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
             <div class="modal-content border-0 shadow">

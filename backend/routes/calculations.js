@@ -3,7 +3,7 @@ const router = express.Router();
 const Calculation = require('../models/Calculation');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Сохранить новый расчет
+// Save new calculation
 router.post('/', authMiddleware, async (req, res) => {
     try {
         const { type, result } = req.body;
@@ -26,7 +26,7 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Получить все расчеты текущего пользователя
+// Get all calculations for current user
 router.get('/', authMiddleware, async (req, res) => {
     try {
         const calcs = await Calculation.find({ user: req.user.id }).sort({ createdAt: -1 });
@@ -37,14 +37,14 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-// Удалить расчет
+// Delete calculation
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const calc = await Calculation.findById(req.params.id);
 
         if (!calc) return res.status(404).json({ message: 'Расчет не найден' });
 
-        // Проверям, что расчет этого пользователя
+        // Check if calculation belongs to this user
         if (calc.user.toString() !== req.user.id) {
             return res.status(403).json({ message: 'Нет прав на удаление' });
         }

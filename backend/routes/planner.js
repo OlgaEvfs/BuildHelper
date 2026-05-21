@@ -3,7 +3,7 @@ const router = express.Router();
 const Planner = require('../models/Planner');
 const auth = require('../middleware/authMiddleware');
 
-// Получить план пользователя
+// Get user plan
 router.get('/', auth, async (req, res) => {
     try {
         const plan = await Planner.findOne({ user: req.user.id });
@@ -14,7 +14,7 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// Сохранить или обновить план
+// Save or update plan
 router.post('/', auth, async (req, res) => {
     const { rooms, furniture, openings } = req.body;
     try {

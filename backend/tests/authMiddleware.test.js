@@ -39,7 +39,7 @@ describe('authMiddleware', () => {
   });
 
   it('should call next if token is valid', async () => {
-    // Нам нужно замокать User.findById, так как middleware делает запрос в БД
+    // We need to mock User.findById because the middleware makes a request to the DB
     const User = require('../models/User');
     User.findById = jest.fn().mockReturnValue({
       select: jest.fn().mockResolvedValue({ id: '123', status: 'active' })

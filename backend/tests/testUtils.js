@@ -5,7 +5,7 @@ const User = require('../models/User');
 
 let mongoServer;
 
-// Функция для подключения к in-memory базе
+// Function to connect to in-memory database
 const connectToMemoryDB = async () => {
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
@@ -13,7 +13,7 @@ const connectToMemoryDB = async () => {
     return uri;
 };
 
-// Функция для отключения и очистки
+// Function to disconnect and clean up
 const closeMemoryDB = async () => {
     await mongoose.disconnect();
     if (mongoServer) {
@@ -21,7 +21,7 @@ const closeMemoryDB = async () => {
     }
 };
 
-// Функция для очистки данных между тестами
+// Function to clear data between tests
 const clearDatabase = async () => {
     const collections = mongoose.connection.collections;
     for (const key in collections) {
@@ -29,9 +29,9 @@ const clearDatabase = async () => {
     }
 };
 
-// Функция для заполнения базы данных
+// Function to seed the database
 const seedDatabase = async () => {
-    // Создаем временного админа
+    // Create temporary admin
     const admin = new User({
         username: 'testadmin',
         email: 'admin@test.com',

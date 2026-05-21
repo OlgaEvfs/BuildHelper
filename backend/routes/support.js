@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const SupportRequest = require('../models/SupportRequest');
 
-// @desc Отправить запрос в поддержку (публичный)
+// @desc Send support request (public)
 router.post('/', async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;

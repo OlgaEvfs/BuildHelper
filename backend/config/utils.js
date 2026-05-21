@@ -1,15 +1,15 @@
-// Токены (JWT - JSON Web Token): Это современный подход. Сервер не хранит данные о входе.
-// Он выдает пользователю зашифрованный «пропуск» (токен),
-// в котором уже написано: «Это Иван, он админ, пропуск годен до завтра». Сервер просто проверяет цифровую подпись на этом пропуске.
-// Это быстрее (серверу не нужно лезть в базу данных при каждом клике, чтобы проверить сессию).
-// Это надежнее для масштабирования.
+// Use JWT (JSON Web Token), a modern approach where the server does not store session data.
+// Issue an encrypted token to the user,
+// which contains information such as: "This is a user, they have specific roles, and the token is valid until a certain time." Verify the digital signature on this token.
+// This is faster because it does not require database access on every request to check the session.
+// This is more reliable for scaling.
 const jwt = require('jsonwebtoken');
 
-// Функция для генерации токена
+// Define function to generate a token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d' // токен будет действовать 30 дней
+        expiresIn: '30d' // Set token expiration to 30 days
     });
 };
 
-module.exports = generateToken; // Экспортируем функцию для использования в других местах приложения
+module.exports = generateToken; // Export function for use in other parts of the application

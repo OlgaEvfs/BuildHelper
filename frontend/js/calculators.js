@@ -1,4 +1,4 @@
-// Вспомогательная функция для корректного парсинга чисел
+// Helper function for correct number parsing
 function parseNumber(val) {
     if (typeof val === 'string') {
         return parseFloat(val.replace(/\s/g, '').replace(',', '.'));
@@ -6,7 +6,7 @@ function parseNumber(val) {
     return parseFloat(val);
 }
 
-// Функция для открытия модалки калькулятора (теперь через Bootstrap)
+// Open calculator modal (Bootstrap)
 window.openCalculatorModal = function(type) {
     const modalElement = document.getElementById('calcModal');
     const modalTitle = document.getElementById('calcModalTitle');
@@ -17,7 +17,7 @@ window.openCalculatorModal = function(type) {
         return;
     }
 
-    // Достаем сохраненные данные в sessionStorage
+    // Load data from sessionStorage
     const savedWallArea = sessionStorage.getItem('lastNetWallArea') || "";
     const savedFloorArea = sessionStorage.getItem('lastFloorArea') || "";
     const savedPerimeter = sessionStorage.getItem('lastPerimeter') || "";
@@ -29,7 +29,7 @@ window.openCalculatorModal = function(type) {
     let title = "";
     let content = "";
 
-    // Выбор контента
+    // Content selection
     switch(type) {
         case 'geometry':
             title = "Геометрия помещения";
@@ -48,7 +48,7 @@ window.openCalculatorModal = function(type) {
                 </div>
                 
                 <div id="openings-list">
-                    <!-- Сюда будем добавлять двери и окна -->
+                    <!-- Add opening rows here -->
                 </div>
                 <button class="btn btn-sm btn-outline-secondary mb-3" onclick="addOpeningRow()">+ Добавить проем</button>
 
@@ -316,7 +316,7 @@ window.openCalculatorModal = function(type) {
             break;
     }
 
-    // Заполняем модалку и открываем
+    // Fill and open modal
     modalTitle.innerText = title;
     modalBody.innerHTML = content;
 
@@ -327,7 +327,7 @@ window.openCalculatorModal = function(type) {
     bsModal.show();
 }
 
-//----------------------------------- РАСЧЕТЫ ---------------------------------------------
+//----------------------------------- CALCULATIONS ---------------------------------------------
 
 function showCalcError(boxId, message) {
     const resultBox = document.getElementById(boxId);
@@ -336,6 +336,7 @@ function showCalcError(boxId, message) {
     resultBox.innerHTML = `<div class="alert alert-danger py-2 small mb-0">${message}</div>`;
 }
 
+// Geometry calculation
 window.calculateGeometry = function() {
     const length = parseNumber(document.getElementById('room-length').value);
     const width = parseNumber(document.getElementById('room-width').value);
@@ -378,6 +379,7 @@ window.calculateGeometry = function() {
     sessionStorage.setItem('lastHeight', height.toFixed(2));
 };
 
+// Paint/Primer consumption calculation
 window.calculatePaint = function() {
     const area = parseNumber(document.getElementById('paint-area').value);
     const cons = parseNumber(document.getElementById('paint-consumption').value);
@@ -403,6 +405,7 @@ window.calculatePaint = function() {
     `;
 };
 
+// Wallpaper calculation
 window.calculateWallpaper = function() {
     const area = parseNumber(document.getElementById('wallpaper-area').value);
     const rollWidth = parseNumber(document.getElementById('roll-width').value);
@@ -425,7 +428,7 @@ window.calculateWallpaper = function() {
         return showCalcError('wallpaper-result', 'Ошибка: Высота стены больше длины рулона.');
     }
 
-    // Расчет с учетом запаса
+    // Calculate with stock
     const totalAreaWithStock = area * (1 + stock / 100);
     const rollsNeeded = Math.ceil((totalAreaWithStock / wallHeight / rollWidth) / stripsPerRoll);
     
@@ -438,6 +441,7 @@ window.calculateWallpaper = function() {
     `;
 };
 
+// Tile calculation
 window.calculateTiles = function() {
     const area = parseNumber(document.getElementById('tile-area').value);
     const w = parseNumber(document.getElementById('tile-w').value);
@@ -470,6 +474,7 @@ window.setTileSize = function(w, h) {
     document.getElementById('tile-h').value = h;
 };
 
+// Waterproofing calculation
 window.calculateWP = function() {
     const area = parseNumber(document.getElementById('wp-area').value);
     const cons = parseNumber(document.getElementById('wp-consumption').value);
@@ -493,6 +498,7 @@ window.calculateWP = function() {
     `;
 };
 
+// Drywall calculation
 window.calculateDrywall = function() {
     const area = parseNumber(document.getElementById('drywall-area').value);
     const sheetArea = parseNumber(document.getElementById('drywall-size').value);
@@ -514,6 +520,7 @@ window.calculateDrywall = function() {
     `;
 };
 
+// Profile calculation
 window.calculateProfiles = function() {
     const area = parseNumber(document.getElementById('profile-area').value);
     const perimeter = parseNumber(document.getElementById('profile-perimeter').value);
@@ -540,7 +547,7 @@ window.calculateProfiles = function() {
     const totalMeters = (cwCount * wallHeight) + uwLength;
     const res = Math.ceil(totalMeters / length);
     
-    // Подвесы из расчета 2 шт на м²
+    // Hangers required based on 2 per m²
     const hangers = Math.ceil(area * 2);
 
     resultBox.style.display = 'block';
@@ -552,6 +559,7 @@ window.calculateProfiles = function() {
     `;
 };
 
+// Laminate calculation
 window.calculateLaminate = function() {
     const area = parseNumber(document.getElementById('laminate-area').value);
     const pack = parseNumber(document.getElementById('laminate-pack').value);
@@ -578,6 +586,7 @@ window.calculateLaminate = function() {
     `;
 };
 
+// Brick calculation
 window.calculateBricks = function() {
     const area = parseNumber(document.getElementById('brick-area').value);
     const wallThickness = parseNumber(document.getElementById('brick-wall-th').value);
@@ -592,8 +601,7 @@ window.calculateBricks = function() {
         return;
     }
 
-    // Средний расход:
-    // ~400 кирпичей на 1 м³ кладки
+    // Average consumption: ~400 bricks per 1 m³ masonry
     const volume = area * wallThickness;
     const bricks = Math.ceil(volume * 400);
 
@@ -605,6 +613,7 @@ window.calculateBricks = function() {
     `;
 };
 
+// Floor screed calculation
 window.calculateFloor = function() {
     const area = parseNumber(document.getElementById('floor-area').value);
     const thickness = parseNumber(document.getElementById('floor-thickness').value);
@@ -629,6 +638,7 @@ window.calculateFloor = function() {
     `;
 };
 
+// Return Save button HTML
 function getSaveButtonHtml(calcName, resultValue) {
     if (localStorage.getItem('userInfo')) {
         return `<button class="btn btn-sm btn-success mt-2 w-100" onclick='saveCalculation(this, ${JSON.stringify(calcName)}, ${JSON.stringify(resultValue)})'>Сохранить в профиль</button>`;
@@ -636,6 +646,7 @@ function getSaveButtonHtml(calcName, resultValue) {
     return '';
 }
 
+// Save calculation to profile
 window.saveCalculation = async function(btn, calcName, resultValue) {
     const userData = localStorage.getItem('userInfo');
     if (!userData) return showNotification('Войдите в систему.', 'warning');

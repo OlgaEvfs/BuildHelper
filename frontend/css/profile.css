@@ -1,12 +1,12 @@
 main {
     min-height: 80vh;
-    overflow: visible; /* Разрешаем выпадающим меню выходить за пределы */
+    overflow: visible; /* Allow dropdown menus to overflow */
 }
 
 /* ... existing styles ... */
 
 
-/* Адаптивность для профиля */
+/* Adaptivity for profile */
 @media (max-width: 767px) {
     .list-group-flush {
         flex-direction: column !important;
@@ -36,18 +36,18 @@ main {
     }
 }
 
-/* Адаптивность для планировщика */
+/* Adaptivity for planner */
 @media (max-width: 991px) {
     .planner-canvas-container {
         min-height: 400px !important;
-        overflow: auto !important; /* Включаем прокрутку */
+        overflow: auto !important; /* Enable scrolling */
         -webkit-overflow-scrolling: touch;
         background-color: var(--bg-light);
     }
 
     #roomCanvas {
         display: block; 
-        /* Убираем жесткие 100%, чтобы canvas мог быть больше экрана и скроллиться */
+        /* Remove strict 100% so canvas can be larger than the screen and scrollable */
     }
 
     .row.g-4 {

@@ -10,12 +10,12 @@ const SupportRequest = require('../models/SupportRequest');
 const protect = require('../middleware/authMiddleware');
 const admin = require('../middleware/adminMiddleware');
 
-router.use(protect); // Все роуты ниже требуют аутентификации
-router.use(admin); // Все роуты ниже требуют прав администратора
+router.use(protect); // Require authentication for all routes below
+router.use(admin); // Require administrator rights for all routes below
 
-// -------- ОБЩАЯ СТАТИСТИКА (DASHBOARD) --------
+// -------- GLOBAL STATISTICS (DASHBOARD) --------
 
-// @desc Получить статистику для дашборда
+// @desc Get statistics for dashboard
 router.get('/stats', async (req, res) => {
     try {
         const [userCount, newsCount, supportCount] = await Promise.all([
@@ -33,9 +33,9 @@ router.get('/stats', async (req, res) => {
     }
 });
 
-// -------- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ --------
+// -------- USER MANAGEMENT --------
 
-// @desc Получить список всех пользователей
+// @desc Get list of all users
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({}).select('-password').sort({ createdAt: -1 });
@@ -45,18 +45,18 @@ router.get('/users', async (req, res) => {
     }
 });
 
-// @desc Изменить статус (Бан/Разбан)
+// @desc Change status (Ban/Unban)
 router.put('/users/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
         const userId = req.params.id;
 
-        // Сначала проверим, не админ ли это
+        // Check if user is an admin
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
         if (user.role === 'admin') return res.status(400).json({ message: 'Нельзя забанить администратора' });
 
-        // Используем findByIdAndUpdate вместо .save(), чтобы избежать проблем с валидацией других полей
+        // Use findByIdAndUpdate instead of .save() to avoid validation issues
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { status: status },
@@ -70,7 +70,7 @@ router.put('/users/:id/status', async (req, res) => {
     }
 });
 
-// @desc    СБРОС ПАРОЛЯ И ФЛАГ ПРИНУДИТЕЛЬНОЙ СМЕНЫ
+// @desc RESET PASSWORD AND FORCED CHANGE FLAG
 router.put('/users/:id/reset-password', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -78,7 +78,7 @@ router.put('/users/:id/reset-password', async (req, res) => {
 
         const tempPassword = Math.random().toString(36).slice(-8);
         user.password = tempPassword;
-        user.resetPasswordRequired = true; // Ставим метку для фронтенда
+        user.resetPasswordRequired = true; // Set flag for frontend
         await user.save();
 
         res.json({ message: 'Пароль сброшен', tempPassword });
@@ -87,7 +87,7 @@ router.put('/users/:id/reset-password', async (req, res) => {
     }
 });
 
- // @desc    КАСКАДНОЕ УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
+ // @desc CASCADE USER DELETION
 router.delete('/users/:id', async (req, res) => {
     try {
         const userId = req.params.id;
@@ -96,7 +96,7 @@ router.delete('/users/:id', async (req, res) => {
         if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
         if (user.role === 'admin') return res.status(400).json({ message: 'Нельзя удалить администратора' });
 
-        // Чистим базу данных полностью
+        // Clean database completely
         await Promise.all([
             News.deleteMany({ author: userId }),
             Comment.deleteMany({ author: userId }),
@@ -112,9 +112,9 @@ router.delete('/users/:id', async (req, res) => {
     }
 });
 
-// -------- УПРАВЛЕНИЕ КОНТЕНТОМ (НОВОСТИ И ВАКАНСИИ) --------
+// -------- CONTENT MANAGEMENT (NEWS AND JOBS) --------
 
-// @desc Получить все новости и вакансии
+// @desc Get all news and jobs
 router.get('/content', async (req, res) => {
     try {
         const content = await News.find({})
@@ -126,7 +126,7 @@ router.get('/content', async (req, res) => {
     }
 });
 
-// @desc Изменить статус публикации (Одобрить/Снять)
+// @desc Change publication status (Approve/Remove)
 router.put('/content/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
@@ -140,7 +140,7 @@ router.put('/content/:id/status', async (req, res) => {
     }
 });
 
-// @desc Удалить запись (новость или вакансию)
+// @desc Delete record (news or job)
 router.delete('/content/:id', async (req, res) => {
     try {
         const item = await News.findById(req.params.id);
@@ -148,7 +148,7 @@ router.delete('/content/:id', async (req, res) => {
             return res.status(404).json({ message: 'Запись не найдена' });
         }
 
-        // Удаляем саму запись и все комментарии к ней
+        // Delete record itself and all comments associated with it
         await Promise.all([
             News.findByIdAndDelete(req.params.id),
             Comment.deleteMany({ news: req.params.id })
@@ -161,8 +161,8 @@ router.delete('/content/:id', async (req, res) => {
     }
 });
 
-// --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
-// @desc    Просмотр всех заявок
+// --- SUPPORT MANAGEMENT ---
+// @desc View all requests
 router.get('/support', async (req, res) => {
     try {
         const requests = await SupportRequest.find({}).sort({ createdAt: -1 });
@@ -172,7 +172,7 @@ router.get('/support', async (req, res) => {
     }
 });
 
-// @desc    Удалить заявку (после решения проблемы)
+// @desc Delete request (after resolving the problem)
 router.delete('/support/:id', async (req, res) => {
     try {
         await SupportRequest.findByIdAndDelete(req.params.id);
@@ -182,7 +182,7 @@ router.delete('/support/:id', async (req, res) => {
     }
 });
 
-// @desc    Изменить статус заявки (open/resolved)
+// @desc Change request status (open/resolved)
 router.put('/support/:id/status', async (req, res) => {
     try {
         const { status } = req.body;

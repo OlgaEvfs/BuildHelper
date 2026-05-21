@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
-    // если токена нет отправляем на логин
+    // Redirect to login if token is missing
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
 
-    // Проверка необходимости смены пароля (временный пароль от админа)
+    // Check for password change requirement (temporary password from admin)
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
     if (userInfo.resetPasswordRequired) {
         const resetAlert = document.getElementById('reset-password-alert');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    //------ ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ---------
+    // Tab switching logic
     const menuLinks = document.querySelectorAll('.list-group-item[data-target]');
     const sections = document.querySelectorAll('section[id]');
 
@@ -25,18 +25,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const targetId = link.getAttribute('data-target');
 
-            // Убираем active у всех и добавляем нажатой
+            // Remove active class from all links and add to clicked
             menuLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
 
-            // Скрываем все секции и показываем нужную
+            // Hide all sections and show target
             sections.forEach(s => s.classList.add('d-none'));
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.classList.remove('d-none');
             }
 
-            // Загружаем данные в зависимости от открытой вкладки
+            // Load data based on active tab
             if (targetId === 'calculations-section') {
                 loadUserCalculations();
             } else if (targetId === 'jobs-section') {
@@ -49,16 +49,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Обработка кнопок "Назад к профилю" внутри секций
+    // Handle "Back to profile" buttons inside sections
     document.querySelectorAll('.back-to-profile').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const profileTab = document.querySelector('[data-target="profile-section"]');
-            if (profileTab) profileTab.click(); // Просто имитируем клик по первой вкладке меню
+            if (profileTab) profileTab.click(); // Simulate click on first menu tab
         });
     });
 
-    // Загружаем данные профиля
+    // Load profile data
     try {
         const response = await fetch('/api/auth/profile', {
             headers:{
@@ -77,10 +77,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = 'login.html';
         }
     } catch (error) {
-        console.error('Ошибка загрузки профиля:', error);
+        console.error('Profile load error:', error);
     }
 
-    // Блок смены пароля
+    // Password change block
     const changePasswordForm = document.getElementById('change-password-form');
     if (changePasswordForm) {
         changePasswordForm.addEventListener('submit', async (e) => {
@@ -88,10 +88,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const passwordMessage = document.getElementById('password-message');
             const submitBtn = changePasswordForm.querySelector('button[type="submit"]');
             
-            // Блокируем кнопку
+            // Disable button
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Обновление...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Updating...';
 
             const oldPassword = document.getElementById('old-password').value;
             const newPassword = document.getElementById('new-password').value;
@@ -110,37 +110,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                 passwordMessage.classList.remove('d-none', 'alert-danger', 'alert-success');
 
                 if (response.ok) {
-                    passwordMessage.textContent = 'Пароль успешно изменен!';
+                    passwordMessage.textContent = 'Password successfully updated!';
                     passwordMessage.classList.add('alert-success');
                     changePasswordForm.reset();
 
-                    // Обновляем данные в localStorage, чтобы убрать уведомление
+                    // Update localStorage to remove notification
                     const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
                     currentUser.resetPasswordRequired = false;
                     localStorage.setItem('userInfo', JSON.stringify(currentUser));
 
-                    // Скрываем само уведомление
+                    // Hide notification
                     const resetAlert = document.getElementById('reset-password-alert');
                     if (resetAlert) resetAlert.classList.add('d-none');
 
                 } else {
-                    passwordMessage.textContent = data.message || 'Ошибка смены пароля';
+                    passwordMessage.textContent = data.message || 'Error updating password';
                     passwordMessage.classList.add('alert-danger');
                 }
             } catch (error) {
-                passwordMessage.textContent = 'Ошибка соединения с сервером';
+                passwordMessage.textContent = 'Server connection error';
                 passwordMessage.classList.add('alert-danger');
             } finally {
-                // Возвращаем кнопку
+                // Restore button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
             }
         });
     }
 
-    // --- ФУНКЦИИ ДЛЯ РАБОТЫ С ВАКАНСИЯМИ ---
+    // --- JOB MANAGEMENT FUNCTIONS ---
 
-    // Переменная для хранения списка всех вакансий пользователя
+    // Variable to store list of all user jobs
     let myJobs = [];
 
     async function loadMyJobs() {
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             myJobs = await res.json();
 
             if (myJobs.length === 0) {
-                list.innerHTML = '<p class="text-muted italic">У вас пока нет размещенных вакансий.</p>';
+                list.innerHTML = '<p class="text-muted italic">No posted jobs.</p>';
                 return;
             }
 
@@ -175,13 +175,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <h5 class="fw-bold mb-1">
                                     <a href="/news-detail.html?id=${job._id}" class="text-decoration-none text-dark hover-accent">${job.title}</a>
                                 </h5>
-                                <p class="small text-muted mb-2">${job.location || 'Локация не указана'} | ${new Date(job.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                <p class="small text-muted mb-2">${job.location || 'Location not specified'} | ${new Date(job.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                                 <span class="badge bh-bg-light text-dark mb-2">${getJobTypeName(job.jobType)}</span>
                             </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-warning" onclick="openEditModal('${job._id}')">Редактировать</button>
-                            <button class="btn btn-sm btn-outline-danger delete-job-btn" data-id="${job._id}">Удалить</button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="openEditModal('${job._id}')">Edit</button>
+                            <button class="btn btn-sm btn-outline-danger delete-job-btn" data-id="${job._id}">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -191,11 +191,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.onclick = () => deleteJob(btn.getAttribute('data-id'));
             });
         } catch (err) {
-            list.innerHTML = '<p class="text-danger">Ошибка загрузки вакансий.</p>';
+            list.innerHTML = '<p class="text-danger">Error loading jobs.</p>';
         }
     }
 
-    // Редактирование вакансий
+    // Edit job
     window.openEditModal = (id) => {
         const job = myJobs.find(j => j._id === id);
         if (!job) return;
@@ -246,26 +246,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('editJobModal'));
                     modal.hide();
                     loadMyJobs();
-                    showNotification('Вакансия обновлена и отправлена на модерацию!', 'success');
+                    showNotification('Job updated and sent for moderation!', 'success');
                 } else {
                     const err = await res.json();
-                    showNotification(err.message || 'Ошибка обновления', 'danger');
+                    showNotification(err.message || 'Update error', 'danger');
                 }
             } catch (err) {
-                showNotification('Ошибка сети', 'danger');
+                showNotification('Network error', 'danger');
             }
         });
     }
 
     function getJobTypeName(type) {
         const types = {
-            finishing: 'Отделка',
-            plumbing: 'Сантехника',
-            electrical: 'Электрика',
-            masonry: 'Каменные работы',
-            roofing: 'Кровля',
-            hvac: 'Вентиляция',
-            general: 'Общие работы'
+            finishing: 'Finishing',
+            plumbing: 'Plumbing',
+            electrical: 'Electrical',
+            masonry: 'Masonry',
+            roofing: 'Roofing',
+            hvac: 'HVAC',
+            general: 'General'
         };
         return types[type] || type;
     }
@@ -277,10 +277,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const msg = document.getElementById('job-form-message');
             const submitBtn = addJobForm.querySelector('button[type="submit"]');
             
-            // Блокируем кнопку
+            // Disable button
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Публикация...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Publishing...';
             
             const jobData = {
                 title: document.getElementById('job-title').value,
@@ -308,8 +308,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (res.ok) {
                     const isUser = userInfo.role !== 'admin';
                     msg.textContent = isUser 
-                        ? 'Вакансия отправлена на модерацию и появится в ленте после проверки!' 
-                        : 'Вакансия успешно опубликована!';
+                        ? 'Job sent for moderation and will appear after review!' 
+                        : 'Job successfully published!';
                     msg.className = 'alert alert-success mt-3';
                     msg.classList.remove('d-none');
                     setTimeout(() => {
@@ -317,25 +317,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                         modal.hide();
                         addJobForm.reset();
                         msg.classList.add('d-none');
-                        // Возвращаем кнопку в исходное состояние
+                        // Restore button
                         submitBtn.disabled = false;
                         submitBtn.innerHTML = originalBtnText;
                         loadMyJobs();
                     }, 3000);
                 } else {
                     const err = await res.json();
-                    msg.textContent = err.message || 'Ошибка при создании';
+                    msg.textContent = err.message || 'Creation error';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
-                    // Возвращаем кнопку
+                    // Restore button
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
                 }
             } catch (error) {
-                msg.textContent = 'Ошибка сети';
+                msg.textContent = 'Network error';
                 msg.className = 'alert alert-danger mt-3';
                 msg.classList.remove('d-none');
-                // Возвращаем кнопку
+                // Restore button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
             }
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function deleteJob(id) {
-        window.showConfirmation('Удалить вакансию?', 'Эта вакансия будет удалена навсегда.', async () => {
+        window.showConfirmation('Delete job?', 'This job will be deleted permanently.', async () => {
             try {
                 const res = await fetch(`/api/news/${id}`, {
                     method: 'DELETE',
@@ -351,12 +351,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 if (res.ok) loadMyJobs();
             } catch (err) {
-                showNotification('Не удалось удалить.', 'danger');
+                showNotification('Delete failed.', 'danger');
             }
-        }, 'Удалить');
+        }, 'Delete');
     }
 
-    // --- ФУНКЦИИ ДЛЯ РАБОТЫ С РАСЧЕТАМИ ---
+    // --- CALCULATION MANAGEMENT FUNCTIONS ---
 
     async function loadUserCalculations() {
         const list = document.getElementById('calculations-list');
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await res.json();
 
             if (data.length === 0) {
-                list.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">Вы пока не сохранили ни одного расчета.</td></tr>';
+                list.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-muted">No calculations saved yet.</td></tr>';
                 return;
             }
 
@@ -375,9 +375,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <tr>
                     <td><span class="fw-bold text-dark">${calc.type}</span></td>
                     <td>${calc.result}</td>
-                    <td class="small text-muted">${new Date(calc.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
+                    <td class="small text-muted">${new Date(calc.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</td>
                     <td class="text-end">
-                        <button class="btn btn-sm text-danger p-0 delete-calc-btn" data-id="${calc._id}" title="Удалить">&times;</button>
+                        <button class="btn btn-sm text-danger p-0 delete-calc-btn" data-id="${calc._id}" title="Delete">&times;</button>
                     </td>
                 </tr>
             `).join('');
@@ -386,12 +386,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.onclick = () => deleteCalculation(btn, btn.getAttribute('data-id'));
             });
         } catch (err) {
-            list.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger">Ошибка загрузки данных.</td></tr>';
+            list.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger">Error loading data.</td></tr>';
         }
     }
 
     async function deleteCalculation(btn, id) {
-        window.showConfirmation('Удалить расчет?', 'Этот расчет будет удален из вашей истории.', async () => {
+        window.showConfirmation('Delete calculation?', 'This calculation will be deleted from history.', async () => {
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
@@ -401,22 +401,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
-                    showNotification('Расчет удален', 'success');
+                    showNotification('Calculation deleted', 'success');
                     loadUserCalculations();
                 } else {
-                    showNotification('Не удалось удалить расчет.', 'danger');
+                    showNotification('Failed to delete calculation.', 'danger');
                     btn.disabled = false;
                     btn.innerHTML = originalHtml;
                 }
             } catch (err) {
-                showNotification('Ошибка удаления', 'danger');
+                showNotification('Delete error', 'danger');
                 btn.disabled = false;
                 btn.innerHTML = originalHtml;
             }
-        }, 'Удалить');
+        }, 'Delete');
     }
 
-    // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С ЧЕК-ЛИСТОМ ------------
+    // ---------- CHECKLIST MANAGEMENT FUNCTIONS ------------
 
     async function loadUserChecklist() {
         const container = document.getElementById('user-checklist-container');
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const tasks = await res.json();
             if (tasks.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center py-3">Ваш список задач пуст.</p>';
+                container.innerHTML = '<p class="text-muted text-center py-3">Your task list is empty.</p>';
                 updateChecklistProgress(0, 0);
                 return;
             }
@@ -439,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="checkmark"></span>
                         <span class="item-text">${task.text}</span>
                     </label>
-                    <button class="btn btn-sm text-danger delete-task-btn" data-id="${task._id}" title="Удалить">&times;</button>
+                    <button class="btn btn-sm text-danger delete-task-btn" data-id="${task._id}" title="Delete">&times;</button>
                 </div>
             `).join('');
 
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 btn.onclick = () => deleteTask(btn.getAttribute('data-id'));
             });
         } catch (err) {
-            container.innerHTML = '<p class="text-danger">Ошибка загрузки списка.</p>';
+            container.innerHTML = '<p class="text-danger">Error loading list.</p>';
         }
     }
 
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     loadUserChecklist();
                 }
             } catch (err) {
-                showNotification('Не удалось добавить задачу', 'danger');
+                showNotification('Failed to add task', 'danger');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
@@ -500,23 +500,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             loadUserChecklist();
         } catch (err) {
-            showNotification('Ошибка обновления', 'danger');
+            showNotification('Update error', 'danger');
         }
     }
 
     async function deleteTask(id) {
-        window.showConfirmation('Удалить задачу?', 'Эта задача будет удалена из вашего списка.', async () => {
+        window.showConfirmation('Delete task?', 'This task will be deleted from your list.', async () => {
             try {
                 await fetch(`/api/checklist/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                showNotification('Задача удалена', 'success');
+                showNotification('Task deleted', 'success');
                 loadUserChecklist();
             } catch (err) {
-                showNotification('Ошибка удаления', 'danger');
+                showNotification('Delete error', 'danger');
             }
-        }, 'Удалить');
+        }, 'Delete');
     }
 
     function updateChecklistProgress(completed, total) {

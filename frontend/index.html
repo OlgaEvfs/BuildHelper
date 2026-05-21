@@ -14,20 +14,20 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bh-bg-light shadow-sm">
             <div class="container-fluid px-4">
-                <!-- Логотип -->
+                <!-- Logo -->
                 <a class="navbar-brand d-flex align-items-center" href="/">
                     <img src="images/logo.png" alt="Logo" width="40" height="40" class="logo-img me-2">
                     <span class="fw-bold bh-brand-name">BuildHelper</span>
                 </a>
 
-                <!-- Кнопка-бургер для мобильных -->
+                <!-- Burger button for mobile -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Ссылки навигации -->
+                <!-- Navigation links -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Блок для авторизации (заполнится из app.js) -->
+                    <!-- Auth block (will be filled from app.js) -->
                     <div id="auth-links" class="ms-auto d-flex gap-2">
                         <a href="/login.html" class="btn btn-sm bh-btn-outline">Вход</a>
                         <a href="/register.html" class="btn btn-sm bh-btn-primary">Регистрация</a>
@@ -38,11 +38,11 @@
     </header>
 
     <main id="content">
-        <!-- Контент будет загружаться здесь -->
+        <!-- Content will be loaded here -->
         <section class="py-5 bg-white">
             <div class="container">
                 <div class="row align-items-center">
-                    <!-- Текст и кнопки -->
+                    <!-- Text and buttons -->
                     <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
                         <h1 class="display-4 fw-bold mb-4">
                             BuildHelper — <br><span class="bh-text-accent">Ваш цифровой помощник</span>
@@ -56,13 +56,13 @@
                         </div>
                     </div>
 
-                    <!-- Визуальный элемент (Инструменты на сетке) -->
+                    <!-- Visual element (Tools on grid) -->
                     <div class="col-lg-6 d-none d-lg-flex justify-content-end">
                         <div class="tech-placeholder shadow-lg">
                             <div class="grid-lines"></div>
 
                             <div class="tools-composition">
-                                <!-- Пиксельный молоток -->
+                                <!-- Pixel hammer -->
                                 <div class="pixel-art-tool hammer">
                                     <svg viewBox="0 0 16 16" fill="none">
                                         <rect x="7" y="8" width="2" height="7" fill="#533824"/>
@@ -74,7 +74,7 @@
                                     </svg>
                                 </div>
 
-                                <!-- Пиксельная дрель -->
+                                <!-- Pixel drill -->
                                 <div class="pixel-art-tool drill">
                                     <svg viewBox="0 0 16 16" fill="none">
                                         <rect x="4" y="9" width="3" height="5" fill="#333"/>
@@ -87,7 +87,7 @@
                                     </svg>
                                 </div>
 
-                                <!-- Пиксельная рулетка -->
+                                <!-- Pixel tape measure -->
                                 <div class="pixel-art-tool tape">
                                     <svg viewBox="0 0 16 16" fill="none">
                                         <rect x="3" y="5" width="8" height="8" rx="1" fill="var(--accent-blue)"/>
@@ -98,16 +98,16 @@
                                     </svg>
                                 </div>
 
-                                <!-- Пиксельный шпатель -->
+                                <!-- Pixel spatula -->
                                 <div class="pixel-art-tool spatula">
                                     <svg viewBox="0 0 16 16" fill="none">
-                                        <!-- Лезвие -->
+                                        <!-- Blade -->
                                         <rect x="3" y="2" width="10" height="7" fill="var(--border-dark)"/>
-                                        <!-- Блик -->
+                                        <!-- Highlight -->
                                         <rect x="3" y="2" width="10" height="1" fill="rgba(255,255,255,0.4)"/>
-                                        <!-- Крепление ручки -->
+                                        <!-- Handle mounting -->
                                         <rect x="6" y="9" width="4" height="1" fill="#7F8C8D"/>
-                                        <!-- Рукоять -->
+                                        <!-- Handle -->
                                         <rect x="7" y="10" width="2" height="5" fill="var(--text-muted)"/>
                                     </svg>
                                 </div>
@@ -123,7 +123,7 @@
                 <h2 class="text-center mb-5 display-5 fw-bold bh-section-title">Выберите нужный расчет</h2>
                 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <!-- Геометрия -->
+                    <!-- Geometry -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="geometry">
                             <div class="display-4 mb-3">📐</div>
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     
-                    <!-- Грунтовка и краска-->
+                    <!-- Primer and paint -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="paint">
                             <div class="display-4 mb-3">🖌️</div>
@@ -143,7 +143,7 @@
                         </div>
                     </div>
 
-                    <!-- Обои -->
+                    <!-- Wallpaper -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="wallpaper">
                             <div class="display-4 mb-3">📃</div>
@@ -153,7 +153,7 @@
                         </div>
                     </div>
 
-                    <!-- Плитка и затирка -->
+                    <!-- Tiles and grout -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="tiles">
                             <div class="display-4 mb-3">💠</div>
@@ -163,7 +163,7 @@
                         </div>
                     </div>
 
-                    <!-- Гидроизоляция -->
+                    <!-- Waterproofing -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="waterproofing">
                             <div class="display-4 mb-3">🪣</div>
@@ -173,7 +173,7 @@
                         </div>
                     </div>
 
-                    <!-- Стяжка пола -->
+                    <!-- Floor screed -->
                     <div class="col">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="floor">
                             <div class="display-4 mb-3">◻️</div>
@@ -183,8 +183,8 @@
                         </div>
                     </div>
 
-                    <!-- Cкрытые калькуляторы (только для авторизированных) -->
-                    <!-- ГКЛ -->
+                    <!-- Hidden calculators (authorized only) -->
+                    <!-- Drywall -->
                     <div class="col auth-only-calc" style="display: none;">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="drywall">
                             <div class="display-4 mb-3">🧱</div>
@@ -194,7 +194,7 @@
                         </div>
                     </div>
 
-                    <!-- Металлические профили -->
+                    <!-- Metal profiles -->
                     <div class="col auth-only-calc" style="display: none;">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="profiles">
                             <div class="display-4 mb-3">🏗️</div>
@@ -204,7 +204,7 @@
                         </div>
                     </div>
 
-                    <!-- Ламинат -->
+                    <!-- Laminate -->
                     <div class="col auth-only-calc" style="display: none;">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="laminate">
                             <div class="display-4 mb-3">🪵</div>
@@ -214,7 +214,7 @@
                         </div>
                     </div>
 
-                    <!-- Кирпич/Блоки -->
+                    <!-- Brick/Blocks -->
                     <div class="col auth-only-calc" style="display: none;">
                         <div class="card h-100 shadow-sm text-center p-4 border-0 calc-card" data-calc="bricks">
                             <div class="display-4 mb-3">🧱</div>
@@ -251,7 +251,7 @@
                 <h2 class="text-center mb-5 display-5 fw-bold bh-section-title">Чек-лист вашего ремонта</h2>
                 
                 <div class="card shadow-sm border-0 mx-auto rounded-4 p-4 p-md-5" style="max-width: 900px;">
-                    <!-- Прогресс-бар Bootstrap -->
+                    <!-- Bootstrap progress bar -->
                     <div class="mb-4">
                         <div class="d-flex justify-content-between fw-bold mb-2">
                             <span>Ваш прогресс:</span>
@@ -262,7 +262,7 @@
                         </div>
                     </div>
 
-                    <!-- Плашка для гостей -->
+                    <!-- Guest reminder -->
                     <div id="reg-reminder" class="alert bh-bg-light border-0 shadow-sm d-flex align-items-center mb-4 rounded-3">
                         <span class="fs-4 me-3">💾</span>
                         <p class="mb-0 small text-dark">
@@ -272,7 +272,7 @@
                     </div>
 
                     <div class="row g-4">
-                        <!-- Категория 1 -->
+                        <!-- Category 1 -->
                         <div class="col-md-4">
                             <h3 class="h6 fw-bold border-bottom pb-2 mb-3">1. Планирование</h3>
                             <div class="checklist-items d-flex flex-column gap-2">
@@ -299,7 +299,7 @@
                             </div>
                         </div>
 
-                        <!-- Категория 2 -->
+                        <!-- Category 2 -->
                         <div class="col-md-4">
                             <h3 class="h6 fw-bold border-bottom pb-2 mb-3">2. Черновые работы</h3>
                             <div class="checklist-items d-flex flex-column gap-2">
@@ -326,7 +326,7 @@
                             </div>
                         </div>
 
-                        <!-- Категория 3 -->
+                        <!-- Category 3 -->
                         <div class="col-md-4">
                             <h3 class="h6 fw-bold border-bottom pb-2 mb-3">3. Чистовые работы</h3>
                             <div class="checklist-items d-flex flex-column gap-2">
@@ -361,7 +361,7 @@
     <footer class="bh-bg-dark text-light py-4 mt-5">
         <div class="container-fluid px-4">
             <div class="row g-4">
-                <!-- Логотип и описание -->
+                <!-- Logo and description -->
                 <div class="col-lg-4 col-md-6">
                     <a href="/" class="text-decoration-none d-flex align-items-center mb-3">
                         <img src="images/logo.png" alt="Logo" width="30" height="30" class="me-2">
@@ -370,7 +370,7 @@
                     <p class="text-secondary small">Ваш надежный помощник в мире строительства и ремонта. Расчитывайте материалы быстро и точно.</p>
                 </div>
 
-                <!-- Ссылки -->
+                <!-- Links -->
                 <div class="col-lg-4 col-md-6">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Разделы</h4>
                     <ul class="list-unstyled small">
@@ -381,7 +381,7 @@
                     </ul>
                 </div>
 
-                <!-- Социальные сети -->
+                <!-- Social media -->
                 <div class="col-lg-4 col-md-12">
                     <h4 class="h6 bh-footer-accent fw-bold text-uppercase mb-3">Мы в соцсетях</h4>
                     <div class="d-flex gap-3 mb-3">
@@ -409,7 +409,7 @@
         </svg>
     </button>
 
-    <!-- Модальное окно поддержки -->
+    <!-- Support modal -->
     <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
@@ -453,7 +453,7 @@
         </div>
     </div>
 
-    <!-- Универсальное модальное окно для калькуляторов -->
+    <!-- Universal modal for calculators -->
     <div class="modal fade" id="calcModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-0 shadow">
@@ -466,7 +466,7 @@
         </div>
     </div>
     
-    <!-- Универсальное окно подтверждения -->
+    <!-- Confirmation modal -->
     <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
             <div class="modal-content border-0 shadow">

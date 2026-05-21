@@ -5,7 +5,7 @@ let currentSupportRequest = null;
 let allSupportRequests = [];
 let allContentItems = [];
 
-// --- ОБЩИЕ ФУНКЦИИ ---
+// --- COMMON FUNCTIONS ---
 async function fetchStats() {
     try {
         const res = await fetch(`${API_URL}/stats`, {
@@ -18,7 +18,7 @@ async function fetchStats() {
     } catch (err) { console.error('Ошибка статистики:', err); }
 }
 
-// --- УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ---
+// --- USER MANAGEMENT ---
 window.fetchUsers = async () => {
     try {
         const res = await fetch(`${API_URL}/users`, {
@@ -130,7 +130,7 @@ window.openDeleteModal = (id, name) => {
     }, 'Удалить всё');
 };
 
-// --- УПРАВЛЕНИЕ ПОДДЕРЖКОЙ ---
+// --- SUPPORT MANAGEMENT ---
 window.fetchSupport = async () => {
     try {
         const res = await fetch(`${API_URL}/support`, {
@@ -247,7 +247,7 @@ window.deleteSupport = async (btn, id) => {
     }, 'Удалить');
 };
 
-// --- УПРАВЛЕНИЕ КОНТЕНТОМ ---
+// --- CONTENT MANAGEMENT ---
 window.fetchContent = async () => {
     try {
         const res = await fetch(`${API_URL}/content`, {
@@ -259,7 +259,7 @@ window.fetchContent = async () => {
     } catch (err) { console.error('Ошибка контента:', err); }
 };
 
-// Вспомогательные функции для перевода
+// Helper translation functions
 function getCategoryName(cat) {
     const categories = {
         'tech': 'Технологии',
@@ -501,19 +501,19 @@ window.deletePost = async (btn, id) => {
 
 // --- DOM INIT ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Проверка права доступа
+    // Check access rights
     const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}');
     if (!token || currentUser.role !== 'admin') {
         window.location.href = '/login.html';
         return;
     }
 
-    // Инициализация модалок
+    // Initialize modals
     new bootstrap.Modal(document.getElementById('passwordModal'));
     new bootstrap.Modal(document.getElementById('supportViewModal'));
     new bootstrap.Modal(document.getElementById('previewModal'));
 
-    // ЛОГИКА СОЗДАНИЯ ПОСТА
+    // Post creation logic
     function toggleJobFields() {
         const categorySelect = document.getElementById('post-category');
         const jobFields = document.getElementById('job-fields-wrapper');
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('post-category').addEventListener('change', toggleJobFields);
 
-    // ЛОГИКА РЕДАКТИРОВАНИЯ ПОСТА
+    // Edit post logic
     function toggleEditJobFields() {
         const categorySelect = document.getElementById('edit-post-category');
         const jobFields = document.getElementById('edit-job-fields-wrapper');
@@ -592,7 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     bootstrap.Modal.getInstance(document.getElementById('editPostModal')).hide();
                     msg.classList.add('d-none');
-                    // Очищаем поле файла после успешной отправки
+                    // Clear file field after successful send
                     document.getElementById('edit-post-image-file').value = '';
                     window.fetchContent();
                 }, 1500);
@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const category = document.getElementById('post-category').value;
         const formData = new FormData();
         
-        // Сначала добавляем текстовые поля
+        // Append text fields first
         formData.append('title', document.getElementById('post-title').value);
         formData.append('content', document.getElementById('post-content').value);
         formData.append('category', category);
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('contactEmail', document.getElementById('job-contact-email').value);
         }
 
-        // Файл добавляем в САМЫЙ КОНЕЦ
+        // Append file at the very end
         const imageFile = document.getElementById('post-image-file').files[0];
         if (imageFile) {
             formData.append('image', imageFile);
@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
-                    // FormData сам ставит нужный Content-Type с boundary
+                    // FormData automatically sets correct Content-Type with boundary
                 },
                 body: formData
             });

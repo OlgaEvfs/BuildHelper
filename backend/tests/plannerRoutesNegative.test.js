@@ -34,7 +34,7 @@ describe('Planner Routes - Negative', () => {
       .send({ rooms: [], furniture: [], openings: [] });
     
     expect(res.statusCode).toBe(200);
-    expect(Planner).toHaveBeenCalled(); // Конструктор был вызван
+    expect(Planner).toHaveBeenCalled(); // Constructor was called
   });
 
   it('POST /api/planner should return 500 on db error', async () => {
