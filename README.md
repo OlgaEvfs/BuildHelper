@@ -84,10 +84,19 @@ BuildHelper/
 ```
 
 ## 🧪 Testing
-To run E2E tests:
-```bash
-npx playwright test
-```
+
+The project uses a multi-layered testing approach:
+
+- **Unit & API Tests (Jest/Supertest):** Testing model logic, middleware, and API CRUD operations.
+  ```bash
+  npm test
+  ```
+- **E2E Tests (Playwright):** Testing critical user scenarios.
+  ```bash
+  npx playwright test
+  ```
+
+For detailed information on strategy, coverage, and test cases, see the [TESTING.md](TESTING.md) file.
 
 ## 📄 License
 This project is licensed under the [MIT](LICENSE) license.
