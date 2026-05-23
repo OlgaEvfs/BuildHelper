@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
         const userExists = await User.findOne({ email });
 
         if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'Пользователь с таким email уже существует' });
         }
 
         // Create a new user (password will be automatically hashed by model middleware)
@@ -45,7 +45,7 @@ const registerUser = async (req, res) => {
                 token: generateToken(user._id) // Generate JWT token
             });
         } else {
-            res.status(400).json({ message: 'Invalid user data' });
+            res.status(400).json({ message: 'Некорректные данные пользователя' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -85,7 +85,7 @@ const authUser = async (req, res) => {
             });
         } else {
             // Return error if user is not found or password does not match
-            res.status(401).json({ message: 'Invalid email or password' });
+            res.status(401).json({ message: 'Неверный email или пароль' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });

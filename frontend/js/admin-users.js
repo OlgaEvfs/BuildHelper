@@ -48,7 +48,7 @@ function renderUsers(users) {
                 <div class="small text-muted">${u.email}</div>
             </td>
             <td>
-                ${u.role === 'admin' ? '<span class="badge bg-dark">Admin</span>' : '<span class="badge bg-light text-dark border">User</span>'}
+                ${u.role === 'admin' ? '<span class="badge bg-dark">Админ</span>' : '<span class="badge bg-light text-dark border">Пользователь</span>'}
             </td>
             <td>
                 <span class="badge ${u.status === 'active' ? 'bg-success' : 'bg-danger'}">

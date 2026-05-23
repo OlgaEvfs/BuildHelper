@@ -17,23 +17,22 @@ const protect = async (req, res, next) => {
             // Exclude password from query result
             req.user = await User.findById(decoded.id).select('-password');
             
-            if (req.user && req.user.status === 'banned') {
+            if (!req.user) {
+                return res.status(401).json({ message: 'Пользователь не найден' });
+            }
+
+            if (req.user.status === 'banned') {
                 return res.status(403).json({ message: 'Ваш аккаунт заблокирован администратором' });
             }
 
             next(); // Move to next middleware
         } catch (error) {
             console.error(error);
-            res.status(401).json({ message: 'Неверный или истекший токен' });
+            return res.status(401).json({ message: 'Неверный или истекший токен' });
         }
+    } else {
+        return res.status(401).json({ message: 'Неверный или истекший токен' });
     }
-    
-    if (!token) {
-        res.status(401).json({ message: 'Неверный или истекший токен' });
-    }
-
-    
-
 };
 
 module.exports = protect;

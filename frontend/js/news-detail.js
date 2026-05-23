@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const commentForm = document.getElementById('comment-form');
 
     if (!newsId) {
-        contentContainer.innerHTML = '<div class="alert alert-danger">News ID not specified</div>';
+        contentContainer.innerHTML = '<div class="alert alert-danger">ID новости не указан</div>';
         return;
     }
 
@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         // Request to API
         const response = await fetch(`/api/news/${newsId}`);
-        if (!response.ok) throw new Error('News not found');
+        if (!response.ok) throw new Error('Новость не найдена');
         const news = await response.json();
 
         // Format date
-        const date = new Date(news.createdAt).toLocaleDateString('en-GB', {
+        const date = new Date(news.createdAt).toLocaleDateString('ru-RU', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
@@ -45,33 +45,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="p-4 mb-4 rounded-4 border shadow-sm" style="background-color: #f8f9fa; border-left: 5px solid var(--accent-blue) !important;">
                     <div class="row text-center text-sm-start mb-3">
                         <div class="col-sm-4 mb-2 mb-sm-0">
-                            <div class="text-muted small text-uppercase">Work Location</div>
-                            <div class="fw-bold">${news.location || 'Not specified'}</div>
+                            <div class="text-muted small text-uppercase">Место работы</div>
+                            <div class="fw-bold">${news.location || 'Не указано'}</div>
                         </div>
                         <div class="col-sm-4 mb-2 mb-sm-0">
-                            <div class="text-muted small text-uppercase">Employment</div>
-                            <div class="fw-bold">${news.employment || 'Not specified'}</div>
+                            <div class="text-muted small text-uppercase">Занятость</div>
+                            <div class="fw-bold">${news.employment || 'Не указано'}</div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="text-muted small text-uppercase">Salary</div>
-                            <div class="fw-bold text-success">${news.salary || 'Negotiable'}</div>
+                            <div class="text-muted small text-uppercase">Зарплата</div>
+                            <div class="fw-bold text-success">${news.salary || 'Договорная'}</div>
                         </div>
                         <!-- Contacts -->
                         <div class="row g-4">
                             <div class="col-md-4">
-                                <div class="text-muted small text-uppercase">Contact Name</div>
-                                <div class="fw-bold">${news.contactName || 'Employer'}</div>
+                                <div class="text-muted small text-uppercase">Контактное лицо</div>
+                                <div class="fw-bold">${news.contactName || 'Работодатель'}</div>
                             </div>
                             <div class="col-md-4">
                                 <div class="text-muted small text-uppercase">Email</div>
                                 <a href="mailto:${news.contactEmail}" class="fw-bold text-decoration-none text-dark">
-                                    ${news.contactEmail || 'Not specified'}
+                                    ${news.contactEmail || 'Не указано'}
                                 </a>
                             </div>
                             <div class="col-md-4">
-                                <div class="text-muted small text-uppercase">Phone</div>
+                                <div class="text-muted small text-uppercase">Телефон</div>
                                 <a href="tel:${news.contactPhone}" class="fw-bold text-decoration-none mb-0" style="color: var(--accent-blue);">
-                                    ${news.contactPhone || 'Not specified'}
+                                    ${news.contactPhone || 'Не указано'}
                                 </a>
                             </div>
                         </div>
@@ -82,25 +82,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Helper functions for translation
         const getCategoryName = (cat) => {
-            const categories = { 'tech': 'Technology', 'market': 'Market', 'experts': 'Experts', 'calendar': 'Calendar', 'jobs': 'Jobs' };
-            return categories[cat] || 'News';
+            const categories = { 'tech': 'Технологии', 'market': 'Рынок', 'experts': 'Эксперты', 'calendar': 'Календарь', 'jobs': 'Вакансии' };
+            return categories[cat] || 'Новости';
         };
 
         const getJobTypeName = (type) => {
-            const types = { 'finishing': 'Finishing', 'plumbing': 'Plumbing', 'electrical': 'Electrical', 'masonry': 'Masonry', 'roofing': 'Roofing', 'hvac': 'HVAC', 'general': 'General' };
-            return types[type] || 'General';
+            const types = { 'finishing': 'Отделка', 'plumbing': 'Сантехника', 'electrical': 'Электрика', 'masonry': 'Камень', 'roofing': 'Кровля', 'hvac': 'Вентиляция', 'general': 'Общие работы' };
+            return types[type] || 'Общие работы';
         };
 
         const categoryLabel = news.category === 'jobs' 
-            ? `Job: ${getJobTypeName(news.jobType)}` 
-            : `News: ${getCategoryName(news.category)}`;
+            ? `Вакансия: ${getJobTypeName(news.jobType)}` 
+            : `Новость: ${getCategoryName(news.category)}`;
 
         contentContainer.innerHTML = `
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <nav aria-label="breadcrumb" class="mb-4">
                         <ol class="breadcrumb bg-transparent p-0">
-                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">All News</a></li>
+                            <li class="breadcrumb-item"><a href="/news.html" class="bh-text-orange text-decoration-none">Все новости</a></li>
                             <li class="breadcrumb-item active" aria-current="page">${news.title}</li>
                         </ol>
                     </nav>
@@ -136,9 +136,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error fetching news:', error);
         contentContainer.innerHTML = `
             <div class="text-center py-5">
-                <h2 class="text-danger">Error!</h2>
+                <h2 class="text-danger">Ошибка!</h2>
                 <p>${error.message}</p>
-                <a href="/news.html" class="btn bh-btn-primary mt-3">Back to list</a>
+                <a href="/news.html" class="btn bh-btn-primary mt-3">Назад к списку</a>
             </div>
         `;
     }
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const comments = await res.json();
 
             if (comments.length === 0) {
-                commentsList.innerHTML = '<p class="text-muted">No comments yet. Be the first!</p>';
+                commentsList.innerHTML = '<p class="text-muted">Комментариев пока нет. Будьте первым!</p>';
                 return;
             }
 
@@ -168,12 +168,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
                                 <span class="comment-author">${c.author ? c.author.username : 'Anonymous'}</span>
-                                ${authorIsAdmin ? '<span class="badge bg-dark ms-2" style="font-size: 0.6rem;">Admin</span>' : ''}
+                                ${authorIsAdmin ? '<span class="badge bg-dark ms-2" style="font-size: 0.6rem;">Админ</span>' : ''}
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                <span class="comment-date text-muted">${new Date(c.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                                 ${showDelete ? `
-                                    <button class="btn btn-sm text-danger p-0 lh-1 delete-comment-btn" data-id="${c._id}" title="Delete">&times;</button>
+                                    <button class="btn btn-sm text-danger p-0 lh-1 delete-comment-btn" data-id="${c._id}" title="Удалить">&times;</button>
                                 ` : ''}
                             </div>    
                         </div>
@@ -193,8 +193,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const commentId = e.target.getAttribute('data-id');
 
             window.showConfirmation(
-                'Delete',
-                'Delete this comment?',
+                'Удаление',
+                'Удалить этот комментарий?',
                 async () => {
                     try {
                         const res = await fetch(`/api/comments/${commentId}`, {
@@ -205,18 +205,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         });
 
                         if (res.ok) {
-                            showNotification('Comment deleted');
+                            showNotification('Комментарий удален');
                             loadComments(newsId);
                         } else {
                             const data = await res.json();
-                            showNotification(data.message || 'Error deleting', 'danger');
+                            showNotification(data.message || 'Ошибка при удалении', 'danger');
                         }
                     } catch (err) {
                         console.error("Error deleting comment:", err);
-                        showNotification('Server error', 'danger');
+                        showNotification('Ошибка сервера', 'danger');
                     }
                 },
-                'Delete'
+                'Удалить'
             );
         }
     });
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     loadComments(newsId); // Reload list
                 } else {
                     const errorData = await res.json();
-                    showNotification(errorData.message || 'Error posting comment', 'danger');
+                    showNotification(errorData.message || 'Ошибка при отправке комментария', 'danger');
                 }
             } catch (err) {
                 console.error("Error posting comment:", err);

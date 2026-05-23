@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             if (data.exists) {
                 emailInput.classList.add('is-invalid');
-                errorDisplay.textContent = 'This email is already registered.';
+                errorDisplay.textContent = 'Этот email уже зарегистрирован.';
                 errorDisplay.classList.remove('d-none');
             }
         } catch (err) {
@@ -66,13 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const passwordRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
             if (!passwordRegex.test(password)) {
                 passwordInput.classList.add('is-invalid');
-                errorDisplay.textContent = 'Password must contain at least 8 characters, one uppercase letter, and one digit.';
+                errorDisplay.textContent = 'Пароль должен содержать минимум 8 символов, одну заглавную букву и одну цифру.';
                 isInvalid = false;
             }
 
             // Abort if any field is invalid
             if (!isInvalid) {
-                errorDisplay.textContent = 'Please check the correctness of the filled fields.';
+                errorDisplay.textContent = 'Пожалуйста, проверьте правильность заполнения полей.';
                 errorDisplay.classList.remove('d-none');
                 return;
             }
@@ -102,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                                 </svg>
                             </div>
-                            <h2 class="fw-bold">Registration successful!</h2>
-                            <p class="text-muted">Welcome, ${data.username}!<br>Redirecting to home page.</p>
+                            <h2 class="fw-bold">Регистрация прошла успешно!</h2>
+                            <p class="text-muted">Добро пожаловать, ${data.username}!<br>Перенаправление на главную страницу.</p>
                         </div>
                     `
 
@@ -113,12 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 5000);
                 } else {
                     // Display server error
-                    errorDisplay.textContent = data.message || 'Registration error';
+                    errorDisplay.textContent = data.message || 'Ошибка при регистрации';
                     errorDisplay.classList.remove('d-none');
                 }
             } catch (error) {
                 console.error('Registration error:', error);
-                errorDisplay.textContent = 'Unable to reach the server. Please try again later.';
+                errorDisplay.textContent = 'Не удалось связаться с сервером. Пожалуйста, попробуйте позже.';
                 errorDisplay.classList.remove('d-none');
             }
         });

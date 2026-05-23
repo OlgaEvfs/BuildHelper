@@ -50,33 +50,10 @@ async function initCanvas() {
 /**
  * Load plan from database
  */
-async function loadPlanFromServer() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-        const response = await fetch('/api/planner', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.ok) {
-            const data = await response.json();
-            rooms = data.rooms || [];
-            furniture = data.furniture || [];
-            openings = data.openings || [];
-            renderOpeningsList();
-        }
-    } catch (err) {
-        console.error('Plan load error:', err);
-    }
-}
-
-/**
- * Save plan to database
- */
 async function savePlanToServer() {
     const token = localStorage.getItem('token');
     if (!token) {
-        showNotification('Please log in to save the project.', 'warning');
+        showNotification('Пожалуйста, войдите в систему, чтобы сохранить проект.', 'warning');
         return;
     }
 
@@ -91,13 +68,13 @@ async function savePlanToServer() {
         });
 
         if (response.ok) {
-            showNotification('Project successfully saved to profile!', 'success');
+            showNotification('Проект успешно сохранен в профиле!', 'success');
         } else {
-            showNotification('Error saving project.', 'danger');
+            showNotification('Ошибка при сохранении проекта.', 'danger');
         }
     } catch (err) {
         console.error('Save error:', err);
-        showNotification('Server connection error.', 'danger');
+        showNotification('Ошибка соединения с сервером.', 'danger');
     }
 }
 
@@ -110,7 +87,7 @@ function addRoom() {
         type: 'room',
         x: 1, y: 1,
         l, w, h,
-        name: rooms.length === 0 ? "Living Room" : `Room ${rooms.length + 1}`
+        name: rooms.length === 0 ? "Гостиная" : `Комната ${rooms.length + 1}`
     };
     rooms.push(newRoom);
     selectObject(newRoom);
@@ -119,20 +96,20 @@ function addRoom() {
 
 function addFurniture(type, w, h) {
     const furnitureConfig = {
-        sofa: { color: '#e67e22', name: 'Sofa', icon: '🛋️' },
-        bed: { color: '#9b59b6', name: 'Bed', icon: '🛏️' },
-        chair: { color: '#3498db', name: 'Armchair', icon: '🪑' },
-        office_chair: { color: '#2980b9', name: 'Office Chair', icon: '💺' },
-        dining_chair: { color: '#7f8c8d', name: 'Chair', icon: '🪑' },
-        table: { color: '#f1c40f', name: 'Table', icon: '🍽️' },
-        closet: { color: '#34495e', name: 'Closet', icon: '🚪' },
-        kitchen: { color: '#d35400', name: 'Kitchen set', icon: '🍳' },
-        fridge: { color: '#7f8c8d', name: 'Fridge', icon: '❄️' },
-        stove: { color: '#2c3e50', name: 'Stove', icon: '🔥' },
-        bath: { color: '#3498db', name: 'Bathtub', icon: '🛁' },
-        toilet: { color: '#ecf0f1', name: 'Toilet', icon: '🚽' },
-        sink: { color: '#bdc3c7', name: 'Sink', icon: '💧' },
-        wash: { color: '#95a5a6', name: 'Washer', icon: '🧺' }
+        sofa: { color: '#e67e22', name: 'Диван', icon: '🛋️' },
+        bed: { color: '#9b59b6', name: 'Кровать', icon: '🛏️' },
+        chair: { color: '#3498db', name: 'Кресло', icon: '🪑' },
+        office_chair: { color: '#2980b9', name: 'Офисное кресло', icon: '💺' },
+        dining_chair: { color: '#7f8c8d', name: 'Стул', icon: '🪑' },
+        table: { color: '#f1c40f', name: 'Стол', icon: '🍽️' },
+        closet: { color: '#34495e', name: 'Шкаф', icon: '🚪' },
+        kitchen: { color: '#d35400', name: 'Кухонный гарнитур', icon: '🍳' },
+        fridge: { color: '#7f8c8d', name: 'Холодильник', icon: '❄️' },
+        stove: { color: '#2c3e50', name: 'Плита', icon: '🔥' },
+        bath: { color: '#3498db', name: 'Ванна', icon: '🛁' },
+        toilet: { color: '#ecf0f1', name: 'Унитаз', icon: '🚽' },
+        sink: { color: '#bdc3c7', name: 'Раковина', icon: '💧' },
+        wash: { color: '#95a5a6', name: 'Стиральная машина', icon: '🧺' }
     };
 
     const config = furnitureConfig[type] || { color: '#3498db', name: type, icon: '📦' };
@@ -159,7 +136,7 @@ function selectObject(obj) {
         return;
     }
     propsBox.classList.remove('d-none');
-    document.getElementById('prop-name').value = obj.name || (obj.type === 'door' ? 'Door' : obj.type === 'window' ? 'Window' : obj.type);
+    document.getElementById('prop-name').value = obj.name || (obj.type === 'door' ? 'Дверь' : obj.type === 'window' ? 'Окно' : obj.type);
     
     if (obj.type === 'room') {
         document.getElementById('prop-w').value = obj.l;
@@ -211,8 +188,8 @@ function deleteObject() {
     if (!selectedObject) return;
     
     window.showConfirmation(
-        'Delete',
-        `Delete ${selectedObject.name}?`,
+        'Удаление',
+        `Удалить ${selectedObject.name}?`,
         () => {
             if (selectedObject.type === 'room') {
                 rooms = rooms.filter(r => r !== selectedObject);
@@ -222,7 +199,7 @@ function deleteObject() {
             selectObject(null);
             render();
         },
-        'Delete'
+        'Удалить'
     );
 }
 
@@ -233,20 +210,20 @@ function renderOpeningsList() {
     if (!listContainer) return;
     
     if (openings.length === 0) {
-        listContainer.innerHTML = '<p class="small text-muted">No openings</p>';
+        listContainer.innerHTML = '<p class="small text-muted">Проемов нет</p>';
         return;
     }
     
     listContainer.innerHTML = openings.map((op, index) => {
         const room = rooms[op.roomId];
-        const roomName = room ? room.name : 'Unknown room';
+        const roomName = room ? room.name : 'Неизвестная комната';
         return `
             <div class="small p-1 border-bottom clickable-opening" onclick="selectOpening(${index})" style="cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}m</span>
+                    <span>${op.type === 'door' ? '🚪' : '🪟'} ${op.w}x${op.h}м</span>
                     <button class="btn btn-xs btn-outline-danger p-0 px-1" onclick="removeOpening(${index}); event.stopPropagation();">×</button>
                 </div>
-                <div class="text-muted" style="font-size: 0.7rem;">In: ${roomName}</div>
+                <div class="text-muted" style="font-size: 0.7rem;">В: ${roomName}</div>
             </div>
         `;
     }).join('');
@@ -259,7 +236,7 @@ function selectOpening(index) {
 
 function addOpening(type) {
     if (!selectedObject || selectedObject.type !== 'room') {
-        showNotification('Select room first!', 'warning');
+        showNotification('Сначала выберите комнату!', 'warning');
         return;
     }
     const roomId = rooms.indexOf(selectedObject);
@@ -297,20 +274,20 @@ function applySingleRoomToCalculators() {
     sessionStorage.setItem('lastNetWallArea', wallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', floorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', perimeter.toFixed(2));
-    showNotification(`Data for room "${room.name}" transferred!`, 'success');
+    showNotification(`Данные комнаты "${room.name}" перенесены!`, 'success');
 }
 
 function clearPlanner() {
     window.showConfirmation(
-        'Clear',
-        'Clear the entire plan?',
+        'Очистить',
+        'Очистить весь план?',
         () => {
             rooms = []; furniture = []; openings = [];
             selectObject(null);
             renderOpeningsList();
             render();
         },
-        'Clear'
+        'Очистить'
     );
 }
 
@@ -365,7 +342,7 @@ function drawRoomObject(room) {
     ctx.fillText(room.name, rx + 10, ry + 20);
     ctx.font = '10px Arial';
     ctx.fillStyle = '#7f8c8d';
-    ctx.fillText(`${room.l}m x ${room.w}m`, rx + 10, ry + 35);
+    ctx.fillText(`${room.l}м x ${room.w}м`, rx + 10, ry + 35);
 }
 
 function drawFurnitureObject(item) {
@@ -518,7 +495,7 @@ function applyToCalculators() {
     sessionStorage.setItem('lastNetWallArea', totalNetWallArea.toFixed(2));
     sessionStorage.setItem('lastFloorArea', totalFloorArea.toFixed(2));
     sessionStorage.setItem('lastPerimeter', totalPerimeter.toFixed(2));
-    showNotification('Data transferred to calculators!', 'success');
+    showNotification('Данные перенесены в калькуляторы!', 'success');
 }
 
 function updateInfo() {
@@ -529,10 +506,10 @@ function updateInfo() {
     infoBox.innerHTML = `
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="small">
-                <div class="fw-bold">Floor calc: ${totalArea} m²</div>
-                <div class="fw-bold">Wall calc: ${totalWallArea} m²</div>
+                <div class="fw-bold">Пол: ${totalArea} м²</div>
+                <div class="fw-bold">Стены: ${totalWallArea} м²</div>
             </div>
-            <button class="btn btn-sm btn-success" onclick="applyToCalculators()">Apply all</button>
+            <button class="btn btn-sm btn-success" onclick="applyToCalculators()">Применить все</button>
         </div>`;
 }
 

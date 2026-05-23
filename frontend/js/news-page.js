@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderNews(data.news);
             renderPagination(data.pagination);
         } catch (error) {
-            newsGrid.innerHTML = '<div class="text-center text-danger">Error loading</div>';
+            newsGrid.innerHTML = '<div class="text-center text-danger">Ошибка загрузки</div>';
         } finally {
             newsGrid.classList.remove('loading'); // Remove loading effect
         }
@@ -76,15 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getJobTypeName(type) {
         const types = {
-            'finishing': 'Finishing',
-            'plumbing': 'Plumbing',
-            'electrical': 'Electrical',
-            'masonry': 'Masonry',
-            'roofing': 'Roofing',
-            'hvac': 'HVAC',
-            'general': 'General'
+            'finishing': 'Отделка',
+            'plumbing': 'Сантехника',
+            'electrical': 'Электрика',
+            'masonry': 'Камень',
+            'roofing': 'Кровля',
+            'hvac': 'Вентиляция',
+            'general': 'Общие работы'
         };
-        return types[type] || 'General';
+        return types[type] || 'Общие работы';
     }
 
     // Render news items
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             newsGrid.innerHTML = `
                 <div class="col-12" style="width: 100% !important; display: flex !important; justify-content: center !important; padding: 80px 0;">
                     <div style="text-align: center !important;">
-                        <h3 class="fw-bold">No news found</h3>
-                        <p class="text-muted">Try selecting a different category or filter</p>
+                        <h3 class="fw-bold">Новости не найдены</h3>
+                        <p class="text-muted">Попробуйте выбрать другую категорию или фильтр</p>
                     </div>
                 </div>
             `;
@@ -107,13 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="${item.imageUrl || 'images/logo.png'}" alt="${item.title}">
                     <div class="news-card-content">
                         <small>
-                            ${item.category === 'jobs' ? `Job: ${getJobTypeName(item.jobType)}` : `News: ${getCategoryName(item.category)}`}
-                            • ${new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            ${item.category === 'jobs' ? `Вакансия: ${getJobTypeName(item.jobType)}` : `Новость: ${getCategoryName(item.category)}`}
+                            • ${new Date(item.createdAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </small>
                         <h3>${item.title}</h3>
                         <p>${item.content.substring(0, 120)}...</p>
                         <div class="text-center mt-auto">
-                            <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline">Read full</a>
+                            <a href="/news-detail.html?id=${item._id}" class="btn bh-btn-outline">Читать полностью</a>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addJobContainer.classList.remove('d-none');
             
             // Set button text
-            addBtn.textContent = isAdmin ? '+ Create publication' : '+ Publish job';
+            addBtn.textContent = isAdmin ? '+ Создать публикацию' : '+ Разместить вакансию';
             
             const imageWrapper = document.getElementById('post-image-wrapper');
             const categorySelect = document.getElementById('post-category');
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (imageWrapper) imageWrapper.classList.add('d-none');
                 if (categorySelect) {
                     categorySelect.parentElement.classList.add('d-none');
-                    categorySelect.innerHTML = '<option value="jobs" selected>Job</option>';
+                    categorySelect.innerHTML = '<option value="jobs" selected>Вакансия</option>';
                 }
             }
                 
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             submitBtn.disabled = true;
             const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Publishing...';
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Публикация...';
             
             const category = document.getElementById('post-category').value;
             const formData = new FormData();
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const phone = document.getElementById('add-post-form').querySelector('#job-contact-phone').value;
                 const phoneRegex = /^\+?\d{7,15}$/;
                 if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
-                    msg.textContent = 'Fill in all fields';
+                    msg.textContent = 'Заполните все поля';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
                     submitBtn.disabled = false;
@@ -241,21 +241,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (res.ok) {
                     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
                     msg.textContent = userInfo.role === 'admin' 
-                        ? 'Publication successful!' 
-                        : 'Sent for moderation!';
+                        ? 'Публикация прошла успешно!' 
+                        : 'Отправлено на модерацию!';
                     msg.className = 'alert alert-success mt-3';
                     msg.classList.remove('d-none');
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     const err = await res.json();
-                    msg.textContent = 'Fill in all fields';
+                    msg.textContent = 'Заполните все поля';
                     msg.className = 'alert alert-danger mt-3';
                     msg.classList.remove('d-none');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
                 }
             } catch (error) {
-                msg.textContent = 'Network error';
+                msg.textContent = 'Ошибка сети';
                 msg.className = 'alert alert-danger mt-3';
                 msg.classList.remove('d-none');
                 submitBtn.disabled = false;
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="col-12" style="width: 100% !important;">
                 <div class="bh-loader-container">
                     <div class="bh-spinner"></div>
-                    <div class="bh-loader-text">Loading news...</div>
+                    <div class="bh-loader-text">Загрузка новостей...</div>
                 </div>
             </div>
         `;
@@ -323,13 +323,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get readable category name
     function getCategoryName(cat) {
         const categories = {
-            'tech': 'Technology',
-            'market': 'Market',
-            'experts': 'Experts',
-            'calendar': 'Calendar',
-            'jobs': 'Jobs'
+            'tech': 'Технологии',
+            'market': 'Рынок',
+            'experts': 'Эксперты',
+            'calendar': 'Календарь',
+            'jobs': 'Вакансии'
         };
-        return categories[cat] || 'News';
+        return categories[cat] || 'Новости';
     }
 
     loadNews();

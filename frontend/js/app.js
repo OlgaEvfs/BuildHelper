@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 2.1. Define global confirmation function
-    window.showConfirmation = (title, message, onConfirm, btnText = 'Confirm') => {
+    window.showConfirmation = (title, message, onConfirm, btnText = 'Подтвердить') => {
         const modalEl = document.getElementById('confirmModal');
         if (!modalEl) {
             console.error('Modal #confirmModal not found');
