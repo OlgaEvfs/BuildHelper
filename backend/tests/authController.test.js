@@ -22,7 +22,15 @@ describe('authController', () => {
       req.body = { username: 'test' };
       await registerUser(req, res);
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Пожалуйста заполните все поля' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'Пожалуйста, заполните все поля' });
+    });
+
+    it('should return 400 if user already exists', async () => {
+      req.body = { username: 'test', email: 'test@ex.com', password: 'Password1' };
+      User.findOne.mockResolvedValue({ email: 'test@ex.com' });
+      await registerUser(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Пользователь с таким email уже существует' });
     });
 
     it('should return 400 if password is weak', async () => {

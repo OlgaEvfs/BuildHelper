@@ -7,17 +7,28 @@ let mongoServer;
 
 // Function to connect to in-memory database
 const connectToMemoryDB = async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
-    return uri;
+    try {
+        const uri = process.env.MONGO_URI;
+        if (!uri) {
+            throw new Error("MONGO_URI is not set in global setup");
+        }
+        if (mongoose.connection.readyState === 0) {
+            await mongoose.connect(uri);
+        }
+        return uri;
+    } catch (err) {
+        console.error("Database connection error:", err);
+        throw err;
+    }
 };
 
 // Function to disconnect and clean up
 const closeMemoryDB = async () => {
-    await mongoose.disconnect();
-    if (mongoServer) {
-        await mongoServer.stop();
+    try {
+        // We don't stop the server here anymore, it's handled globally
+        await mongoose.disconnect();
+    } catch (err) {
+        console.error("Database disconnect error:", err);
     }
 };
 

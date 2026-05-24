@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
 
     // Perform a simple check for the presence of data
     if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Пожалуйста заполните все поля' });
+        return res.status(400).json({ message: 'Пожалуйста, заполните все поля' });
     }
 
     // Check password complexity: minimum 8 characters, at least one digit and one uppercase letter

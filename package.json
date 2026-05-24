@@ -7,12 +7,15 @@
     "start": "node backend/server.js",
     "seed": "node backend/seed.js",
     "dev": "nodemon backend/server.js",
-    "test": "jest --coverage",
+    "test": "jest --coverage --runInBand --forceExit",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
   "jest": {
     "testEnvironment": "node",
+    "testTimeout": 30000,
+    "globalSetup": "./backend/tests/globalSetup.js",
+    "globalTeardown": "./backend/tests/globalTeardown.js",
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/e2e/"
