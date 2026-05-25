@@ -50,6 +50,31 @@ async function initCanvas() {
 /**
  * Load plan from database
  */
+async function loadPlanFromServer() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+        const response = await fetch('/api/planner', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            rooms = data.rooms || [];
+            furniture = data.furniture || [];
+            openings = data.openings || [];
+            render();
+            renderOpeningsList();
+        }
+    } catch (err) {
+        console.error('Load error:', err);
+    }
+}
+
+/**
+ * Load plan from database
+ */
 async function savePlanToServer() {
     const token = localStorage.getItem('token');
     if (!token) {

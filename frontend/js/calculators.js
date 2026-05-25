@@ -23,7 +23,7 @@ window.openCalculatorModal = function(type) {
     const savedPerimeter = sessionStorage.getItem('lastPerimeter') || "";
     const savedHeight = sessionStorage.getItem('lastHeight') || "2.5";
 
-    const masterCalc = `<div class="alert alert-info small py-2 mb-3"><strong>Мастер-расчет:</strong> Рекомендуем использовать <a href="#" onclick="openCalculatorModal('geometry'); return false;">Геометрию</a> для автоматического учета проемов.</div>`;
+    const masterCalc = `<div class="alert alert-info small py-2 mb-3"><strong>Мастер-расчет:</strong> Рекомендуем использовать <a href="#" onclick="window.openCalculatorModal('geometry'); return false;">Геометрию</a> для автоматического учета проемов.</div>`;
     const quickCalc = `<div class="alert alert-warning small py-2 mb-3"><strong>Быстрый расчет:</strong> Вводите <strong>чистую площадь</strong> (за вычетом окон и дверей).</div>`;
     
     let title = "";
@@ -47,14 +47,14 @@ window.openCalculatorModal = function(type) {
                     <input type="text" id="room-height" class="form-control" placeholder="0.0">
                 </div>
                 
-                <div id="openings-list">
-                    <!-- Add opening rows here -->
+                <div id="openings-list" class="mb-2">
+                    <!-- Сюда будут добавляться проемы -->
                 </div>
-                <button class="btn btn-sm btn-outline-secondary mb-3" onclick="addOpeningRow()">+ Добавить проем</button>
+                <button class="btn btn-sm btn-outline-secondary mb-3" onclick="window.addOpeningRow()">+ Добавить проем</button>
 
                 <div id="calc-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculateGeometry()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateGeometry()">Рассчитать</button>
             `;
             break;
 
@@ -88,7 +88,7 @@ window.openCalculatorModal = function(type) {
 
                 <div id="paint-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculatePaint()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculatePaint()">Рассчитать</button>
             `;
             break;
         
@@ -128,7 +128,7 @@ window.openCalculatorModal = function(type) {
 
                 <div id="wallpaper-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculateWallpaper()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateWallpaper()">Рассчитать</button>
             `;
             break;
 
@@ -154,9 +154,9 @@ window.openCalculatorModal = function(type) {
                         <input type="text" id="tile-h" class="form-control" placeholder="В" value="300">
                     </div>
                     <div class="btn-group btn-group-sm w-100">
-                        <button type="button" class="btn btn-outline-secondary" onclick="setTileSize(300, 300)">30x30</button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="setTileSize(600, 600)">60x60</button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="setTileSize(600, 300)">60x30</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="window.setTileSize(300, 300)">30x30</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="window.setTileSize(600, 600)">60x60</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="window.setTileSize(600, 300)">60x30</button>
                     </div>
                 </div>
                 <div class="form-group mb-3">
@@ -170,7 +170,7 @@ window.openCalculatorModal = function(type) {
 
                 <div id="tiles-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculateTiles()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateTiles()">Рассчитать</button>
             `;
             break;
 
@@ -194,7 +194,7 @@ window.openCalculatorModal = function(type) {
 
                 <div id="wp-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculateWP()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateWP()">Рассчитать</button>
             `;
             break;
 
@@ -218,7 +218,7 @@ window.openCalculatorModal = function(type) {
 
                 <div id="floor-result" class="result-box mb-3" style="display:none;"></div>
 
-                <button class="btn bh-btn-primary w-100" onclick="calculateFloor()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateFloor()">Рассчитать</button>
             `;
             break;
 
@@ -243,7 +243,7 @@ window.openCalculatorModal = function(type) {
                     <input type="text" id="drywall-stock" class="form-control" value="10">
                 </div>
                 <div id="drywall-result" class="result-box mb-3" style="display:none;"></div>
-                <button class="btn bh-btn-primary w-100" onclick="calculateDrywall()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateDrywall()">Рассчитать</button>
             `;
             break;
 
@@ -268,7 +268,7 @@ window.openCalculatorModal = function(type) {
                     <input type="text" id="profile-perimeter" class="form-control" value="${savedPerimeter || ''}" placeholder="0.0">
                 </div>
                 <div id="profiles-result" class="result-box mb-3" style="display:none;"></div>
-                <button class="btn bh-btn-primary w-100" onclick="calculateProfiles()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateProfiles()">Рассчитать</button>
             `;
             break;
 
@@ -293,7 +293,7 @@ window.openCalculatorModal = function(type) {
                     </select>
                 </div>
                 <div id="laminate-result" class="result-box mb-3" style="display:none;"></div>
-                <button class="btn bh-btn-primary w-100" onclick="calculateLaminate()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateLaminate()">Рассчитать</button>
             `;
             break;
 
@@ -311,7 +311,7 @@ window.openCalculatorModal = function(type) {
                     <input type="text" id="brick-wall-th" class="form-control" value="0.2">
                 </div>
                 <div id="bricks-result" class="result-box mb-3" style="display:none;"></div>
-                <button class="btn bh-btn-primary w-100" onclick="calculateBricks()">Рассчитать</button>
+                <button class="btn bh-btn-primary w-100" onclick="window.calculateBricks()">Рассчитать</button>
             `;
             break;
     }
@@ -336,6 +336,47 @@ function showCalcError(boxId, message) {
     resultBox.innerHTML = `<div class="alert alert-danger py-2 small mb-0">${message}</div>`;
 }
 
+// Add opening row in Geometry calculator
+window.addOpeningRow = function() {
+    const list = document.getElementById('openings-list');
+    if (!list) return;
+
+    const row = document.createElement('div');
+    row.className = 'opening-row row g-1 mb-1 align-items-center';
+    row.innerHTML = `
+        <div class="col-3">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text px-1" style="font-size: 0.65rem;">Ш:</span>
+                <input type="number" class="form-control op-width p-1" value="0.0" step="0.1" min="0" style="font-size: 0.8rem;">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text px-1" style="font-size: 0.65rem;">В:</span>
+                <input type="number" class="form-control op-height p-1" value="0.0" step="0.1" min="0" style="font-size: 0.8rem;">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text px-1" style="font-size: 0.65rem;">№:</span>
+                <input type="number" class="form-control op-qty p-1" value="1" min="1" step="1" style="font-size: 0.8rem;">
+            </div>
+        </div>
+        <div class="col-2 text-center">
+            <button class="btn btn-link btn-sm p-0" onclick="window.removeOpeningRow(this)" title="Удалить" style="text-decoration: none; border: none; background: none; font-size: 1.5rem; color: #ff0000; line-height: 1;">
+                &times;
+            </button>
+        </div>
+    `;
+    list.appendChild(row);
+};
+
+// Remove opening row
+window.removeOpeningRow = function(btn) {
+    const row = btn.closest('.opening-row');
+    if (row) row.remove();
+};
+
 // Geometry calculation
 window.calculateGeometry = function() {
     const length = parseNumber(document.getElementById('room-length').value);
@@ -356,7 +397,8 @@ window.calculateGeometry = function() {
     document.querySelectorAll('.opening-row').forEach(row => {
         const opW = parseNumber(row.querySelector('.op-width').value) || 0;
         const opH = parseNumber(row.querySelector('.op-height').value) || 0;
-        const opQty = parseNumber(row.querySelector('.op-qty').value) || 1;
+        const opQtyEl = row.querySelector('.op-qty');
+        const opQty = opQtyEl ? (parseNumber(opQtyEl.value) || 1) : 1;
         totalOpeningsArea += (opW * opH * opQty);
     });
 
@@ -641,7 +683,7 @@ window.calculateFloor = function() {
 // Return Save button HTML
 function getSaveButtonHtml(calcName, resultValue) {
     if (localStorage.getItem('userInfo')) {
-        return `<button class="btn btn-sm btn-success mt-2 w-100" onclick='saveCalculation(this, ${JSON.stringify(calcName)}, ${JSON.stringify(resultValue)})'>Сохранить в профиль</button>`;
+        return `<button class="btn btn-sm btn-success mt-2 w-100" onclick='window.saveCalculation(this, ${JSON.stringify(calcName)}, ${JSON.stringify(resultValue)})'>Сохранить в профиль</button>`;
     }
     return '';
 }

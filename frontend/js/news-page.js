@@ -162,16 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleJobFields() {
         const categorySelect = document.getElementById('post-category');
         const jobFields = document.getElementById('job-fields-wrapper');
-        const phoneInput = document.getElementById('job-contact-phone');
 
         if (categorySelect && jobFields) {
-            if (categorySelect.value === 'jobs') {
+            const isJobs = categorySelect.value === 'jobs';
+            if (isJobs) {
                 jobFields.classList.remove('d-none');
-                if (phoneInput) phoneInput.required = true;
             } else {
                 jobFields.classList.add('d-none');
-                if (phoneInput) phoneInput.required = false;
             }
+
+            // Robustly toggle 'required' for all fields inside the wrapper
+            jobFields.querySelectorAll('input, select, textarea').forEach(field => {
+                field.required = isJobs;
+            });
         }
     }
 
