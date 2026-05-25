@@ -15,6 +15,13 @@ module.exports = defineConfig({
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
   },
+  webServer: {
+    command: 'npm start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'ignore',
+    stderr: 'pipe',
+  },
   projects: [
     {
       name: 'chromium',

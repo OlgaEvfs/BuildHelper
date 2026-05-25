@@ -9,7 +9,7 @@ jest.mock('../models/User');
 
 const app = express();
 app.use(express.json());
-app.use('/api', checkEmailRoutes);
+app.use('/api/check-email', checkEmailRoutes);
 
 beforeAll(async () => {
   await connectToMemoryDB();

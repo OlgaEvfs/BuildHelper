@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 
 // Check if email is already in use
-router.post('/check-email', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { email } = req.body;
         const user = await User.findOne({ email: email.toLowerCase() });
